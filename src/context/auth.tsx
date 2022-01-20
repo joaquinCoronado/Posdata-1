@@ -1,11 +1,12 @@
 import React, {createContext, useState, useEffect, useContext} from 'react';
 import propTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Api from 'axios';
 import {AuthContextType} from '../types';
 
 type AuthContextProps = {
   user: AuthContextType;
-  login: () => void;
+  login: (email: string, password: string) => void;
   logout: () => void;
 };
 
@@ -29,7 +30,28 @@ const AuthProvider = ({children}: any) => {
     AsyncStorage.setItem('@user', JSON.stringify(user));
   }, [user]);
 
-  const login = () => {};
+  const login = (username: string, password: string) => {
+    const data = [username, password];
+    let form: any = [];
+    for (const property in data) {
+      const encodeKey = encodeURIComponent(property);
+      const encodeValue = encodeURIComponent(data[property]);
+      form.push(encodeKey + '=' + encodeValue);
+    }
+    form = form.join('&');
+    fetch('https://posdata.io/security/oauth/token', {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Athorization: 'Basic ' + global.btoa('frontendapp:123456'),
+      },
+      method: 'POST',
+      body: form,
+    })
+      .then(res => {
+        console.log('RES : ', res);
+      })
+      .catch(e => console.log('Ya valio verga perro ', e));
+  };
 
   const logout = () => {
     setUser(null);
