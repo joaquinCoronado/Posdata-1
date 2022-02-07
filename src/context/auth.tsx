@@ -1,13 +1,20 @@
 import React, {createContext, useState, useEffect, useContext} from 'react';
 import propTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Api from 'axios';
+
+import {Api, authConfig} from '../api/index';
 import {AuthContextType} from '../types';
+import {LoginResponse} from '../types/auth';
 
 type AuthContextProps = {
   user: AuthContextType;
-  login: (email: string, password: string) => void;
+  login: (email: string, password: string) => Promise<Boolean>;
   logout: () => void;
+  signup: (body: {
+    name: string;
+    password: string;
+    email: string;
+  }) => Promise<Boolean>;
 };
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
@@ -31,33 +38,45 @@ const AuthProvider = ({children}: any) => {
   }, [user]);
 
   const login = (username: string, password: string) => {
-    const data = [username, password];
-    let form: any = [];
-    for (const property in data) {
-      const encodeKey = encodeURIComponent(property);
-      const encodeValue = encodeURIComponent(data[property]);
-      form.push(encodeKey + '=' + encodeValue);
-    }
-    form = form.join('&');
-    fetch('https://posdata.io/security/oauth/token', {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Athorization: 'Basic ' + global.btoa('frontendapp:123456'),
-      },
-      method: 'POST',
-      body: form,
-    })
-      .then(res => {
-        console.log('RES : ', res);
-      })
-      .catch(e => console.log('Ya valio verga perro ', e));
+    return new Promise<Boolean>(async (resolve, reject) => {
+      const params = new URLSearchParams();
+      params.append('username', username);
+      params.append('password', password);
+      params.append('grant_type', 'password');
+      try {
+        const ok = await Api.post<LoginResponse>(
+          '/security/oauth/token',
+          params,
+          authConfig,
+        );
+        const {access_token, refresh_token, name, id, email, jti} = ok.data;
+        setUser({access_token, refresh_token, name, id, email, jti});
+        resolve(true);
+      } catch (error) {
+        reject(new Error('Eror, please try again later'));
+      }
+    });
   };
 
-  const logout = () => {
-    setUser(null);
+  const signup = (body: {name: string; password: string; email: string}) => {
+    return new Promise<Boolean>(async (resolve, reject) => {
+      try {
+        const res = await Api.post('/user/v1/signup', body);
+        if (res.status !== 200) {
+          reject(new Error(''));
+        }
+        await login(body.email, body.password);
+        resolve(true);
+      } catch (error: any) {
+        reject(new Error('Error, plase try again later'));
+      }
+    });
   };
+
+  const logout = () => setUser(null);
+
   return (
-    <AuthContext.Provider value={{user, login, logout}}>
+    <AuthContext.Provider value={{user, login, logout, signup}}>
       {children}
     </AuthContext.Provider>
   );
