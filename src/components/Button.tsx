@@ -26,10 +26,11 @@ interface Props {
   buttonStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   loading?: Boolean;
+  diabled?: Boolean;
 }
 
 const Button = (props: Props) => {
-  const settings = useSettings();
+  const {theme} = useSettings();
   const {opacity, fadeIn, fadeOut} = useFade();
   return (
     <TouchableOpacity
@@ -37,16 +38,26 @@ const Button = (props: Props) => {
       style={[
         styles.wrapper,
         props.style,
-        {shadowColor: 'orange', opacity: props.disabled ? 0.5 : 1},
+        {shadowColor: theme.colors.primary, opacity: props.disabled ? 0.5 : 1},
       ]}
       onPress={props.onPress}>
-      <View style={[styles.innerWrapper, {backgroundColor: 'orange'}]}>
+      <View
+        style={[styles.innerWrapper, {backgroundColor: theme.colors.primary}]}>
         <View style={styles.button}>
           {props.icon ? <Icon /> : null}
-          <Text style={[styles.title]}>{props.title}</Text>
+          <Text
+            style={[
+              styles.title,
+              {color: theme.dark ? theme.colors.text : theme.colors.background},
+            ]}>
+            {props.title}
+          </Text>
         </View>
         <Animated.View
-          style={[styles.loading, {opacity, backgroundColor: 'orange'}]}>
+          style={[
+            styles.loading,
+            {opacity, backgroundColor: theme.colors.text},
+          ]}>
           <ActivityIndicator size="small" color="#FFF" />
         </Animated.View>
       </View>

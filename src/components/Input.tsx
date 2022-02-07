@@ -14,7 +14,9 @@ interface Props extends TextInputProps {
 }
 
 const Input = (props: Props) => {
-  const {settings} = useSettings();
+  const {
+    theme: {colors, dividerColor, dark},
+  } = useSettings();
   return (
     <View style={[styles.wrapper, props.style]}>
       {props.label && <Text style={styles.label}>{props.label}</Text>}
@@ -23,9 +25,16 @@ const Input = (props: Props) => {
         autoCorrect={false}
         blurOnSubmit={false}
         clearButtonMode="while-editing"
-        style={styles.input}
+        style={{
+          ...styles.input,
+          backgroundColor: colors.background,
+          borderColor: colors.text,
+          color: colors.text,
+        }}
+        selectionColor={colors.primary}
+        placeholderTextColor={dividerColor}
+        keyboardAppearance={dark ? 'dark' : 'light'}
         {...props}
-        selectionColor={'red'}
       />
     </View>
   );
@@ -33,12 +42,15 @@ const Input = (props: Props) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginBottom: 6,
+    marginVertical: 8,
   },
-  label: {},
+  label: {
+    paddingBottom: 2,
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
   input: {
-    borderColor: '#000',
-    paddingVertical: 4,
+    padding: 12,
     borderWidth: Platform.OS === 'android' ? 1 : StyleSheet.hairlineWidth,
   },
 });
