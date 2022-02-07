@@ -5,27 +5,70 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
+import {Appearance, AppState} from 'react-native';
 import propTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SettingsContextType, PosdataTheme} from '../types';
 
-type SettingsContextProps = {
+import {SettingsContextType, PosdataTheme} from '../types';
+interface SettingsContextProps {
   settings: SettingsContextType;
   theme: PosdataTheme;
   updateSettings: Function;
-  updateTheme: Function;
-};
+  setDarkTheme: () => void;
+  setLightTheme: () => void;
+}
 
 const SettingsContext = createContext<SettingsContextProps>(
   {} as SettingsContextProps,
 );
+
+const lightTheme: PosdataTheme = {
+  currentTheme: 'light',
+  dark: false,
+  colors: {
+    primary: '#0071BC',
+    background: '#FFFF',
+    card: '#FFFF',
+    text: '#222222',
+    border: '#0071BC',
+    notification: '#0071BC',
+  },
+  dividerColor: 'rgba(0,0,0,0.7)',
+};
+
+const darkTheme: PosdataTheme = {
+  currentTheme: 'dark',
+  dark: true,
+  colors: {
+    primary: '#0071BC',
+    background: '#263238',
+    card: '#263238',
+    text: '#FFFF',
+    border: '#0071BC',
+    notification: '#0071BC',
+  },
+  dividerColor: 'rgba(255,255,255,0.7)',
+};
 
 const SettingsProvider = ({children}: any) => {
   const [settings, setSettings] = useState<SettingsContextType>({
     appLoading: true,
     welcomed: false,
   });
-  const [theme, setTheme] = useState<PosdataTheme>(null);
+  const [theme, setTheme] = useState<PosdataTheme>(
+    Appearance.getColorScheme() === 'dark' ? darkTheme : lightTheme,
+  );
+
+  useEffect(() => {
+    AppState.addEventListener('change', status => {
+      if (status === 'active') {
+        Appearance.getColorScheme() === 'light'
+          ? setLightTheme()
+          : setDarkTheme();
+      }
+    });
+  }, []);
+
   useEffect(() => {
     AsyncStorage.getItem('@settings')
       .then(res => {
@@ -45,13 +88,13 @@ const SettingsProvider = ({children}: any) => {
     setSettings(s => ({...s, ...params}));
   }, []);
 
-  const updateTheme = useCallback(params => {
-    setTheme(params);
-  }, []);
+  const setDarkTheme = () => setTheme(darkTheme);
+
+  const setLightTheme = () => setTheme(lightTheme);
 
   return (
     <SettingsContext.Provider
-      value={{settings, theme, updateSettings, updateTheme}}>
+      value={{settings, theme, updateSettings, setDarkTheme, setLightTheme}}>
       {children}
     </SettingsContext.Provider>
   );
@@ -66,7 +109,7 @@ const useSettings = () => {
   if (context === undefined) {
     throw new Error('Settings context must be used within Settings Provider');
   }
-  return context;
+  return {...context};
 };
 
 export {SettingsProvider, useSettings};
