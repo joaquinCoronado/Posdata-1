@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   input: {
-    padding: 12,
+    padding: 10,
     borderWidth: Platform.OS === 'android' ? 1 : StyleSheet.hairlineWidth,
   },
 });
