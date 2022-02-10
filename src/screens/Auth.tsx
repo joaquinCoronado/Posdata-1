@@ -5,6 +5,7 @@ import {
   Platform,
   StyleSheet,
   Text,
+  Alert,
 } from 'react-native';
 import {useAuth} from '../context/auth';
 import Input from '../components/Input';
@@ -15,9 +16,16 @@ const Auth = () => {
   const [activeScreen, setActiveScreen] = useState<
     'login' | 'signup' | 'resetPassword'
   >('login');
-  const handleSubmit = () => {
-    console.log('Hola');
-    login('joaquin@posdata.io', '123');
+  const [loading, setLoading] = useState<Boolean>(false);
+  const handleSubmit = async () => {
+    setLoading(false);
+    try {
+      await login('joaquin@posdata.io', '123');
+      setLoading(false);
+    } catch (error: any) {
+      Alert.alert(error.message);
+      setLoading(false);
+    }
   };
   return (
     <KeyboardAvoidingView
@@ -37,7 +45,12 @@ const Auth = () => {
           <Input placeholder="******" label="Password" />
           {/* <Input /> */}
         </View>
-        <Button title="Login" style={styles.button} onPress={handleSubmit} />
+        <Button
+          title="Login"
+          style={styles.button}
+          onPress={handleSubmit}
+          loading={loading}
+        />
       </View>
     </KeyboardAvoidingView>
   );
