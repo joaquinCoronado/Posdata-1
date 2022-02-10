@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   ViewStyle,
   StyleProp,
@@ -10,7 +10,6 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import propTypes from 'prop-types';
 
 import Icon from './Icon';
 import {useSettings} from '../context/settings';
@@ -32,18 +31,23 @@ interface Props {
 const Button = (props: Props) => {
   const {theme} = useSettings();
   const {opacity, fadeIn, fadeOut} = useFade();
+
+  useEffect(
+    () => (props.loading ? fadeIn() : fadeOut()),
+    [fadeIn, fadeOut, props.loading],
+  );
+
   return (
     <TouchableOpacity
       activeOpacity={0.68}
       style={[
-        styles.wrapper,
+        styles.container,
         props.style,
         {shadowColor: theme.colors.primary, opacity: props.disabled ? 0.5 : 1},
       ]}
       onPress={props.onPress}>
-      <View
-        style={[styles.innerWrapper, {backgroundColor: theme.colors.primary}]}>
-        <View style={styles.button}>
+      <View style={[styles.wrapper, {backgroundColor: theme.colors.primary}]}>
+        <View style={styles.textContainer}>
           {props.icon ? <Icon /> : null}
           <Text
             style={[
@@ -56,7 +60,7 @@ const Button = (props: Props) => {
         <Animated.View
           style={[
             styles.loading,
-            {opacity, backgroundColor: theme.colors.text},
+            {opacity, backgroundColor: theme.colors.primary},
           ]}>
           <ActivityIndicator size="small" color="#FFF" />
         </Animated.View>
@@ -66,25 +70,25 @@ const Button = (props: Props) => {
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
+  container: {
     width: '100%',
     alignItems: 'center',
     shadowOpacity: 0.3,
-    shadowRadius: 15,
+    shadowRadius: 10,
     shadowOffset: {
       width: 0,
       height: 10,
     },
   },
-  innerWrapper: {
+  wrapper: {
     width: '100%',
     height: 52,
-    borderRadius: 8,
+    borderRadius: 3,
     backgroundColor: '#FFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  button: {
+  textContainer: {
     position: 'absolute',
     flexDirection: 'row',
   },
@@ -94,21 +98,8 @@ const styles = StyleSheet.create({
   loading: {
     position: 'absolute',
     width: '100%',
-    backgroundColor: '#222',
   },
 });
-
-Button.propTypes = {
-  buttonStyle: propTypes.object,
-  icon1: propTypes.string,
-  icon2: propTypes.string,
-  mode: propTypes.oneOf(['primary', 'white', 'link', 'secondary-link']),
-  onPress: propTypes.func.isRequired,
-  shadow: propTypes.bool,
-  style: propTypes.object,
-  textStyle: propTypes.object,
-  title: propTypes.string.isRequired,
-};
 
 Button.defaultProps = {
   mode: 'primary',
