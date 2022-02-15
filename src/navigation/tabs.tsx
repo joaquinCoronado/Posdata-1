@@ -7,7 +7,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Search from '..//screens/Search';
@@ -15,6 +14,7 @@ import Exchange from '../screens/Exchange';
 import Places from '../screens/Places';
 import Profile from '../screens/Profile';
 import NewPlace from '../screens/NewPlace';
+import {useSettings} from '../context/settings';
 
 export type RootTabsParams = {
   Places: undefined;
@@ -34,6 +34,7 @@ const getWidth = () => {
 
 const Tabs = () => {
   const tabOffsetValue = useRef(new Animated.Value(0)).current;
+  const {theme} = useSettings();
   return (
     <>
       <Tab.Navigator
@@ -41,26 +42,27 @@ const Tabs = () => {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: {
-            backgroundColor: 'white',
+            backgroundColor: theme.colors.background,
             position: 'absolute',
             marginBottom: 35,
             marginHorizontal: 20,
             height: 60,
             borderRadius: 10,
             shadowColor: '#000',
-            shadowOpacity: 0.06,
+            shadowOpacity: 0.1,
             shadowOffset: {
               width: 10,
               height: 10,
             },
-            paddingHorizontal: 20,
+            paddingHorizontal: 15,
+            borderTopColor: theme.colors.background,
           },
         }}>
         <Tab.Screen
           name="Places"
           component={Places}
-          listeners={({navigation, route}) => ({
-            tabPress: e => {
+          listeners={() => ({
+            tabPress: () => {
               Animated.spring(tabOffsetValue, {
                 toValue: 0,
                 useNativeDriver: true,
@@ -71,7 +73,7 @@ const Tabs = () => {
             tabBarIcon: ({focused}) => (
               <View style={styles.iconContainer}>
                 <Icon
-                  color={focused ? 'red' : 'gray'}
+                  color={focused ? theme.colors.primary : theme.colors.text}
                   size={20}
                   name="home-outline"
                 />
@@ -82,8 +84,8 @@ const Tabs = () => {
         <Tab.Screen
           name="Search"
           component={Search}
-          listeners={({navigation, route}) => ({
-            tabPress: e => {
+          listeners={() => ({
+            tabPress: () => {
               Animated.spring(tabOffsetValue, {
                 toValue: getWidth(),
                 useNativeDriver: true,
@@ -94,7 +96,7 @@ const Tabs = () => {
             tabBarIcon: ({focused}) => (
               <View style={styles.iconContainer}>
                 <Icon
-                  color={focused ? 'red' : 'gray'}
+                  color={focused ? theme.colors.primary : theme.colors.text}
                   size={20}
                   name="search-outline"
                 />
@@ -105,8 +107,8 @@ const Tabs = () => {
         <Tab.Screen
           name="NewPlace"
           component={NewPlace}
-          listeners={({navigation, route}) => ({
-            tabPress: e => {
+          listeners={() => ({
+            tabPress: () => {
               Animated.spring(tabOffsetValue, {
                 toValue: getWidth() * 2,
                 useNativeDriver: true,
@@ -114,8 +116,12 @@ const Tabs = () => {
             },
           })}
           options={{
-            tabBarIcon: ({focused}) => (
-              <TouchableOpacity style={styles.mainIconContainer}>
+            tabBarIcon: () => (
+              <TouchableOpacity
+                style={{
+                  ...styles.mainIconContainer,
+                  backgroundColor: theme.colors.primary,
+                }}>
                 <Icon color={'white'} size={30} name={'add-outline'} />
               </TouchableOpacity>
             ),
@@ -124,8 +130,8 @@ const Tabs = () => {
         <Tab.Screen
           name="Exchange"
           component={Exchange}
-          listeners={({navigation, route}) => ({
-            tabPress: e => {
+          listeners={() => ({
+            tabPress: () => {
               Animated.spring(tabOffsetValue, {
                 toValue: getWidth() * 3,
                 useNativeDriver: true,
@@ -136,7 +142,7 @@ const Tabs = () => {
             tabBarIcon: ({focused}) => (
               <View style={styles.iconContainer}>
                 <Icon
-                  color={focused ? 'red' : 'gray'}
+                  color={focused ? theme.colors.primary : theme.colors.text}
                   size={20}
                   name="reader-outline"
                 />
@@ -147,8 +153,8 @@ const Tabs = () => {
         <Tab.Screen
           name="Profile"
           component={Profile}
-          listeners={({navigation, route}) => ({
-            tabPress: e => {
+          listeners={() => ({
+            tabPress: () => {
               Animated.spring(tabOffsetValue, {
                 toValue: getWidth() * 4,
                 useNativeDriver: true,
@@ -159,7 +165,7 @@ const Tabs = () => {
             tabBarIcon: ({focused}) => (
               <View style={styles.iconContainer}>
                 <Icon
-                  color={focused ? 'red' : 'gray'}
+                  color={focused ? theme.colors.primary : theme.colors.text}
                   size={20}
                   name="person-outline"
                 />
@@ -172,6 +178,7 @@ const Tabs = () => {
         style={{
           ...styles.tabIndicator,
           transform: [{translateX: tabOffsetValue}],
+          backgroundColor: theme.colors.primary,
         }}
       />
     </>
@@ -183,7 +190,6 @@ const styles = StyleSheet.create({
   mainIconContainer: {
     width: 55,
     height: 55,
-    backgroundColor: 'red',
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
@@ -192,7 +198,6 @@ const styles = StyleSheet.create({
   tabIndicator: {
     width: getWidth(),
     height: 3,
-    backgroundColor: 'red',
     position: 'absolute',
     bottom: 95,
     left: 25,
