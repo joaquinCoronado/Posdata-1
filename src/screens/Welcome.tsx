@@ -47,10 +47,6 @@ const Welcome = () => {
             source={require('../assets/welcome03.jpeg')}
             style={styles.image}
           />
-          <View style={styles.info}>
-            <Text style={styles.title}>title TITLE </Text>
-            <Text style={styles.subtitle}>Subtitle subtitle</Text>
-          </View>
         </View>
       </Swiper>
       <Button title="Hola Mundo" style={styles.button} onPress={handleSubmit} />
@@ -91,24 +87,6 @@ const styles = StyleSheet.create({
   slide: {
     flex: 1,
     overflow: 'hidden',
-  },
-  info: {
-    flex: 1,
-    marginBottom: 200,
-    paddingHorizontal: 38,
-    justifyContent: 'flex-end',
-  },
-  title: {
-    fontSize: 38,
-    color: '#FFF',
-    textAlign: 'left',
-    //
-  },
-  subtitle: {
-    fontSize: 22,
-    color: '#FFF',
-    marginTop: 16,
-    textAlign: 'left',
   },
   button: {
     maxWidth: 350,
