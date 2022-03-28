@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {
+  createBottomTabNavigator,
+  BottomTabScreenProps,
+} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Search from '..//screens/Search';
@@ -32,7 +35,9 @@ const getWidth = () => {
   return width / 5;
 };
 
-const Tabs = () => {
+interface Props extends BottomTabScreenProps<RootTabsParams, 'Places'> {}
+
+const Tabs = ({navigation}: Props) => {
   const tabOffsetValue = useRef(new Animated.Value(0)).current;
   const {theme} = useSettings();
   return (
@@ -118,6 +123,7 @@ const Tabs = () => {
           options={{
             tabBarIcon: () => (
               <TouchableOpacity
+                onPress={() => navigation.navigate('NewPlace')}
                 style={{
                   ...styles.mainIconContainer,
                   backgroundColor: theme.colors.primary,

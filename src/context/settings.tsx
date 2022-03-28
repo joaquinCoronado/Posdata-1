@@ -60,13 +60,16 @@ const SettingsProvider = ({children}: any) => {
   );
 
   useEffect(() => {
-    AppState.addEventListener('change', status => {
+    const listener = AppState.addEventListener('change', status => {
       if (status === 'active') {
         Appearance.getColorScheme() === 'light'
           ? setLightTheme()
           : setDarkTheme();
       }
     });
+    return () => {
+      listener.remove();
+    };
   }, []);
 
   useEffect(() => {

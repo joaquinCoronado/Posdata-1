@@ -18,9 +18,9 @@ const Auth = () => {
   >('login');
   const [loading, setLoading] = useState<Boolean>(false);
   const handleSubmit = async () => {
-    setLoading(false);
+    setLoading(true);
     try {
-      await login('joaquin@posdata.io', '123');
+      await login('oscar@posdataaasas.io', '123');
       setLoading(false);
     } catch (error: any) {
       Alert.alert(error.message);

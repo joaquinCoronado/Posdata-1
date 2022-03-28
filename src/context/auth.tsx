@@ -51,6 +51,7 @@ const AuthProvider = ({children}: any) => {
         );
         const {access_token, refresh_token, name, id, email, jti} = ok.data;
         setUser({access_token, refresh_token, name, id, email, jti});
+        Api.defaults.headers.common.Authorization = 'Bearer ' + access_token;
         resolve(true);
       } catch (error) {
         reject(new Error('Eror, please try again later'));
