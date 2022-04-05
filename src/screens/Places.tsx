@@ -5,11 +5,13 @@ import {
   StyleSheet,
   FlatList,
   SafeAreaView,
-  ImageBackground,
   TouchableOpacity,
 } from 'react-native';
+import Image from 'react-native-fast-image';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
 import FlatButton from '../components/FlatButton';
+import {RootStackParams} from '../navigation/places';
 
 // DOMMY DATA OF PLACES
 const placesList = [
@@ -83,30 +85,14 @@ interface renderItemProps {
   item: any;
 }
 
-const renderItem = (props: renderItemProps) => {
-  const {item} = props;
-  return (
-    <TouchableOpacity
-      activeOpacity={0.88}
-      onPress={() => {
-        console.log('On press: ', item.name, item.id);
-      }}
-      style={styles.itemContainer}>
-      <ImageBackground
-        source={{uri: item.picture}}
-        resizeMode="cover"
-        style={styles.image}
-      />
-    </TouchableOpacity>
-  );
-};
-
 const listFooter = () => <FlatButton onPress={() => {}} title="SEE MORE" />;
 
-const Places = () => {
+interface Props extends StackScreenProps<RootStackParams, 'Places'> {}
+
+const Places = ({navigation}: Props) => {
   let [isLoading, setLoading] = useState(false);
   const {theme} = useSettings();
-
+  console.log('Navigate: ', navigation);
   return (
     <View style={styles.container}>
       <Text style={[styles.titleOne, {color: theme.colors.text}]}>Places</Text>
@@ -125,7 +111,27 @@ const Places = () => {
             }}
             numColumns={2}
             data={placesList}
-            renderItem={renderItem}
+            renderItem={(props: renderItemProps) => {
+              const {item} = props;
+              return (
+                <TouchableOpacity
+                  activeOpacity={0.88}
+                  onPress={() => {
+                    navigation.navigate('Place', {
+                      name: item.name,
+                      id: item.id,
+                    });
+                    console.log('On press: ', item.name, item.id);
+                  }}
+                  style={styles.itemContainer}>
+                  <Image
+                    source={{uri: item.picture}}
+                    resizeMode="cover"
+                    style={styles.image}
+                  />
+                </TouchableOpacity>
+              );
+            }}
             ListFooterComponent={listFooter}
             keyExtractor={item => item.id}
           />
@@ -156,7 +162,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   itemContainer: {
-    backgroundColor: 'blue',
     height: 350,
     width: '50%',
     marginBottom: 5,

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {
   Animated,
   Dimensions,
@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import Search from '../screens/Search';
 import Exchange from '../screens/Exchange';
-import Places from '../screens/Places';
+import Places from './places';
 import Profile from '../screens/Profile';
 import NewPlace from '../screens/NewPlace';
 import {useSettings} from '../context/settings';
