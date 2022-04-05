@@ -12,7 +12,7 @@ import {
 } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import Search from '..//screens/Search';
+import Search from '../screens/Search';
 import Exchange from '../screens/Exchange';
 import Places from '../screens/Places';
 import Profile from '../screens/Profile';
