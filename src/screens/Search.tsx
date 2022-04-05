@@ -6,9 +6,9 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
-  ImageBackground,
   TextInput,
 } from 'react-native';
+import Image from 'react-native-fast-image';
 import {useSettings} from '../context/settings';
 import FlatButton from '../components/FlatButton';
 
@@ -292,7 +292,7 @@ const Search = () => {
           console.log('On press: ', item.name, item.id);
         }}
         style={styles.itemContainer}>
-        <ImageBackground
+        <Image
           source={{uri: item.picture}}
           resizeMode="cover"
           style={styles.image}
@@ -363,7 +363,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   itemContainer: {
-    backgroundColor: 'blue',
     height: 150,
     width: '33%',
     marginBottom: 5,
