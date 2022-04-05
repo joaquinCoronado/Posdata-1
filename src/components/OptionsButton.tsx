@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 interface Props {
   onPress?: () => void;
-  title: string;
 }
 
 const OptionsButton = (props: Props) => {

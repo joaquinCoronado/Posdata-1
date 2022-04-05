@@ -18,7 +18,6 @@ import Places from './places';
 import Profile from '../screens/Profile';
 import NewPlace from '../screens/NewPlace';
 import {useSettings} from '../context/settings';
-import PlaceDetail from '../screens/requestExchange/PlaceDetail';
 
 export type RootTabsParams = {
   Places: undefined;

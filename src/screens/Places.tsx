@@ -85,7 +85,11 @@ interface renderItemProps {
   item: any;
 }
 
-const listFooter = () => <FlatButton onPress={() => {}} title="SEE MORE" />;
+const listFooter = () => (
+  <View style={styles.listFooterContainer}>
+    <FlatButton onPress={() => {}} title="SEE MORE" />
+  </View>
+);
 
 interface Props extends StackScreenProps<RootStackParams, 'Places'> {}
 
@@ -117,11 +121,7 @@ const Places = ({navigation}: Props) => {
                 <TouchableOpacity
                   activeOpacity={0.88}
                   onPress={() => {
-                    navigation.navigate('Place', {
-                      name: item.name,
-                      id: item.id,
-                    });
-                    console.log('On press: ', item.name, item.id);
+                    navigation.navigate('Place', {...item});
                   }}
                   style={styles.itemContainer}>
                   <Image
@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  listFooterContainer: {marginBottom: 255},
 });
 
 export default Places;

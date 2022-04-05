@@ -6,23 +6,14 @@ import FlatButton from '../../components/FlatButton';
 
 interface Props {
   place: any;
+  route: any;
 }
 
 const PlaceDetail = (props: Props) => {
   let [isModalOpen, setModalOpen] = useState(false);
-
-  const {
-    place = {
-      id: '1',
-      picture:
-        'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
-      name: 'la minerva',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-30',
-    },
-  } = props;
+  console.log('details', props);
+  const {route} = props;
+  const {params: place} = route;
 
   return (
     <View style={styles.container}>
@@ -39,7 +30,6 @@ const PlaceDetail = (props: Props) => {
           </Text>
         </View>
         <OptionsButton
-          title="hola mundo"
           onPress={() => {
             setModalOpen(true);
           }}

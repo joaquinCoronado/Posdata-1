@@ -1,12 +1,20 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import Places from '../screens/Places';
-import Place from '../screens/Place.example';
+import PlaceDetail from '../screens/requestExchange/PlaceDetail';
 import {fade} from '../utils/screenAnimations';
 
 export type RootStackParams = {
   Places: undefined;
-  Place: {name: string; id: string};
+  Place: {
+    id: string;
+    picture: string;
+    name: string;
+    country: string;
+    city: string;
+    ownerId: number;
+    createdAt: string;
+  };
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -25,7 +33,7 @@ const PlacesNavigator = () => {
         }}
       />
       <Stack.Screen
-        component={Place}
+        component={PlaceDetail}
         name="Place"
         options={{
           cardStyleInterpolator: fade,
