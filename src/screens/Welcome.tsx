@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
 import Button from '../components/Button';
@@ -25,10 +25,6 @@ const Welcome = () => {
             source={require('../assets/welcome01.jpeg')}
             style={styles.image}
           />
-          <View style={styles.info}>
-            <Text style={styles.title}>title TITLE </Text>
-            <Text style={styles.subtitle}>Subtitle subtitle</Text>
-          </View>
         </View>
         <View style={styles.slide}>
           <Image
@@ -36,10 +32,6 @@ const Welcome = () => {
             source={require('../assets/welcome02.jpeg')}
             style={styles.image}
           />
-          <View style={styles.info}>
-            <Text style={styles.title}>title TITLE </Text>
-            <Text style={styles.subtitle}>Subtitle subtitle</Text>
-          </View>
         </View>
         <View style={styles.slide}>
           <Image
