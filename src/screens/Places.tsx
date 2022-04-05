@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import usePlaces from '../hooks/usePlaces';
+import {useSettings} from '../context/settings';
 import FlatButton from '../components/FlatButton';
 
 // DOMMY DATA OF PLACES
@@ -104,15 +104,25 @@ const renderItem = (props: renderItemProps) => {
 const listFooter = () => <FlatButton onPress={() => {}} title="SEE MORE" />;
 
 const Places = () => {
-  const {} = usePlaces();
+  let [isLoading, setLoading] = useState(false);
+  const {theme} = useSettings();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleOne}>Places</Text>
+      <Text style={[styles.titleOne, {color: theme.colors.text}]}>Places</Text>
       <View style={styles.listPalcesContainer}>
-        <Text style={styles.titleTwo}>BROWS ALL</Text>
+        <Text style={[styles.titleTwo, {color: theme.colors.text}]}>
+          BROWS ALL
+        </Text>
         <SafeAreaView style={styles.safeAreaContainer}>
           <FlatList
+            refreshing={isLoading}
+            onRefresh={() => {
+              setLoading(true);
+              setTimeout(() => {
+                setLoading(false);
+              }, 2000);
+            }}
             numColumns={2}
             data={placesList}
             renderItem={renderItem}
@@ -148,7 +158,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     backgroundColor: 'blue',
     height: 350,
-    width: 180,
+    width: '50%',
     marginBottom: 5,
     marginRight: 5,
   },
