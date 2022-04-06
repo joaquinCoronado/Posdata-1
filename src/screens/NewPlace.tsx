@@ -222,7 +222,7 @@ const NewPlace = () => {
             </View>
             <View
               style={{
-                bottom: -height / 3 + 50,
+                bottom: -height / 3 + 13,
               }}>
               <Button
                 title="Save Place"
@@ -249,7 +249,7 @@ const NewPlace = () => {
           </View>
           <View
             style={{
-              marginTop: 30,
+              marginTop: height / 3 - 40,
             }}>
             <Button
               title="Save Place"
