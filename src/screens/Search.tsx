@@ -302,7 +302,7 @@ const Search = () => {
   };
 
   const listFooter = () => (
-    <View style={{marginBottom: 78, color: text}}>
+    <View style={styles.listFooterContainer}>
       <FlatButton onPress={() => {}} title="SEE MORE" />
     </View>
   );
@@ -377,6 +377,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     marginBottom: 10,
+  },
+  listFooterContainer: {
+    marginBottom: 330,
   },
 });
 
