@@ -96,11 +96,14 @@ const NewPlace = () => {
                   <Icon
                     name="file-tray-full-outline"
                     style={styles.iconFiles}
+                    color={theme.colors.text}
                     size={180}
                   />
                   <View style={{}}>
-                    <Text>title TITLE </Text>
-                    <Text>Subtitle subtitle</Text>
+                    <Text style={{color: theme.colors.text}}>title TITLE </Text>
+                    <Text style={{color: theme.colors.text}}>
+                      Subtitle subtitle
+                    </Text>
                   </View>
                 </View>
               </>
@@ -145,22 +148,7 @@ const NewPlace = () => {
       return (
         <>
           <ScrollView style={{...styles.container, top: top + 20}}>
-            <View>
-              <TextInput
-                style={[
-                  styles.input,
-                  {borderColor: theme.colors.text, color: theme.colors.text},
-                ]}
-                onChangeText={() => {}}
-                value={form.country}
-                onEndEditing={() => {
-                  console.log('text');
-                }}
-                placeholder="Country"
-                placeholderTextColor={'rgba(0,0,0,0.8)'}
-              />
-            </View>
-            <View>
+            <View style={styles.inputContainer}>
               <TextInput
                 style={[
                   styles.input,
@@ -171,11 +159,12 @@ const NewPlace = () => {
                 onEndEditing={() => {
                   console.log('text');
                 }}
-                placeholder="Pais"
-                placeholderTextColor={'rgba(0,0,0,0.8)'}
+                placeholder="Country"
+                placeholderTextColor={theme.colors.text}
               />
             </View>
-            <View>
+
+            <View style={styles.inputContainer}>
               <TextInput
                 style={[
                   styles.input,
@@ -187,7 +176,7 @@ const NewPlace = () => {
                   console.log('text');
                 }}
                 placeholder="Estado"
-                placeholderTextColor={'rgba(0,0,0,0.8)'}
+                placeholderTextColor={theme.colors.text}
               />
             </View>
             <View>
@@ -202,10 +191,10 @@ const NewPlace = () => {
                   console.log('text');
                 }}
                 placeholder="Ciudad"
-                placeholderTextColor={'rgba(0,0,0,0.8)'}
+                placeholderTextColor={theme.colors.text}
               />
             </View>
-            <View>
+            <View style={styles.inputContainer}>
               <TextInput
                 style={[
                   styles.input,
@@ -217,7 +206,7 @@ const NewPlace = () => {
                   console.log('text');
                 }}
                 placeholder="Nombre del lugar"
-                placeholderTextColor={'rgba(0,0,0,0.8)'}
+                placeholderTextColor={theme.colors.text}
               />
             </View>
             <View
@@ -322,6 +311,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 14,
     marginTop: 10,
+  },
+  inputContainer: {
+    marginVertical: 6,
   },
 });
 
