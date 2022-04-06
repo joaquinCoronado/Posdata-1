@@ -13,6 +13,7 @@ import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Button from '../components/Button';
 import {useForm} from '../hooks/useForm';
 import {useSettings} from '../context/settings';
@@ -29,6 +30,7 @@ const NewPlace = () => {
     placeName: '',
   });
   const {theme} = useSettings();
+  const {top} = useSafeAreaInsets();
   const getPhotos = () => {
     Alert.alert('Subir Foto', 'Selecciona una opcion', [
       {
@@ -74,7 +76,10 @@ const NewPlace = () => {
       },
     ]);
   };
-  console.log('TempPhotos: ', tempPhotos);
+
+  const onSubmit = () => {
+    setStep(s => `${Number(s) + 1}`);
+  };
   switch (step) {
     case '1': {
       return (
@@ -111,7 +116,7 @@ const NewPlace = () => {
                     style={styles.iconContainer}
                     onPress={() => {
                       const images = [...tempPhotos];
-                      delete images[index];
+                      images.splice(index, 1);
                       setTempPhotos(images);
                     }}>
                     <Icon name="close-sharp" size={30} color="white" />
@@ -130,6 +135,7 @@ const NewPlace = () => {
               title="Siguiente"
               style={styles.button}
               onPress={() => setStep(s => `${Number(s) + 1}`)}
+              mode="white"
             />
           </View>
         </View>
@@ -138,7 +144,7 @@ const NewPlace = () => {
     case '2': {
       return (
         <>
-          <ScrollView>
+          <ScrollView style={{...styles.container, top: top + 20}}>
             <View>
               <TextInput
                 style={[
@@ -150,6 +156,84 @@ const NewPlace = () => {
                 onEndEditing={() => {
                   console.log('text');
                 }}
+                placeholder="Country"
+                placeholderTextColor={'rgba(0,0,0,0.8)'}
+              />
+            </View>
+            <View>
+              <TextInput
+                style={[
+                  styles.input,
+                  {borderColor: theme.colors.text, color: theme.colors.text},
+                ]}
+                onChangeText={value => onChange(value, 'country')}
+                value={form.country}
+                onEndEditing={() => {
+                  console.log('text');
+                }}
+                placeholder="Pais"
+                placeholderTextColor={'rgba(0,0,0,0.8)'}
+              />
+            </View>
+            <View>
+              <TextInput
+                style={[
+                  styles.input,
+                  {borderColor: theme.colors.text, color: theme.colors.text},
+                ]}
+                onChangeText={value => onChange(value, 'state')}
+                value={form.state}
+                onEndEditing={() => {
+                  console.log('text');
+                }}
+                placeholder="Estado"
+                placeholderTextColor={'rgba(0,0,0,0.8)'}
+              />
+            </View>
+            <View>
+              <TextInput
+                style={[
+                  styles.input,
+                  {borderColor: theme.colors.text, color: theme.colors.text},
+                ]}
+                onChangeText={value => onChange(value, 'city')}
+                value={form.city}
+                onEndEditing={() => {
+                  console.log('text');
+                }}
+                placeholder="Ciudad"
+                placeholderTextColor={'rgba(0,0,0,0.8)'}
+              />
+            </View>
+            <View>
+              <TextInput
+                style={[
+                  styles.input,
+                  {borderColor: theme.colors.text, color: theme.colors.text},
+                ]}
+                onChangeText={value => onChange(value, 'placeName')}
+                value={form.placeName}
+                onEndEditing={() => {
+                  console.log('text');
+                }}
+                placeholder="Nombre del lugar"
+                placeholderTextColor={'rgba(0,0,0,0.8)'}
+              />
+            </View>
+            <View
+              style={{
+                bottom: -height / 3 + 50,
+              }}>
+              <Button
+                title="Save Place"
+                style={styles.button}
+                onPress={onSubmit}
+              />
+              <Button
+                title="Back"
+                style={styles.button}
+                mode="white"
+                onPress={() => setStep(s => `${Number(s) - 1}`)}
               />
             </View>
           </ScrollView>
@@ -157,13 +241,40 @@ const NewPlace = () => {
       );
     }
     default:
-      return <></>;
+      return (
+        <View style={[styles.container]}>
+          <View style={{...styles.center, marginTop: height / 3}}>
+            <Text style={styles.title}>SAVED PLACE</Text>
+            <Text style={styles.subtitle}>CONGRATULATIONS !!</Text>
+          </View>
+          <View
+            style={{
+              marginTop: 30,
+            }}>
+            <Button
+              title="Save Place"
+              style={styles.button}
+              onPress={onSubmit}
+            />
+            <Button
+              title="Back"
+              style={styles.button}
+              onPress={() => setStep(s => `${Number(s) - 1}`)}
+              mode="white"
+            />
+          </View>
+        </View>
+      );
   }
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginHorizontal: 10,
+  },
+  center: {
+    alignItems: 'center',
   },
   image: {
     ...StyleSheet.absoluteFillObject,
@@ -186,7 +297,7 @@ const styles = StyleSheet.create({
   button: {
     maxWidth: 350,
     alignSelf: 'center',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   iconFiles: {},
   iconContainer: {
@@ -202,6 +313,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     marginBottom: 10,
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 32,
+  },
+  subtitle: {
+    fontWeight: '500',
+    fontSize: 14,
+    marginTop: 10,
   },
 });
 
