@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
@@ -32,6 +34,7 @@ interface Photo {
 const NewPlace = () => {
   const [tempPhotos, setTempPhotos] = useState<Photo[]>([]);
   const [step, setStep] = useState<'1' | '2' | '3'>('1');
+  const [isLoading, setLoading] = useState<true | false>(false);
   const {form, onChange} = useForm({
     country: '',
     state: '',
@@ -60,6 +63,7 @@ const NewPlace = () => {
                   uri: res?.assets?.[0]?.uri,
                   type: res?.assets?.[0]?.type,
                   name: res?.assets?.[0]?.fileName,
+                  size: res.assets[0].fileSize,
                 }),
               );
             },
@@ -84,6 +88,7 @@ const NewPlace = () => {
                   uri: res?.assets?.[0]?.uri,
                   type: res?.assets?.[0]?.type,
                   name: res.assets[0].fileName,
+                  size: res.assets[0].fileSize,
                 }),
               );
             },
@@ -92,7 +97,6 @@ const NewPlace = () => {
       },
       {
         text: 'Cancelar',
-
         style: 'cancel',
       },
     ]);
@@ -100,14 +104,11 @@ const NewPlace = () => {
 
   const onSubmit = async () => {
     try {
+      setLoading(true);
       const photo = new FormData();
-      console.log('Hola : ', {
-        name: 'photo1',
-        type: tempPhotos[0].type,
-        uri: tempPhotos[0].uri,
-      });
+      console.log('Hola : ', tempPhotos[0]);
       photo.append('file', {
-        name: 'photo1',
+        name: tempPhotos[0].name,
         type: tempPhotos[0].type,
         uri: tempPhotos[0].uri,
       });
@@ -120,15 +121,34 @@ const NewPlace = () => {
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJqb2FxdWluQHBvc2RhdGEuaW8iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwibmFtZSI6IkpvYXF1aW4gQ29yb25hZG8iLCJpZCI6MiwiZXhwIjoxNzI3MjIyNTg1LCJqdGkiOiIxZWU3N2E0OC01ODEzLTQwOWYtYjdhOS1iZWU3NzI1M2E3YTkiLCJlbWFpbCI6ImpvYXF1aW5AcG9zZGF0YS5pbyIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIn0.H9_ALfpvA0LYFYKbzuwdrBGSh999z7st-5_oH9SC_v0',
         },
       });
-      console.log('Pos ya salio la mamada ', res);
-      // Api.post('http://posdata.io/place/v1/place', {
-      //   ...form,
-      //   picture: 'no picture yet',
-      // });
+
+      if (res?.data?.image) {
+        await Api.post(
+          'http://posdata.io/place/v1/place',
+          {
+            ...form,
+            name: form.placeName,
+            picture: res.data.image,
+          },
+          {
+            headers: {
+              Accept: 'application/json',
+              Authorization:
+                'Bearer ' +
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJqb2FxdWluQHBvc2RhdGEuaW8iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwibmFtZSI6IkpvYXF1aW4gQ29yb25hZG8iLCJpZCI6MiwiZXhwIjoxNzI3MjIyNTg1LCJqdGkiOiIxZWU3N2E0OC01ODEzLTQwOWYtYjdhOS1iZWU3NzI1M2E3YTkiLCJlbWFpbCI6ImpvYXF1aW5AcG9zZGF0YS5pbyIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIn0.H9_ALfpvA0LYFYKbzuwdrBGSh999z7st-5_oH9SC_v0',
+            },
+          },
+        );
+
+        onChange('clean', null);
+        setTempPhotos([]);
+        setLoading(false);
+      }
     } catch (error) {
-      console.log('Error: ', error.message);
+      console.log('Error: ', error);
     }
   };
+
   switch (step) {
     case '1': {
       return (
@@ -188,6 +208,7 @@ const NewPlace = () => {
               style={styles.button}
               onPress={() => setStep(s => `${Number(s) + 1}`)}
               mode="white"
+              disabled={tempPhotos.length === 0}
             />
           </View>
         </View>
@@ -196,8 +217,9 @@ const NewPlace = () => {
     case '2': {
       return (
         <>
-          <ScrollView style={{...styles.container, top: top + 20}}>
+          <ScrollView style={{...styles.container, top: top + 10}}>
             <View style={styles.inputContainer}>
+              <Text style={styles.titleForm}>PLACE INFORMATION</Text>
               <TextInput
                 style={[
                   styles.input,
@@ -275,6 +297,16 @@ const NewPlace = () => {
               />
             </View>
           </ScrollView>
+          <Modal
+            style={styles.loadingContainerModal}
+            transparent={true}
+            animationType="slide"
+            visible={isLoading}>
+            <View style={styles.loadingcontainer}>
+              <ActivityIndicator size="large" color="#000" />
+              <Text>Saving place...</Text>
+            </View>
+          </Modal>
         </>
       );
     }
@@ -363,6 +395,17 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginVertical: 6,
+  },
+  titleForm: {
+    fontWeight: 'bold',
+    fontSize: 12,
+    marginBottom: 15,
+  },
+  loadingContainerModal: {},
+  loadingcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
