@@ -10,12 +10,15 @@ import {
 import {useAuth} from '../context/auth';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useSettings} from '../context/settings';
 
 const Auth = () => {
   const {login} = useAuth();
   const [activeScreen, setActiveScreen] = useState<
     'login' | 'signup' | 'resetPassword'
   >('login');
+  const {theme} = useSettings();
   const [loading, setLoading] = useState<Boolean>(false);
   const handleSubmit = async () => {
     setLoading(true);
@@ -41,6 +44,9 @@ const Auth = () => {
           </Text>
         </View>
         <View style={styles.inputContainer}>
+          {activeScreen === 'signup' && (
+            <Input placeholder="Escribe tu nombre" label="Name" />
+          )}
           <Input placeholder="example@example.com" label="Email" />
           <Input placeholder="******" label="Password" />
           {/* <Input /> */}
@@ -51,6 +57,28 @@ const Auth = () => {
           onPress={handleSubmit}
           loading={loading}
         />
+        <View style={styles.createAccount}>
+          <Text style={styles.textAccount}>
+            {activeScreen === 'login'
+              ? '  Aún no tienes cuenta Registrate'
+              : '¿Ya tienes cuenta? Inicia Sesión'}
+          </Text>
+          <TouchableOpacity
+            onPress={() =>
+              activeScreen === 'signup'
+                ? setActiveScreen('login')
+                : setActiveScreen('signup')
+            }>
+            <Text
+              style={{
+                color: theme.colors.primary,
+                fontWeight: 'bold',
+                paddingTop: 9,
+              }}>
+              Aqui
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -70,6 +98,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginBottom: 10,
   },
+  createAccount: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 80,
+  },
+  textAccount: {},
 });
 
 export default Auth;

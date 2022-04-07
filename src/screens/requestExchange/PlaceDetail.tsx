@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Text, View, StyleSheet, Image} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
+import Image from 'react-native-fast-image';
 import OptionsButton from '../../components/OptionsButton';
 import PopupMenu from '../../components/PopupMenu';
 import FlatButton from '../../components/FlatButton';

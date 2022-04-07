@@ -14,14 +14,14 @@ import {
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {decode, encode} from 'base-64';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import Button from '../components/Button';
 import {useForm} from '../hooks/useForm';
 import {useSettings} from '../context/settings';
 import {Api} from '../api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {RootTabsParams} from '../navigation/tabs';
 
 const height = Dimensions.get('screen').height;
 
@@ -30,8 +30,9 @@ interface Photo {
   uri: string;
   name: string;
 }
+interface Props extends BottomTabScreenProps<RootTabsParams, 'NewPlace'> {}
 
-const NewPlace = () => {
+const NewPlace = ({navigation}: Props) => {
   const [tempPhotos, setTempPhotos] = useState<Photo[]>([]);
   const [step, setStep] = useState<'1' | '2' | '3'>('1');
   const [isLoading, setLoading] = useState<true | false>(false);
@@ -106,7 +107,6 @@ const NewPlace = () => {
     try {
       setLoading(true);
       const photo = new FormData();
-      console.log('Hola : ', tempPhotos[0]);
       photo.append('file', {
         name: tempPhotos[0].name,
         type: tempPhotos[0].type,
@@ -143,6 +143,7 @@ const NewPlace = () => {
         onChange('clean', null);
         setTempPhotos([]);
         setLoading(false);
+        setStep(s => `${Number(s) + 1}`);
       }
     } catch (error) {
       console.log('Error: ', error);
@@ -322,14 +323,17 @@ const NewPlace = () => {
               marginTop: height / 3 - 40,
             }}>
             <Button
-              title="Save Place"
+              title="Go to home"
               style={styles.button}
-              onPress={onSubmit}
+              onPress={() => {
+                navigation.navigate('Places');
+                setStep('1');
+              }}
             />
             <Button
               title="Back"
               style={styles.button}
-              onPress={() => setStep(s => `${Number(s) - 1}`)}
+              onPress={() => setStep('1')}
               mode="white"
             />
           </View>

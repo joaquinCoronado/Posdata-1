@@ -9,10 +9,14 @@ import {
   TextInput,
 } from 'react-native';
 import Image from 'react-native-fast-image';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
 import FlatButton from '../components/FlatButton';
+import {RootStackParams} from '../navigation/places';
 
-const Search = () => {
+interface Props extends StackScreenProps<RootStackParams, 'Places'> {}
+
+const Search = ({navigation}: Props) => {
   let [searchTest, setSearchText] = useState('');
   let [isLoading, setLoading] = useState(false);
   const {theme} = useSettings();
@@ -282,25 +286,6 @@ const Search = () => {
     item: any;
   }
 
-  const renderItem = (props: renderItemProps) => {
-    const {item} = props;
-    return (
-      <TouchableOpacity
-        disabled={isLoading}
-        activeOpacity={0.88}
-        onPress={() => {
-          console.log('On press: ', item.name, item.id);
-        }}
-        style={styles.itemContainer}>
-        <Image
-          source={{uri: item.picture}}
-          resizeMode="cover"
-          style={styles.image}
-        />
-      </TouchableOpacity>
-    );
-  };
-
   const listFooter = () => (
     <View style={styles.listFooterContainer}>
       <FlatButton onPress={() => {}} title="SEE MORE" />
@@ -330,7 +315,24 @@ const Search = () => {
             }}
             numColumns={3}
             data={placesList}
-            renderItem={renderItem}
+            renderItem={(props: renderItemProps) => {
+              const {item} = props;
+              return (
+                <TouchableOpacity
+                  disabled={isLoading}
+                  activeOpacity={0.88}
+                  onPress={() => {
+                    navigation.navigate('Place', {...item});
+                  }}
+                  style={styles.itemContainer}>
+                  <Image
+                    source={{uri: item.picture}}
+                    resizeMode="cover"
+                    style={styles.image}
+                  />
+                </TouchableOpacity>
+              );
+            }}
             ListFooterComponent={listFooter}
             ListHeaderComponent={
               <Text style={[styles.titleTwo, {color: text}]}>ALL RESULTS</Text>
