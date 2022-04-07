@@ -18,7 +18,7 @@ const placesList = [
   {
     id: '61cd6b11a2df096ee18a42d9',
     picture:
-      'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+      'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
     name: 'la minerva',
     country: 'mexico',
     city: 'guadalajara',
@@ -28,7 +28,7 @@ const placesList = [
   {
     id: '61cfab06d226d73c58119b51',
     picture:
-      'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+      'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
     name: 'riu',
     country: 'mexico',
     city: 'guadalajara',
@@ -39,7 +39,7 @@ const placesList = [
   {
     id: '61d13ef7947cb16b8ea2fec2',
     picture:
-      'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+      'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
     name: 'letras de tlaquepaque',
     country: 'mexico',
     city: 'tlaquepaque',
@@ -50,7 +50,7 @@ const placesList = [
   {
     id: '61cd6b11a2df096ee18a42d91',
     picture:
-      'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+      'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
     name: 'la minerva',
     country: 'mexico',
     city: 'guadalajara',
@@ -60,7 +60,7 @@ const placesList = [
   {
     id: '61cfab06d226d73c58119b512',
     picture:
-      'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+      'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
     name: 'riu',
     country: 'mexico',
     city: 'guadalajara',
@@ -71,7 +71,7 @@ const placesList = [
   {
     id: '61d13ef7947cb16b8ea2fec23',
     picture:
-      'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+      'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
     name: 'letras de tlaquepaque',
     country: 'mexico',
     city: 'tlaquepaque',
