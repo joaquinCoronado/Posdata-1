@@ -26,7 +26,7 @@ interface Props {
   buttonStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   loading?: Boolean;
-  diabled?: Boolean;
+  disabled?: Boolean;
 }
 
 const Button = (props: Props) => {
@@ -41,6 +41,7 @@ const Button = (props: Props) => {
   if (props.mode === 'white') {
     return (
       <TouchableOpacity
+        disabled={props.disabled ? props.disabled : false}
         activeOpacity={0.68}
         style={[
           styles.container,
