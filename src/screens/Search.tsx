@@ -23,7 +23,7 @@ const Search = () => {
     {
       id: '1',
       picture:
-        'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
       name: 'la minerva',
       country: 'mexico',
       city: 'guadalajara',
@@ -33,7 +33,7 @@ const Search = () => {
     {
       id: '2',
       picture:
-        'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
       name: 'riu',
       country: 'mexico',
       city: 'guadalajara',
@@ -44,7 +44,7 @@ const Search = () => {
     {
       id: '3',
       picture:
-        'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
       name: 'letras de tlaquepaque',
       country: 'mexico',
       city: 'tlaquepaque',
@@ -55,7 +55,7 @@ const Search = () => {
     {
       id: '4',
       picture:
-        'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
       name: 'la minerva',
       country: 'mexico',
       city: 'guadalajara',
@@ -65,7 +65,7 @@ const Search = () => {
     {
       id: '5',
       picture:
-        'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
       name: 'riu',
       country: 'mexico',
       city: 'guadalajara',
@@ -76,7 +76,7 @@ const Search = () => {
     {
       id: '6',
       picture:
-        'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
       name: 'letras de tlaquepaque',
       country: 'mexico',
       city: 'tlaquepaque',
@@ -87,7 +87,7 @@ const Search = () => {
     {
       id: '7',
       picture:
-        'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
       name: 'la minerva',
       country: 'mexico',
       city: 'guadalajara',
@@ -97,7 +97,7 @@ const Search = () => {
     {
       id: '8',
       picture:
-        'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
       name: 'riu',
       country: 'mexico',
       city: 'guadalajara',
@@ -108,7 +108,7 @@ const Search = () => {
     {
       id: '9',
       picture:
-        'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
       name: 'letras de tlaquepaque',
       country: 'mexico',
       city: 'tlaquepaque',
@@ -119,7 +119,7 @@ const Search = () => {
     {
       id: '10',
       picture:
-        'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
       name: 'la minerva',
       country: 'mexico',
       city: 'guadalajara',
@@ -129,7 +129,7 @@ const Search = () => {
     {
       id: '11',
       picture:
-        'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
       name: 'riu',
       country: 'mexico',
       city: 'guadalajara',
@@ -140,7 +140,7 @@ const Search = () => {
     {
       id: '12',
       picture:
-        'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
       name: 'letras de tlaquepaque',
       country: 'mexico',
       city: 'tlaquepaque',
@@ -151,7 +151,7 @@ const Search = () => {
     {
       id: '13',
       picture:
-        'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
       name: 'la minerva',
       country: 'mexico',
       city: 'guadalajara',
@@ -161,7 +161,7 @@ const Search = () => {
     {
       id: '14',
       picture:
-        'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
       name: 'riu',
       country: 'mexico',
       city: 'guadalajara',
@@ -172,7 +172,7 @@ const Search = () => {
     {
       id: '15',
       picture:
-        'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
       name: 'letras de tlaquepaque',
       country: 'mexico',
       city: 'tlaquepaque',
@@ -183,7 +183,7 @@ const Search = () => {
     {
       id: '16',
       picture:
-        'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
       name: 'la minerva',
       country: 'mexico',
       city: 'guadalajara',
@@ -193,7 +193,7 @@ const Search = () => {
     {
       id: '17',
       picture:
-        'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
       name: 'riu',
       country: 'mexico',
       city: 'guadalajara',
@@ -204,7 +204,7 @@ const Search = () => {
     {
       id: '18',
       picture:
-        'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
       name: 'letras de tlaquepaque',
       country: 'mexico',
       city: 'tlaquepaque',
@@ -215,7 +215,7 @@ const Search = () => {
     {
       id: '19',
       picture:
-        'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
       name: 'la minerva',
       country: 'mexico',
       city: 'guadalajara',
@@ -225,7 +225,7 @@ const Search = () => {
     {
       id: '20',
       picture:
-        'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
       name: 'riu',
       country: 'mexico',
       city: 'guadalajara',
@@ -236,7 +236,7 @@ const Search = () => {
     {
       id: '21',
       picture:
-        'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
       name: 'letras de tlaquepaque',
       country: 'mexico',
       city: 'tlaquepaque',
@@ -247,7 +247,7 @@ const Search = () => {
     {
       id: '22',
       picture:
-        'https://pbs.twimg.com/media/EurxiTaXUAUkXBz?format=jpg&name=large',
+        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
       name: 'la minerva',
       country: 'mexico',
       city: 'guadalajara',
@@ -257,7 +257,7 @@ const Search = () => {
     {
       id: '23',
       picture:
-        'https://elviajerofeliz.com/wp-content/uploads/2015/09/paisajes-de-Canada.jpg',
+        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
       name: 'riu',
       country: 'mexico',
       city: 'guadalajara',
@@ -268,7 +268,7 @@ const Search = () => {
     {
       id: '24',
       picture:
-        'https://www.nippon.com/es/ncommon/contents/japan-data/1331263/1331263.jpg',
+        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
       name: 'letras de tlaquepaque',
       country: 'mexico',
       city: 'tlaquepaque',
