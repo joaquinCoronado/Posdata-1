@@ -12,7 +12,7 @@ interface Props {
 const PlaceDetail = (props: Props) => {
   let [isModalOpen, setModalOpen] = useState(false);
   console.log('details', props);
-  const {route} = props;
+  const {route, navigation} = props;
   const {params: place} = route;
 
   return (
@@ -36,7 +36,13 @@ const PlaceDetail = (props: Props) => {
         />
       </View>
       <PopupMenu visible={isModalOpen}>
-        <FlatButton title="REQUEST FOR EXCHANGE" onPress={() => {}} />
+        <FlatButton
+          title="REQUEST FOR EXCHANGE"
+          onPress={() => {
+            navigation.navigate('RequestExchangeForm', {...place});
+            setModalOpen(false);
+          }}
+        />
         <FlatButton
           title="CANCEL"
           onPress={() => {

@@ -8,10 +8,20 @@ import Auth from '../screens/Auth';
 import ResetPassword from '../screens/ResetPassword';
 import Tabs from './tabs';
 import PlaceDetail from '../screens/requestExchange/PlaceDetail';
+import RequestExchangeForm from '../screens/requestExchange/RequestExchangeForm';
 export type RootStackParams = {
   Auth: undefined;
   Home: undefined;
   Place: {
+    id: string;
+    picture: string;
+    name: string;
+    country: string;
+    city: string;
+    ownerId: number;
+    createdAt: string;
+  };
+  RequestExchangeForm: {
     id: string;
     picture: string;
     name: string;
@@ -47,6 +57,10 @@ const Navigation = () => {
             options={{
               cardStyleInterpolator: fade,
             }}
+          />
+          <Stack.Screen
+            component={RequestExchangeForm}
+            name="RequestExchangeForm"
           />
         </>
       ) : (
