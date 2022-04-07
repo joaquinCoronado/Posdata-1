@@ -9,6 +9,8 @@ import ResetPassword from '../screens/ResetPassword';
 import Tabs from './tabs';
 import PlaceDetail from '../screens/requestExchange/PlaceDetail';
 import RequestExchangeForm from '../screens/requestExchange/RequestExchangeForm';
+import SuccesExchangeRequest from '../screens/requestExchange/SuccesExchangeRequest';
+
 export type RootStackParams = {
   Auth: undefined;
   Home: undefined;
@@ -30,6 +32,7 @@ export type RootStackParams = {
     ownerId: number;
     createdAt: string;
   };
+  SuccesExchangeRequest: undefined;
   ResetPassword: undefined;
 };
 
@@ -61,6 +64,10 @@ const Navigation = () => {
           <Stack.Screen
             component={RequestExchangeForm}
             name="RequestExchangeForm"
+          />
+          <Stack.Screen
+            component={SuccesExchangeRequest}
+            name="SuccesExchangeRequest"
           />
         </>
       ) : (

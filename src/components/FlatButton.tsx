@@ -5,6 +5,9 @@ import {useSettings} from '../context/settings';
 interface Props {
   onPress?: () => void;
   title: string;
+  width: any;
+  containerStyles: any;
+  textStyles: any;
 }
 
 const FlatButton = (props: Props) => {
@@ -15,15 +18,24 @@ const FlatButton = (props: Props) => {
       console.log('set prop onPress to FlatButton');
     },
     title,
+    width = '100%',
+    containerStyles = {},
+    textStyles = {},
   } = props;
   return (
     <TouchableOpacity
       activeOpacity={0.68}
-      style={[styles.buttonContainer, {borderColor: text}]}
+      style={[
+        styles.buttonContainer,
+        containerStyles,
+        {borderColor: text, width: width},
+      ]}
       onPress={() => {
         onPress();
       }}>
-      <Text style={[styles.buttonText, {color: text}]}>{title}</Text>
+      <Text style={[styles.buttonText, {color: text}, textStyles]}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };

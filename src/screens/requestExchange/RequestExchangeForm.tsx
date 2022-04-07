@@ -8,16 +8,21 @@ import {
   TextInput,
 } from 'react-native';
 
+import FlatButton from '../../components/FlatButton';
+
 interface Props {
   place: any;
   route: any;
+  navigation: any;
 }
 
 const RequestExchangeForm = (props: Props) => {
-  let [searchTest, setSearchText] = useState('');
-  const {route} = props;
+  let [deliveriDate, setDeliveriDate] = useState('');
+  let [textNote, setTextNote] = useState('');
+  const {route, navigation} = props;
   const {params: place} = route;
 
+  console.log('navigation', navigation);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -37,14 +42,33 @@ const RequestExchangeForm = (props: Props) => {
         <Text>DELIVERI DATE</Text>
         <TextInput
           style={[styles.input]}
-          onChangeText={setSearchText}
-          value={searchTest}
-          onEndEditing={() => {
-            console.log('text', searchTest);
+          onChangeText={setDeliveriDate}
+          value={deliveriDate}
+        />
+        <Text>TEXT NOTE</Text>
+        <TextInput
+          multiline={true}
+          style={[styles.input, styles.textArea]}
+          onChangeText={setTextNote}
+          value={textNote}
+        />
+      </View>
+      <View style={styles.buttonsContainer}>
+        <FlatButton
+          width="48%"
+          title="SEND REQUEST"
+          onPress={() => {
+            navigation.navigate('SuccesExchangeRequest', {});
+          }}
+        />
+        <FlatButton
+          width="48%"
+          title="CANCEL"
+          onPress={() => {
+            navigation.pop();
           }}
         />
       </View>
-      <View style={styles.buttonsContainer}></View>
     </SafeAreaView>
   );
 };
@@ -54,7 +78,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: 'lightgrey',
   },
   // HEADER
   headerContainer: {
@@ -66,6 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderBottomWidth: 1,
     borderBottomColor: 'grey',
+    marginBottom: 25,
   },
   image: {marginRight: 15, height: 70, width: 70, borderRadius: 35},
   placeDataContainer: {},
@@ -81,18 +105,29 @@ const styles = StyleSheet.create({
   },
   //FORM
   formContainer: {
+    flex: 1,
     backgroundColor: 'transparent',
     width: '100%',
     padding: 15,
   },
   input: {
     height: 40,
-    borderWidth: 1,
+    borderWidth: 1.5,
     padding: 10,
-    marginBottom: 10,
+    paddingTop: 15,
+    marginBottom: 25,
+  },
+  textArea: {
+    height: 150,
   },
   //BUTTONS
-  buttonsContainer: {backgroundColor: 'grey', height: 70, width: '100%'},
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    padding: 15,
+    marginBottom: 15,
+  },
 });
 
 export default RequestExchangeForm;

@@ -7,6 +7,7 @@ import FlatButton from '../../components/FlatButton';
 interface Props {
   place: any;
   route: any;
+  navigation: any;
 }
 
 const PlaceDetail = (props: Props) => {
