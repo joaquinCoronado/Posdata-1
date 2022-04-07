@@ -12,16 +12,25 @@ import {
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {decode, encode} from 'base-64';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Button from '../components/Button';
 import {useForm} from '../hooks/useForm';
 import {useSettings} from '../context/settings';
+import {Api} from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const height = Dimensions.get('screen').height;
 
+interface Photo {
+  type: string;
+  uri: string;
+  name: string;
+}
+
 const NewPlace = () => {
-  const [tempPhotos, setTempPhotos] = useState<string[]>([]);
+  const [tempPhotos, setTempPhotos] = useState<Photo[]>([]);
   const [step, setStep] = useState<'1' | '2' | '3'>('1');
   const {form, onChange} = useForm({
     country: '',
@@ -46,7 +55,13 @@ const NewPlace = () => {
                 return;
               }
 
-              setTempPhotos(s => s.concat(res.assets?.[0]?.uri ?? ''));
+              setTempPhotos(s =>
+                s.concat({
+                  uri: res?.assets?.[0]?.uri,
+                  type: res?.assets?.[0]?.type,
+                  name: res?.assets?.[0]?.fileName,
+                }),
+              );
             },
           );
         },
@@ -64,7 +79,13 @@ const NewPlace = () => {
                 return;
               }
 
-              setTempPhotos(s => s.concat(res.assets?.[0]?.uri ?? ''));
+              setTempPhotos(s =>
+                s.concat({
+                  uri: res?.assets?.[0]?.uri,
+                  type: res?.assets?.[0]?.type,
+                  name: res.assets[0].fileName,
+                }),
+              );
             },
           );
         },
@@ -77,8 +98,36 @@ const NewPlace = () => {
     ]);
   };
 
-  const onSubmit = () => {
-    setStep(s => `${Number(s) + 1}`);
+  const onSubmit = async () => {
+    try {
+      const photo = new FormData();
+      console.log('Hola : ', {
+        name: 'photo1',
+        type: tempPhotos[0].type,
+        uri: tempPhotos[0].uri,
+      });
+      photo.append('file', {
+        name: 'photo1',
+        type: tempPhotos[0].type,
+        uri: tempPhotos[0].uri,
+      });
+      const res = await Api.post('http://posdata.io/storage/v1/image', photo, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          Authorization:
+            'Bearer ' +
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJqb2FxdWluQHBvc2RhdGEuaW8iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwibmFtZSI6IkpvYXF1aW4gQ29yb25hZG8iLCJpZCI6MiwiZXhwIjoxNzI3MjIyNTg1LCJqdGkiOiIxZWU3N2E0OC01ODEzLTQwOWYtYjdhOS1iZWU3NzI1M2E3YTkiLCJlbWFpbCI6ImpvYXF1aW5AcG9zZGF0YS5pbyIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIn0.H9_ALfpvA0LYFYKbzuwdrBGSh999z7st-5_oH9SC_v0',
+        },
+      });
+      console.log('Pos ya salio la mamada ', res);
+      // Api.post('http://posdata.io/place/v1/place', {
+      //   ...form,
+      //   picture: 'no picture yet',
+      // });
+    } catch (error) {
+      console.log('Error: ', error.message);
+    }
   };
   switch (step) {
     case '1': {
@@ -112,7 +161,7 @@ const NewPlace = () => {
                 <View style={styles.slide}>
                   <Image
                     resizeMode="cover"
-                    source={{uri: photo}}
+                    source={{uri: photo.uri}}
                     style={styles.image}
                   />
                   <TouchableOpacity
