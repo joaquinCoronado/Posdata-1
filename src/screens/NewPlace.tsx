@@ -8,20 +8,33 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {decode, encode} from 'base-64';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Button from '../components/Button';
 import {useForm} from '../hooks/useForm';
 import {useSettings} from '../context/settings';
+import {Api} from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const height = Dimensions.get('screen').height;
 
+interface Photo {
+  type: string;
+  uri: string;
+  name: string;
+}
+
 const NewPlace = () => {
-  const [tempPhotos, setTempPhotos] = useState<string[]>([]);
+  const [tempPhotos, setTempPhotos] = useState<Photo[]>([]);
   const [step, setStep] = useState<'1' | '2' | '3'>('1');
+  const [isLoading, setLoading] = useState<true | false>(false);
   const {form, onChange} = useForm({
     country: '',
     state: '',
@@ -29,6 +42,7 @@ const NewPlace = () => {
     placeName: '',
   });
   const {theme} = useSettings();
+  const {top} = useSafeAreaInsets();
   const getPhotos = () => {
     Alert.alert('Subir Foto', 'Selecciona una opcion', [
       {
@@ -44,7 +58,14 @@ const NewPlace = () => {
                 return;
               }
 
-              setTempPhotos(s => s.concat(res.assets?.[0]?.uri ?? ''));
+              setTempPhotos(s =>
+                s.concat({
+                  uri: res?.assets?.[0]?.uri,
+                  type: res?.assets?.[0]?.type,
+                  name: res?.assets?.[0]?.fileName,
+                  size: res.assets[0].fileSize,
+                }),
+              );
             },
           );
         },
@@ -62,19 +83,72 @@ const NewPlace = () => {
                 return;
               }
 
-              setTempPhotos(s => s.concat(res.assets?.[0]?.uri ?? ''));
+              setTempPhotos(s =>
+                s.concat({
+                  uri: res?.assets?.[0]?.uri,
+                  type: res?.assets?.[0]?.type,
+                  name: res.assets[0].fileName,
+                  size: res.assets[0].fileSize,
+                }),
+              );
             },
           );
         },
       },
       {
         text: 'Cancelar',
-
         style: 'cancel',
       },
     ]);
   };
-  console.log('TempPhotos: ', tempPhotos);
+
+  const onSubmit = async () => {
+    try {
+      setLoading(true);
+      const photo = new FormData();
+      console.log('Hola : ', tempPhotos[0]);
+      photo.append('file', {
+        name: tempPhotos[0].name,
+        type: tempPhotos[0].type,
+        uri: tempPhotos[0].uri,
+      });
+      const res = await Api.post('http://posdata.io/storage/v1/image', photo, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          Authorization:
+            'Bearer ' +
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJqb2FxdWluQHBvc2RhdGEuaW8iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwibmFtZSI6IkpvYXF1aW4gQ29yb25hZG8iLCJpZCI6MiwiZXhwIjoxNzI3MjIyNTg1LCJqdGkiOiIxZWU3N2E0OC01ODEzLTQwOWYtYjdhOS1iZWU3NzI1M2E3YTkiLCJlbWFpbCI6ImpvYXF1aW5AcG9zZGF0YS5pbyIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIn0.H9_ALfpvA0LYFYKbzuwdrBGSh999z7st-5_oH9SC_v0',
+        },
+      });
+
+      if (res?.data?.image) {
+        await Api.post(
+          'http://posdata.io/place/v1/place',
+          {
+            ...form,
+            name: form.placeName,
+            picture: res.data.image,
+          },
+          {
+            headers: {
+              Accept: 'application/json',
+              Authorization:
+                'Bearer ' +
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJqb2FxdWluQHBvc2RhdGEuaW8iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwibmFtZSI6IkpvYXF1aW4gQ29yb25hZG8iLCJpZCI6MiwiZXhwIjoxNzI3MjIyNTg1LCJqdGkiOiIxZWU3N2E0OC01ODEzLTQwOWYtYjdhOS1iZWU3NzI1M2E3YTkiLCJlbWFpbCI6ImpvYXF1aW5AcG9zZGF0YS5pbyIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIn0.H9_ALfpvA0LYFYKbzuwdrBGSh999z7st-5_oH9SC_v0',
+            },
+          },
+        );
+
+        onChange('clean', null);
+        setTempPhotos([]);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  };
+
   switch (step) {
     case '1': {
       return (
@@ -91,11 +165,14 @@ const NewPlace = () => {
                   <Icon
                     name="file-tray-full-outline"
                     style={styles.iconFiles}
+                    color={theme.colors.text}
                     size={180}
                   />
                   <View style={{}}>
-                    <Text>title TITLE </Text>
-                    <Text>Subtitle subtitle</Text>
+                    <Text style={{color: theme.colors.text}}>title TITLE </Text>
+                    <Text style={{color: theme.colors.text}}>
+                      Subtitle subtitle
+                    </Text>
                   </View>
                 </View>
               </>
@@ -104,14 +181,14 @@ const NewPlace = () => {
                 <View style={styles.slide}>
                   <Image
                     resizeMode="cover"
-                    source={{uri: photo}}
+                    source={{uri: photo.uri}}
                     style={styles.image}
                   />
                   <TouchableOpacity
                     style={styles.iconContainer}
                     onPress={() => {
                       const images = [...tempPhotos];
-                      delete images[index];
+                      images.splice(index, 1);
                       setTempPhotos(images);
                     }}>
                     <Icon name="close-sharp" size={30} color="white" />
@@ -130,6 +207,8 @@ const NewPlace = () => {
               title="Siguiente"
               style={styles.button}
               onPress={() => setStep(s => `${Number(s) + 1}`)}
+              mode="white"
+              disabled={tempPhotos.length === 0}
             />
           </View>
         </View>
@@ -138,32 +217,134 @@ const NewPlace = () => {
     case '2': {
       return (
         <>
-          <ScrollView>
+          <ScrollView style={{...styles.container, top: top + 10}}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.titleForm}>PLACE INFORMATION</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  {borderColor: theme.colors.text, color: theme.colors.text},
+                ]}
+                onChangeText={value => onChange(value, 'country')}
+                value={form.country}
+                onEndEditing={() => {
+                  console.log('text');
+                }}
+                placeholder="Country"
+                placeholderTextColor={theme.colors.text}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[
+                  styles.input,
+                  {borderColor: theme.colors.text, color: theme.colors.text},
+                ]}
+                onChangeText={value => onChange(value, 'state')}
+                value={form.state}
+                onEndEditing={() => {
+                  console.log('text');
+                }}
+                placeholder="Estado"
+                placeholderTextColor={theme.colors.text}
+              />
+            </View>
             <View>
               <TextInput
                 style={[
                   styles.input,
                   {borderColor: theme.colors.text, color: theme.colors.text},
                 ]}
-                onChangeText={() => {}}
-                value={form.country}
+                onChangeText={value => onChange(value, 'city')}
+                value={form.city}
                 onEndEditing={() => {
                   console.log('text');
                 }}
+                placeholder="Ciudad"
+                placeholderTextColor={theme.colors.text}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[
+                  styles.input,
+                  {borderColor: theme.colors.text, color: theme.colors.text},
+                ]}
+                onChangeText={value => onChange(value, 'placeName')}
+                value={form.placeName}
+                onEndEditing={() => {
+                  console.log('text');
+                }}
+                placeholder="Nombre del lugar"
+                placeholderTextColor={theme.colors.text}
+              />
+            </View>
+            <View
+              style={{
+                bottom: -height / 3 + 13,
+              }}>
+              <Button
+                title="Save Place"
+                style={styles.button}
+                onPress={onSubmit}
+              />
+              <Button
+                title="Back"
+                style={styles.button}
+                mode="white"
+                onPress={() => setStep(s => `${Number(s) - 1}`)}
               />
             </View>
           </ScrollView>
+          <Modal
+            style={styles.loadingContainerModal}
+            transparent={true}
+            animationType="slide"
+            visible={isLoading}>
+            <View style={styles.loadingcontainer}>
+              <ActivityIndicator size="large" color="#000" />
+              <Text>Saving place...</Text>
+            </View>
+          </Modal>
         </>
       );
     }
     default:
-      return <></>;
+      return (
+        <View style={[styles.container]}>
+          <View style={{...styles.center, marginTop: height / 3}}>
+            <Text style={styles.title}>SAVED PLACE</Text>
+            <Text style={styles.subtitle}>CONGRATULATIONS !!</Text>
+          </View>
+          <View
+            style={{
+              marginTop: height / 3 - 40,
+            }}>
+            <Button
+              title="Save Place"
+              style={styles.button}
+              onPress={onSubmit}
+            />
+            <Button
+              title="Back"
+              style={styles.button}
+              onPress={() => setStep(s => `${Number(s) - 1}`)}
+              mode="white"
+            />
+          </View>
+        </View>
+      );
   }
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginHorizontal: 10,
+  },
+  center: {
+    alignItems: 'center',
   },
   image: {
     ...StyleSheet.absoluteFillObject,
@@ -186,7 +367,7 @@ const styles = StyleSheet.create({
   button: {
     maxWidth: 350,
     alignSelf: 'center',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   iconFiles: {},
   iconContainer: {
@@ -202,6 +383,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     marginBottom: 10,
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 32,
+  },
+  subtitle: {
+    fontWeight: '500',
+    fontSize: 14,
+    marginTop: 10,
+  },
+  inputContainer: {
+    marginVertical: 6,
+  },
+  titleForm: {
+    fontWeight: 'bold',
+    fontSize: 12,
+    marginBottom: 15,
+  },
+  loadingContainerModal: {},
+  loadingcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -51,7 +51,9 @@ const AuthProvider = ({children}: any) => {
         );
         const {access_token, refresh_token, name, id, email, jti} = ok.data;
         setUser({access_token, refresh_token, name, id, email, jti});
-        Api.defaults.headers.common.Authorization = 'Bearer ' + access_token;
+        Api.defaults.headers.common.Authorization =
+          'Bearer ' +
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJqb2FxdWluQHBvc2RhdGEuaW8iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwibmFtZSI6IkpvYXF1aW4gQ29yb25hZG8iLCJpZCI6MiwiZXhwIjoxNzI3MjIyNTg1LCJqdGkiOiIxZWU3N2E0OC01ODEzLTQwOWYtYjdhOS1iZWU3NzI1M2E3YTkiLCJlbWFpbCI6ImpvYXF1aW5AcG9zZGF0YS5pbyIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIn0.H9_ALfpvA0LYFYKbzuwdrBGSh999z7st-5_oH9SC_v0';
         resolve(true);
       } catch (error) {
         reject(new Error('Eror, please try again later'));

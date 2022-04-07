@@ -9,6 +9,7 @@ import {
   Animated,
   StyleSheet,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 
 import Icon from './Icon';
@@ -25,7 +26,7 @@ interface Props {
   buttonStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   loading?: Boolean;
-  diabled?: Boolean;
+  disabled?: Boolean;
 }
 
 const Button = (props: Props) => {
@@ -36,6 +37,47 @@ const Button = (props: Props) => {
     () => (props.loading ? fadeIn() : fadeOut()),
     [fadeIn, fadeOut, props.loading],
   );
+
+  if (props.mode === 'white') {
+    return (
+      <TouchableOpacity
+        disabled={props.disabled ? props.disabled : false}
+        activeOpacity={0.68}
+        style={[
+          styles.container,
+          props.style,
+          {
+            shadowColor: theme.colors.text,
+            opacity: props.disabled ? 0.5 : 1,
+          },
+        ]}
+        onPress={props.onPress}>
+        <View
+          style={[
+            styles.wrapper,
+            {
+              backgroundColor: theme.colors.background,
+              borderColor: theme.colors.text,
+              borderWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 1,
+            },
+          ]}>
+          <View style={styles.textContainer}>
+            {props.icon ? <Icon /> : null}
+            <Text style={[styles.title, {color: theme.colors.text}]}>
+              {props.title}
+            </Text>
+          </View>
+          <Animated.View
+            style={[
+              styles.loading,
+              {opacity, backgroundColor: theme.colors.primary},
+            ]}>
+            <ActivityIndicator size="small" color="#FFF" />
+          </Animated.View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <TouchableOpacity

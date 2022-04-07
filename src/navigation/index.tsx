@@ -40,6 +40,7 @@ const Stack = createStackNavigator<RootStackParams>();
 
 const Navigation = () => {
   const {user} = useAuth();
+  console.log('User: ', user);
   return (
     <Stack.Navigator
       screenOptions={{
