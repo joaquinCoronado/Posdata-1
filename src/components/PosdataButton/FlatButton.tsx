@@ -1,13 +1,13 @@
 import React from 'react';
 import {TouchableOpacity, StyleSheet, Text} from 'react-native';
-import {useSettings} from '../context/settings';
+import {useSettings} from '../../context/settings';
 
 interface Props {
   onPress?: () => void;
   title: string;
-  width: any;
-  containerStyles: any;
-  textStyles: any;
+  width?: any;
+  containerStyles?: any;
+  textStyles?: any;
 }
 
 const FlatButton = (props: Props) => {

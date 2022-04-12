@@ -7,7 +7,7 @@ import {useAuth} from '../context/auth';
 import Auth from '../screens/Auth';
 import ResetPassword from '../screens/ResetPassword';
 import Tabs from './tabs';
-import PlaceDetail from '../screens/requestExchange/PlaceDetail';
+import PlaceDetail from '../screens/PlaceDetail';
 import RequestExchangeForm from '../screens/requestExchange/RequestExchangeForm';
 import SuccesExchangeRequest from '../screens/requestExchange/SuccesExchangeRequest';
 
