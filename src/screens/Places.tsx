@@ -44,7 +44,6 @@ const Places = ({navigation}: Props) => {
     try {
       setLoading(true);
       let placesFromApi = await searchPlaces('');
-      console.log('placesFromApi', placesFromApi);
       setPlaces(placesFromApi);
     } catch (e) {
       console.log(e);

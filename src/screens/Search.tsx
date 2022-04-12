@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,282 +13,45 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
 import PosdataButton from '../components/PosdataButton';
 import {RootStackParams} from '../navigation/places';
+import {searchPlaces} from '../api';
 
 interface Props extends StackScreenProps<RootStackParams, 'Places'> {}
 
 const Search = ({navigation}: Props) => {
+  let [places, setPlaces] = useState([]);
   let [searchTest, setSearchText] = useState('');
   let [isLoading, setLoading] = useState(false);
   const {theme} = useSettings();
   const {text} = theme.colors;
 
-  // DOMMY DATA OF PLACES
-  const placesList = [
-    {
-      id: '1',
-      picture:
-        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-      name: 'la minerva',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-30',
-    },
-    {
-      id: '2',
-      picture:
-        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-      name: 'riu',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-31',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '3',
-      picture:
-        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-      name: 'letras de tlaquepaque',
-      country: 'mexico',
-      city: 'tlaquepaque',
-      ownerId: 2,
-      createdAt: '2022-01-01',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '4',
-      picture:
-        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-      name: 'la minerva',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-30',
-    },
-    {
-      id: '5',
-      picture:
-        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-      name: 'riu',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-31',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '6',
-      picture:
-        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-      name: 'letras de tlaquepaque',
-      country: 'mexico',
-      city: 'tlaquepaque',
-      ownerId: 2,
-      createdAt: '2022-01-01',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '7',
-      picture:
-        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-      name: 'la minerva',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-30',
-    },
-    {
-      id: '8',
-      picture:
-        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-      name: 'riu',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-31',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '9',
-      picture:
-        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-      name: 'letras de tlaquepaque',
-      country: 'mexico',
-      city: 'tlaquepaque',
-      ownerId: 2,
-      createdAt: '2022-01-01',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '10',
-      picture:
-        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-      name: 'la minerva',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-30',
-    },
-    {
-      id: '11',
-      picture:
-        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-      name: 'riu',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-31',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '12',
-      picture:
-        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-      name: 'letras de tlaquepaque',
-      country: 'mexico',
-      city: 'tlaquepaque',
-      ownerId: 2,
-      createdAt: '2022-01-01',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '13',
-      picture:
-        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-      name: 'la minerva',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-30',
-    },
-    {
-      id: '14',
-      picture:
-        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-      name: 'riu',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-31',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '15',
-      picture:
-        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-      name: 'letras de tlaquepaque',
-      country: 'mexico',
-      city: 'tlaquepaque',
-      ownerId: 2,
-      createdAt: '2022-01-01',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '16',
-      picture:
-        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-      name: 'la minerva',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-30',
-    },
-    {
-      id: '17',
-      picture:
-        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-      name: 'riu',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-31',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '18',
-      picture:
-        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-      name: 'letras de tlaquepaque',
-      country: 'mexico',
-      city: 'tlaquepaque',
-      ownerId: 2,
-      createdAt: '2022-01-01',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '19',
-      picture:
-        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-      name: 'la minerva',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-30',
-    },
-    {
-      id: '20',
-      picture:
-        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-      name: 'riu',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-31',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '21',
-      picture:
-        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-      name: 'letras de tlaquepaque',
-      country: 'mexico',
-      city: 'tlaquepaque',
-      ownerId: 2,
-      createdAt: '2022-01-01',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '22',
-      picture:
-        'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-      name: 'la minerva',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-30',
-    },
-    {
-      id: '23',
-      picture:
-        'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-      name: 'riu',
-      country: 'mexico',
-      city: 'guadalajara',
-      ownerId: 2,
-      createdAt: '2021-12-31',
-      updatedAt: '2022-01-02',
-    },
-    {
-      id: '24',
-      picture:
-        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-      name: 'letras de tlaquepaque',
-      country: 'mexico',
-      city: 'tlaquepaque',
-      ownerId: 2,
-      createdAt: '2022-01-01',
-      updatedAt: '2022-01-02',
-    },
-  ];
+  useEffect(() => {
+    getPlaces();
+  }, []);
+
+  async function getPlaces() {
+    try {
+      setLoading(true);
+      let placesFromApi = await searchPlaces(searchTest);
+      console.log('placesFromApi', placesFromApi);
+      setPlaces(placesFromApi);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  }
 
   interface renderItemProps {
     item: any;
   }
 
-  const listFooter = () => (
+  const listFooter = (onPres: any) => (
     <View style={styles.listFooterContainer}>
-      <PosdataButton onPress={() => {}} title="SEE MORE" />
+      <PosdataButton
+        onPress={() => {
+          onPres();
+        }}
+        title="SEE MORE"
+      />
     </View>
   );
 
@@ -302,19 +65,17 @@ const Search = ({navigation}: Props) => {
           value={searchTest}
           onEndEditing={() => {
             console.log('text', searchTest);
+            getPlaces();
           }}
         />
         <SafeAreaView style={styles.safeAreaContainer}>
           <FlatList
             refreshing={isLoading}
             onRefresh={() => {
-              setLoading(true);
-              setTimeout(() => {
-                setLoading(false);
-              }, 2000);
+              getPlaces();
             }}
             numColumns={3}
-            data={placesList}
+            data={places}
             renderItem={(props: renderItemProps) => {
               const {item} = props;
               return (
@@ -333,7 +94,7 @@ const Search = ({navigation}: Props) => {
                 </TouchableOpacity>
               );
             }}
-            ListFooterComponent={listFooter}
+            ListFooterComponent={listFooter(getPlaces)}
             ListHeaderComponent={
               <Text style={[styles.titleTwo, {color: text}]}>ALL RESULTS</Text>
             }
