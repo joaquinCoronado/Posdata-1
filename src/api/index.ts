@@ -1,4 +1,5 @@
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Api = axios.create({
   baseURL: 'http://posdata.io',
@@ -14,4 +15,48 @@ const authConfig = {
   },
 };
 
-export {Api, authConfig};
+const uploadImage = async (photo: any) => {
+  const formData = new FormData();
+  formData.append('file', {
+    name: photo.name,
+    type: photo.type,
+    uri: photo.uri,
+  });
+
+  let token = await AsyncStorage.getItem('token');
+
+  const res = await Api.post('/storage/v1/image', formData, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'multipart/form-data',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  console.log('images uploaded', res);
+  return res;
+};
+
+const createNewPlace = async (place: any) => {
+  let token = await AsyncStorage.getItem('token');
+  const response = await Api.post('/place/v1/place', place, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response;
+};
+
+const searchPlaces = async (search: string) => {
+  let token = await AsyncStorage.getItem('token');
+  let url = '/place/v1/place/search?search=' + search;
+  const response = await Api.get(url, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
+export {Api, authConfig, uploadImage, createNewPlace, searchPlaces};

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -12,82 +12,20 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
 import PosdataButton from '../components/PosdataButton';
 import {RootStackParams} from '../navigation/places';
-
-// DOMMY DATA OF PLACES
-const placesList = [
-  {
-    id: '61cd6b11a2df096ee18a42d9',
-    picture:
-      'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-    name: 'la minerva',
-    country: 'mexico',
-    city: 'guadalajara',
-    ownerId: 2,
-    createdAt: '2021-12-30',
-  },
-  {
-    id: '61cfab06d226d73c58119b51',
-    picture:
-      'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-    name: 'riu',
-    country: 'mexico',
-    city: 'guadalajara',
-    ownerId: 2,
-    createdAt: '2021-12-31',
-    updatedAt: '2022-01-02',
-  },
-  {
-    id: '61d13ef7947cb16b8ea2fec2',
-    picture:
-      'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-    name: 'letras de tlaquepaque',
-    country: 'mexico',
-    city: 'tlaquepaque',
-    ownerId: 2,
-    createdAt: '2022-01-01',
-    updatedAt: '2022-01-02',
-  },
-  {
-    id: '61cd6b11a2df096ee18a42d91',
-    picture:
-      'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-    name: 'la minerva',
-    country: 'mexico',
-    city: 'guadalajara',
-    ownerId: 2,
-    createdAt: '2021-12-30',
-  },
-  {
-    id: '61cfab06d226d73c58119b512',
-    picture:
-      'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-    name: 'riu',
-    country: 'mexico',
-    city: 'guadalajara',
-    ownerId: 2,
-    createdAt: '2021-12-31',
-    updatedAt: '2022-01-02',
-  },
-  {
-    id: '61d13ef7947cb16b8ea2fec23',
-    picture:
-      'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-    name: 'letras de tlaquepaque',
-    country: 'mexico',
-    city: 'tlaquepaque',
-    ownerId: 2,
-    createdAt: '2022-01-01',
-    updatedAt: '2022-01-02',
-  },
-];
+import {searchPlaces} from '../api';
 
 interface renderItemProps {
   item: any;
 }
 
-const listFooter = () => (
+const listFooter = (onPress: any) => (
   <View style={styles.listFooterContainer}>
-    <PosdataButton onPress={() => {}} title="SEE MORE" />
+    <PosdataButton
+      onPress={() => {
+        onPress();
+      }}
+      title="SEE MORE"
+    />
   </View>
 );
 
@@ -95,8 +33,25 @@ interface Props extends StackScreenProps<RootStackParams, 'Places'> {}
 
 const Places = ({navigation}: Props) => {
   let [isLoading, setLoading] = useState(false);
+  let [places, setPlaces] = useState([]);
   const {theme} = useSettings();
-  console.log('Navigate: ', navigation);
+
+  useEffect(() => {
+    getPlaces();
+  }, []);
+
+  async function getPlaces() {
+    try {
+      setLoading(true);
+      let placesFromApi = await searchPlaces('');
+      console.log('placesFromApi', placesFromApi);
+      setPlaces(placesFromApi);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  }
+
   return (
     <View style={styles.container}>
       <Text style={[styles.titleOne, {color: theme.colors.text}]}>Places</Text>
@@ -108,13 +63,10 @@ const Places = ({navigation}: Props) => {
           <FlatList
             refreshing={isLoading}
             onRefresh={() => {
-              setLoading(true);
-              setTimeout(() => {
-                setLoading(false);
-              }, 2000);
+              getPlaces();
             }}
             numColumns={2}
-            data={placesList}
+            data={places}
             renderItem={(props: renderItemProps) => {
               const {item} = props;
               return (
@@ -132,7 +84,7 @@ const Places = ({navigation}: Props) => {
                 </TouchableOpacity>
               );
             }}
-            ListFooterComponent={listFooter}
+            ListFooterComponent={listFooter(getPlaces)}
             keyExtractor={item => item.id}
           />
         </SafeAreaView>

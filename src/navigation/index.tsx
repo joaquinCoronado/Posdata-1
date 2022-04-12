@@ -13,7 +13,7 @@ import SuccesExchangeRequest from '../screens/requestExchange/SuccesExchangeRequ
 import Welcome from '../screens/Welcome';
 
 export type RootStackParams = {
-  Auth: undefined;
+  Auth: {mode: string};
   Home: undefined;
   Place: {
     id: string;

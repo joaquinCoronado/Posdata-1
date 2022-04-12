@@ -8,8 +8,6 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
-  Modal,
-  ActivityIndicator,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
@@ -20,8 +18,9 @@ import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import Button from '../components/Button';
 import {useForm} from '../hooks/useForm';
 import {useSettings} from '../context/settings';
-import {Api} from '../api';
+import {Api, uploadImage, createNewPlace} from '../api';
 import {RootTabsParams} from '../navigation/tabs';
+import LoadingModal from '../components/LoadingModal';
 
 const height = Dimensions.get('screen').height;
 
@@ -104,48 +103,24 @@ const NewPlace = ({navigation}: Props) => {
   };
 
   const onSubmit = async () => {
+    console.log('API', Api);
     try {
       setLoading(true);
-      const photo = new FormData();
-      photo.append('file', {
-        name: tempPhotos[0].name,
-        type: tempPhotos[0].type,
-        uri: tempPhotos[0].uri,
-      });
-      const res = await Api.post('http://posdata.io/storage/v1/image', photo, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
-          Authorization:
-            'Bearer ' +
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJqb2FxdWluQHBvc2RhdGEuaW8iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwibmFtZSI6IkpvYXF1aW4gQ29yb25hZG8iLCJpZCI6MiwiZXhwIjoxNzI3MjIyNTg1LCJqdGkiOiIxZWU3N2E0OC01ODEzLTQwOWYtYjdhOS1iZWU3NzI1M2E3YTkiLCJlbWFpbCI6ImpvYXF1aW5AcG9zZGF0YS5pbyIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIn0.H9_ALfpvA0LYFYKbzuwdrBGSh999z7st-5_oH9SC_v0',
-        },
-      });
+      const res = await uploadImage(tempPhotos[0]);
 
       if (res?.data?.image) {
-        await Api.post(
-          'http://posdata.io/place/v1/place',
-          {
-            ...form,
-            name: form.placeName,
-            picture: res.data.image,
-          },
-          {
-            headers: {
-              Accept: 'application/json',
-              Authorization:
-                'Bearer ' +
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJqb2FxdWluQHBvc2RhdGEuaW8iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwibmFtZSI6IkpvYXF1aW4gQ29yb25hZG8iLCJpZCI6MiwiZXhwIjoxNzI3MjIyNTg1LCJqdGkiOiIxZWU3N2E0OC01ODEzLTQwOWYtYjdhOS1iZWU3NzI1M2E3YTkiLCJlbWFpbCI6ImpvYXF1aW5AcG9zZGF0YS5pbyIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIn0.H9_ALfpvA0LYFYKbzuwdrBGSh999z7st-5_oH9SC_v0',
-            },
-          },
-        );
-
+        await createNewPlace({
+          ...form,
+          name: form.placeName,
+          picture: res?.data?.image,
+        });
         onChange('clean', null);
         setTempPhotos([]);
         setLoading(false);
         setStep(s => `${Number(s) + 1}`);
       }
     } catch (error) {
+      setLoading(false);
       console.log('Error: ', error);
     }
   };
@@ -298,16 +273,7 @@ const NewPlace = ({navigation}: Props) => {
               />
             </View>
           </ScrollView>
-          <Modal
-            style={styles.loadingContainerModal}
-            transparent={true}
-            animationType="slide"
-            visible={isLoading}>
-            <View style={styles.loadingcontainer}>
-              <ActivityIndicator size="large" color="#000" />
-              <Text>Saving place...</Text>
-            </View>
-          </Modal>
+          <LoadingModal visible={isLoading} text="Saving place..." />
         </>
       );
     }

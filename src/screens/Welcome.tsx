@@ -2,12 +2,15 @@ import React from 'react';
 import {View, StyleSheet, Text, useWindowDimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import PosdataButton from '../components/PosdataButton';
-import {useSettings} from '../context/settings';
 
-const Welcome = ({navigation}) => {
+interface Props {
+  navigation: any;
+}
+
+const Welcome = ({navigation}: Props) => {
   const {width} = useWindowDimensions();
-  const handleSubmit = () => {
-    navigation.navigate('Auth');
+  const handleSubmit = (mode: string) => {
+    navigation.navigate('Auth', {mode});
   };
 
   return (
@@ -47,13 +50,17 @@ const Welcome = ({navigation}) => {
       </View>
 
       <View style={styles.buttonsContainer}>
-        <PosdataButton width="48%" title="LOG IN" onPress={handleSubmit} />
+        <PosdataButton
+          width="48%"
+          title="LOG IN"
+          onPress={() => handleSubmit('login')}
+        />
         <PosdataButton
           containerStyles={styles.registerButton}
           textStyles={styles.registerButtonText}
           width="48%"
           title="REGISTER"
-          onPress={() => {}}
+          onPress={() => handleSubmit('signup')}
         />
       </View>
     </View>

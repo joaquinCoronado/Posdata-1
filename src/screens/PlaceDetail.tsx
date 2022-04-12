@@ -3,7 +3,6 @@ import {Text, View, StyleSheet} from 'react-native';
 import Image from 'react-native-fast-image';
 import OptionsButton from '../components/OptionsButton';
 import PopupMenu from '../components/PopupMenu';
-import FlatButton from '../components/PosdataButton/FlatButton';
 import PosdataButton from '../components/PosdataButton';
 
 interface Props {

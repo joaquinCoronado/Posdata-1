@@ -11,6 +11,7 @@ import {
   BottomTabScreenProps,
 } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
+import LinearGradient from 'react-native-linear-gradient';
 
 import Search from '../screens/Search';
 import Exchange from '../screens/Exchange';
@@ -78,7 +79,7 @@ const Tabs = ({navigation}: Props) => {
             tabBarIcon: ({focused}) => (
               <View style={styles.iconContainer}>
                 <Icon
-                  color={focused ? theme.colors.primary : theme.colors.text}
+                  color={focused ? '#FF4D00' : theme.colors.text}
                   size={20}
                   name="home-outline"
                 />
@@ -101,7 +102,7 @@ const Tabs = ({navigation}: Props) => {
             tabBarIcon: ({focused}) => (
               <View style={styles.iconContainer}>
                 <Icon
-                  color={focused ? theme.colors.primary : theme.colors.text}
+                  color={focused ? '#FF4D00' : theme.colors.text}
                   size={20}
                   name="search-outline"
                 />
@@ -122,14 +123,15 @@ const Tabs = ({navigation}: Props) => {
           })}
           options={{
             tabBarIcon: () => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate('NewPlace')}
-                style={{
-                  ...styles.mainIconContainer,
-                  backgroundColor: theme.colors.primary,
-                }}>
-                <Icon color={'white'} size={30} name={'add-outline'} />
-              </TouchableOpacity>
+              <LinearGradient
+                colors={['#FF00D6', '#FF4D00']}
+                style={styles.mainIconContainer}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('NewPlace')}
+                  style={styles.touchableIcon}>
+                  <Icon color={'white'} size={30} name={'add-outline'} />
+                </TouchableOpacity>
+              </LinearGradient>
             ),
           }}
         />
@@ -148,7 +150,7 @@ const Tabs = ({navigation}: Props) => {
             tabBarIcon: ({focused}) => (
               <View style={styles.iconContainer}>
                 <Icon
-                  color={focused ? theme.colors.primary : theme.colors.text}
+                  color={focused ? '#FF4D00' : theme.colors.text}
                   size={20}
                   name="reader-outline"
                 />
@@ -171,7 +173,7 @@ const Tabs = ({navigation}: Props) => {
             tabBarIcon: ({focused}) => (
               <View style={styles.iconContainer}>
                 <Icon
-                  color={focused ? theme.colors.primary : theme.colors.text}
+                  color={focused ? '#FF4D00' : theme.colors.text}
                   size={20}
                   name="person-outline"
                 />
@@ -184,7 +186,7 @@ const Tabs = ({navigation}: Props) => {
         style={{
           ...styles.tabIndicator,
           transform: [{translateX: tabOffsetValue}],
-          backgroundColor: theme.colors.primary,
+          backgroundColor: '#FF4D00',
         }}
       />
     </>
@@ -192,7 +194,13 @@ const Tabs = ({navigation}: Props) => {
 };
 
 const styles = StyleSheet.create({
-  iconContainer: {position: 'absolute', top: '50%'},
+  iconContainer: {
+    width: 60,
+    height: 50,
+    top: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   mainIconContainer: {
     width: 55,
     height: 55,
@@ -208,6 +216,13 @@ const styles = StyleSheet.create({
     bottom: 95,
     left: 25,
     borderRadius: 50,
+  },
+  touchableIcon: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
   },
 });
 
