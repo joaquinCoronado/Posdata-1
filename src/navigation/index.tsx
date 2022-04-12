@@ -10,6 +10,7 @@ import Tabs from './tabs';
 import PlaceDetail from '../screens/PlaceDetail';
 import RequestExchangeForm from '../screens/requestExchange/RequestExchangeForm';
 import SuccesExchangeRequest from '../screens/requestExchange/SuccesExchangeRequest';
+import Welcome from '../screens/Welcome';
 
 export type RootStackParams = {
   Auth: undefined;
@@ -34,6 +35,7 @@ export type RootStackParams = {
   };
   SuccesExchangeRequest: undefined;
   ResetPassword: undefined;
+  Welcome: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -73,6 +75,7 @@ const Navigation = () => {
         </>
       ) : (
         <>
+          <Stack.Screen name="Welcome" component={Welcome} />
           <Stack.Screen name="Auth" component={Auth} />
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
         </>

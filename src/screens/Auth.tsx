@@ -14,12 +14,22 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSettings} from '../context/settings';
 
 const Auth = () => {
-  const {login} = useAuth();
+  //STATE
   const [activeScreen, setActiveScreen] = useState<
     'login' | 'signup' | 'resetPassword'
   >('login');
-  const {theme} = useSettings();
   const [loading, setLoading] = useState<Boolean>(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+
+  // AUTENTICATION
+  const {login} = useAuth();
+
+  // THEME
+  const {theme} = useSettings();
+  const {text} = theme.colors;
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -30,26 +40,42 @@ const Auth = () => {
       setLoading(false);
     }
   };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.container}>
-        <View>
-          <Text style={{...styles.title}}>
-            {activeScreen === 'login'
-              ? 'Log in'
-              : activeScreen === 'signup'
-              ? 'Register'
-              : 'Reset Password'}
-          </Text>
-        </View>
+        {/* HEADER */}
+        <Text style={[styles.title, {color: text}]}>
+          {activeScreen === 'login'
+            ? 'Log in'
+            : activeScreen === 'signup'
+            ? 'Register'
+            : 'Reset Password'}
+        </Text>
+        {/* FORM */}
         <View style={styles.inputContainer}>
           {activeScreen === 'signup' && (
-            <Input placeholder="Escribe tu nombre" label="Name" />
+            <Input
+              placeholder="Escribe tu nombre"
+              label="Name"
+              value={name}
+              onChangeText={setName}
+            />
           )}
-          <Input placeholder="example@example.com" label="Email" />
-          <Input placeholder="******" label="Password" />
-          {/* <Input /> */}
+          <Input
+            value={email}
+            placeholder="example@example.com"
+            label="Email"
+            onChangeText={setEmail}
+          />
+          <Input
+            value={password}
+            placeholder="******"
+            label="Password"
+            onChangeText={setPassword}
+            secureTextEntry
+          />
         </View>
         <Button
           title="Login"
@@ -57,6 +83,7 @@ const Auth = () => {
           onPress={handleSubmit}
           loading={loading}
         />
+        {/* FOOTER */}
         <View style={styles.createAccount}>
           <Text style={styles.textAccount}>
             {activeScreen === 'login'
