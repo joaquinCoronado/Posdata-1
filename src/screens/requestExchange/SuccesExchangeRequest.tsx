@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, SafeAreaView, Text} from 'react-native';
-
-import FlatButton from '../../components/FlatButton';
+import {useSettings} from '../../context/settings';
+import PosdataButton from '../../components/PosdataButton';
 
 interface Props {
   navigation: any;
@@ -9,21 +9,25 @@ interface Props {
 
 const SuccesExchangeRequest = (props: Props) => {
   const {navigation} = props;
-  console.log('navigation', navigation);
+
+  let {theme} = useSettings();
+  let {text} = theme.colors;
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>SENT REQUEST</Text>
-        <Text style={styles.subtitle}>CONGRATULATIONS!!</Text>
-        <FlatButton
+        <Text style={[styles.title, {color: text}]}>SENT REQUEST</Text>
+        <Text style={[styles.subtitle, {color: text}]}>CONGRATULATIONS!!</Text>
+        <PosdataButton
           title="RETURN"
           containerStyles={styles.primaryButton}
           textStyles={styles.primaryButtonText}
           onPress={() => {
             navigation.navigate('Places', {});
           }}
+          gradient
         />
-        <FlatButton
+        <PosdataButton
           title="MY EXCHANGES"
           onPress={() => {
             navigation.navigate('Exchange', {});
