@@ -1,14 +1,21 @@
 import React from 'react';
-import {View, SafeAreaView, Text, StyleSheet} from 'react-native';
+import {SafeAreaView, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
+import {RootStackParams} from '../navigation/index';
 
-const Exchange = () => {
+interface Props extends StackScreenProps<RootStackParams, 'Chat'> {}
+
+const Exchange = ({navigation}: Props) => {
   const {theme} = useSettings();
   return (
     <SafeAreaView style={styles.container}>
       <Text style={[styles.titleOne, {color: theme.colors.text}]}>
         Exchanges
       </Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+        <Text>Ir a Chat</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

@@ -10,6 +10,7 @@ import Tabs from './tabs';
 import PlaceDetail from '../screens/requestExchange/PlaceDetail';
 import RequestExchangeForm from '../screens/requestExchange/RequestExchangeForm';
 import SuccesExchangeRequest from '../screens/requestExchange/SuccesExchangeRequest';
+import Chat from '../screens/Chat';
 
 export type RootStackParams = {
   Auth: undefined;
@@ -34,6 +35,7 @@ export type RootStackParams = {
   };
   SuccesExchangeRequest: undefined;
   ResetPassword: undefined;
+  Chat: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -70,6 +72,7 @@ const Navigation = () => {
             component={SuccesExchangeRequest}
             name="SuccesExchangeRequest"
           />
+          <Stack.Screen component={Chat} name="Chat" />
         </>
       ) : (
         <>
