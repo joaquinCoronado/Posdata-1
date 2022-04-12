@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import Image from 'react-native-fast-image';
-import OptionsButton from '../../components/OptionsButton';
-import PopupMenu from '../../components/PopupMenu';
-import FlatButton from '../../components/FlatButton';
+import OptionsButton from '../components/OptionsButton';
+import PopupMenu from '../components/PopupMenu';
+import FlatButton from '../components/PosdataButton/FlatButton';
+import PosdataButton from '../components/PosdataButton';
 
 interface Props {
   place: any;
@@ -38,14 +39,14 @@ const PlaceDetail = (props: Props) => {
         />
       </View>
       <PopupMenu visible={isModalOpen}>
-        <FlatButton
+        <PosdataButton
           title="REQUEST FOR EXCHANGE"
           onPress={() => {
             navigation.navigate('RequestExchangeForm', {...place});
             setModalOpen(false);
           }}
         />
-        <FlatButton
+        <PosdataButton
           title="CANCEL"
           onPress={() => {
             setModalOpen(false);

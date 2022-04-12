@@ -7,8 +7,9 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-
-import FlatButton from '../../components/FlatButton';
+import PosdataButton from '../../components/PosdataButton';
+import GradientText from '../../components/GradientText';
+import {useSettings} from '../../context/settings';
 
 interface Props {
   place: any;
@@ -19,6 +20,9 @@ interface Props {
 const RequestExchangeForm = (props: Props) => {
   let [deliveriDate, setDeliveriDate] = useState('');
   let [textNote, setTextNote] = useState('');
+  let {theme} = useSettings();
+  let {dividerColor} = theme;
+  let {text} = theme.colors;
   const {route, navigation} = props;
   const {params: place} = route;
 
@@ -32,36 +36,43 @@ const RequestExchangeForm = (props: Props) => {
           resizeMode="cover"
         />
         <View style={styles.placeDataContainer}>
-          <Text style={styles.placeName}>{place.name}</Text>
-          <Text style={styles.placeLocation}>
+          <GradientText style={styles.placeName}>{place.name}</GradientText>
+          <Text style={[styles.placeLocation, {color: text}]}>
             {place.city + ', ' + place.country}
           </Text>
         </View>
       </View>
       <View style={styles.formContainer}>
-        <Text>DELIVERI DATE</Text>
+        <Text style={[styles.labelTextForImput, {color: text}]}>
+          DELIVERI DATE
+        </Text>
         <TextInput
-          style={[styles.input]}
+          style={[styles.input, {borderColor: dividerColor, color: text}]}
           onChangeText={setDeliveriDate}
           value={deliveriDate}
         />
-        <Text>TEXT NOTE</Text>
+        <Text style={[styles.labelTextForImput, {color: text}]}>TEXT NOTE</Text>
         <TextInput
           multiline={true}
-          style={[styles.input, styles.textArea]}
+          style={[
+            styles.input,
+            styles.textArea,
+            {borderColor: dividerColor, color: text},
+          ]}
           onChangeText={setTextNote}
           value={textNote}
         />
       </View>
       <View style={styles.buttonsContainer}>
-        <FlatButton
+        <PosdataButton
           width="48%"
           title="SEND REQUEST"
           onPress={() => {
             navigation.navigate('SuccesExchangeRequest', {});
           }}
+          gradient
         />
-        <FlatButton
+        <PosdataButton
           width="48%"
           title="CANCEL"
           onPress={() => {
@@ -95,13 +106,15 @@ const styles = StyleSheet.create({
   placeDataContainer: {},
   placeName: {
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 18,
     textTransform: 'capitalize',
     color: 'black',
   },
   placeLocation: {
     color: 'black',
+    fontWeight: '300',
     textTransform: 'capitalize',
+    fontSize: 16,
   },
   //FORM
   formContainer: {
@@ -119,6 +132,11 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 150,
+  },
+  labelTextForImput: {
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 5,
   },
   //BUTTONS
   buttonsContainer: {

@@ -10,7 +10,7 @@ import {
 import Image from 'react-native-fast-image';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
-import FlatButton from '../components/FlatButton';
+import PosdataButton from '../components/PosdataButton';
 import {RootStackParams} from '../navigation/places';
 
 // DOMMY DATA OF PLACES
@@ -87,7 +87,7 @@ interface renderItemProps {
 
 const listFooter = () => (
   <View style={styles.listFooterContainer}>
-    <FlatButton onPress={() => {}} title="SEE MORE" />
+    <PosdataButton onPress={() => {}} title="SEE MORE" />
   </View>
 );
 
