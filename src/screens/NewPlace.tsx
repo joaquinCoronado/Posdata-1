@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
-  Dimensions,
   Alert,
   Text,
   TouchableOpacity,
@@ -13,16 +12,13 @@ import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
-import Button from '../components/Button';
 import {useForm} from '../hooks/useForm';
 import {useSettings} from '../context/settings';
-import {Api, uploadImage, createNewPlace} from '../api';
+import {uploadImage, createNewPlace} from '../api';
 import {RootTabsParams} from '../navigation/tabs';
 import LoadingModal from '../components/LoadingModal';
-
-const height = Dimensions.get('screen').height;
+import PosdataButton from '../components/PosdataButton';
 
 interface Photo {
   type: string;
@@ -41,8 +37,9 @@ const NewPlace = ({navigation}: Props) => {
     city: '',
     placeName: '',
   });
+
   const {theme} = useSettings();
-  const {top} = useSafeAreaInsets();
+
   const getPhotos = () => {
     Alert.alert('Subir Foto', 'Selecciona una opcion', [
       {
@@ -82,6 +79,7 @@ const NewPlace = ({navigation}: Props) => {
               if (res.didCancel || !res.assets?.[0].uri) {
                 return;
               }
+              setTempPhotos([]);
 
               setTempPhotos(s =>
                 s.concat({
@@ -96,14 +94,13 @@ const NewPlace = ({navigation}: Props) => {
         },
       },
       {
-        text: 'Cancelar',
+        text: 'Cancel',
         style: 'cancel',
       },
     ]);
   };
 
   const onSubmit = async () => {
-    console.log('API', Api);
     try {
       setLoading(true);
       const res = await uploadImage(tempPhotos[0]);
@@ -133,25 +130,22 @@ const NewPlace = ({navigation}: Props) => {
             activeDot={<View />}
             dot={<View />}
             loop
-            style={{height: height / 2}}
+            style={styles.swiperContainer}
             showsButtons={false}>
             {tempPhotos.length === 0 ? (
-              <>
-                <View style={styles.slideIcon}>
-                  <Icon
-                    name="file-tray-full-outline"
-                    style={styles.iconFiles}
-                    color={theme.colors.text}
-                    size={180}
-                  />
-                  <View style={{}}>
-                    <Text style={{color: theme.colors.text}}>title TITLE </Text>
-                    <Text style={{color: theme.colors.text}}>
-                      Subtitle subtitle
-                    </Text>
-                  </View>
+              // BLANCK STATE
+              <View style={styles.slideIcon}>
+                <View style={styles.textBlankStateContainer}>
+                  <Text
+                    style={[styles.textBlanckSate, {color: theme.colors.text}]}>
+                    To start
+                  </Text>
+                  <Text
+                    style={[styles.textBlanckSate, {color: theme.colors.text}]}>
+                    pick your image
+                  </Text>
                 </View>
-              </>
+              </View>
             ) : (
               tempPhotos.map((photo, index) => (
                 <View style={styles.slide}>
@@ -173,29 +167,32 @@ const NewPlace = ({navigation}: Props) => {
               ))
             )}
           </Swiper>
+          {/* BUTTONS */}
           <View style={styles.buttons}>
-            <Button
-              title="Subir Imagen"
-              style={styles.button}
+            <PosdataButton
+              title="PICK IMAGE"
+              containerStyles={styles.buttonContainer}
+              textStyles={styles.blackButtonText}
               onPress={getPhotos}
             />
-            <Button
-              title="Siguiente"
-              style={styles.button}
-              onPress={() => setStep(s => `${Number(s) + 1}`)}
-              mode="white"
-              disabled={tempPhotos.length === 0}
-            />
+            {tempPhotos.length > 0 ? (
+              <PosdataButton
+                title="NEXT"
+                onPress={() => setStep(s => `${Number(s) + 1}`)}
+              />
+            ) : null}
           </View>
         </View>
       );
     }
     case '2': {
       return (
-        <>
-          <ScrollView style={{...styles.container, top: top + 10}}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.titleForm}>PLACE INFORMATION</Text>
+        <View style={styles.formMainContainer}>
+          <ScrollView style={styles.scrollViewContainer}>
+            <View style={styles.formContainer}>
+              <Text style={[styles.titleForm, {color: theme.colors.text}]}>
+                PLACE INFORMATION
+              </Text>
               <TextInput
                 style={[
                   styles.input,
@@ -203,15 +200,10 @@ const NewPlace = ({navigation}: Props) => {
                 ]}
                 onChangeText={value => onChange(value, 'country')}
                 value={form.country}
-                onEndEditing={() => {
-                  console.log('text');
-                }}
                 placeholder="Country"
                 placeholderTextColor={theme.colors.text}
               />
-            </View>
 
-            <View style={styles.inputContainer}>
               <TextInput
                 style={[
                   styles.input,
@@ -219,14 +211,10 @@ const NewPlace = ({navigation}: Props) => {
                 ]}
                 onChangeText={value => onChange(value, 'state')}
                 value={form.state}
-                onEndEditing={() => {
-                  console.log('text');
-                }}
-                placeholder="Estado"
+                placeholder="State"
                 placeholderTextColor={theme.colors.text}
               />
-            </View>
-            <View>
+
               <TextInput
                 style={[
                   styles.input,
@@ -234,14 +222,10 @@ const NewPlace = ({navigation}: Props) => {
                 ]}
                 onChangeText={value => onChange(value, 'city')}
                 value={form.city}
-                onEndEditing={() => {
-                  console.log('text');
-                }}
-                placeholder="Ciudad"
+                placeholder="City"
                 placeholderTextColor={theme.colors.text}
               />
-            </View>
-            <View style={styles.inputContainer}>
+
               <TextInput
                 style={[
                   styles.input,
@@ -249,58 +233,41 @@ const NewPlace = ({navigation}: Props) => {
                 ]}
                 onChangeText={value => onChange(value, 'placeName')}
                 value={form.placeName}
-                onEndEditing={() => {
-                  console.log('text');
-                }}
-                placeholder="Nombre del lugar"
+                placeholder="Name place"
                 placeholderTextColor={theme.colors.text}
               />
-            </View>
-            <View
-              style={{
-                bottom: -height / 3 + 13,
-              }}>
-              <Button
-                title="Save Place"
-                style={styles.button}
-                onPress={onSubmit}
-              />
-              <Button
-                title="Back"
-                style={styles.button}
-                mode="white"
-                onPress={() => setStep(s => `${Number(s) - 1}`)}
-              />
+              <LoadingModal visible={isLoading} text="Saving place..." />
             </View>
           </ScrollView>
-          <LoadingModal visible={isLoading} text="Saving place..." />
-        </>
+          <View style={styles.formButtonContainer}>
+            <PosdataButton title="SAVE PLACE" onPress={onSubmit} gradient />
+            <PosdataButton
+              title="BACK"
+              onPress={() => setStep(s => `${Number(s) - 1}`)}
+            />
+          </View>
+        </View>
       );
     }
     default:
       return (
         <View style={[styles.container]}>
-          <View style={{...styles.center, marginTop: height / 3}}>
+          <View style={styles.congratTextContainer}>
             <Text style={styles.title}>SAVED PLACE</Text>
             <Text style={styles.subtitle}>CONGRATULATIONS !!</Text>
           </View>
-          <View
-            style={{
-              marginTop: height / 3 - 40,
-            }}>
-            <Button
-              title="Go to home"
-              style={styles.button}
+          <View style={styles.congratButtonContainer}>
+            <PosdataButton
+              title="GO"
               onPress={() => {
                 navigation.navigate('Places');
                 setStep('1');
               }}
+              gradient
             />
-            <Button
-              title="Back"
-              style={styles.button}
-              onPress={() => setStep('1')}
-              mode="white"
+            <PosdataButton
+              title="MY PLACES"
+              onPress={() => navigation.navigate('Profile')}
             />
           </View>
         </View>
@@ -311,7 +278,8 @@ const NewPlace = ({navigation}: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   center: {
     alignItems: 'center',
@@ -321,25 +289,21 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   slide: {
-    height: (2 * height) / 3,
+    height: '100%',
     overflow: 'hidden',
   },
   slideIcon: {
-    height: (2 * height) / 3,
-    overflow: 'hidden',
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttons: {
-    height: height / 3,
-    paddingTop: 20,
+    width: '100%',
+    padding: 15,
+    paddingTop: 5,
+    marginBottom: 25,
+    borderTopWidth: 1,
   },
-  button: {
-    maxWidth: 350,
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  iconFiles: {},
   iconContainer: {
     position: 'absolute',
     top: 50,
@@ -349,10 +313,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   input: {
-    height: 40,
-    borderWidth: 1,
+    height: 55,
+    borderWidth: 1.5,
     padding: 10,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   title: {
     fontWeight: 'bold',
@@ -364,11 +328,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   inputContainer: {
-    marginVertical: 6,
+    padding: 15,
+    marginBottom: 0,
   },
   titleForm: {
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 14,
     marginBottom: 15,
   },
   loadingContainerModal: {},
@@ -376,6 +341,37 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  iconFiles: {},
+  textBlankStateContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textBlanckSate: {
+    fontWeight: '300',
+    fontSize: 18,
+  },
+  buttonContainer: {
+    backgroundColor: 'black',
+  },
+  blackButtonText: {color: 'white'},
+  swiperContainer: {height: '100%', width: '100%'},
+  formContainer: {
+    height: '100%',
+    width: '100%',
+    padding: 15,
+  },
+  formButtonContainer: {width: '100%', padding: 15, marginBottom: 25},
+  scrollViewContainer: {height: '100%', paddingTop: 55},
+  formMainContainer: {backgroundColor: 'transparent', flex: 1},
+  congratTextContainer: {
+    alignItems: 'center',
+    marginBottom: 70,
+  },
+  congratButtonContainer: {
+    width: '100%',
+    paddingHorizontal: 15,
+    paddingBottom: 0,
   },
 });
 
