@@ -62,7 +62,7 @@ const Auth = ({navigation, route}: Props) => {
       <View style={styles.container}>
         {/* BACK */}
         <TouchableOpacity style={styles.backButton} onPress={hanldeBack}>
-          <Icon color="black" size={24} name="return-up-back-outline" />
+          <Icon color={text} size={24} name="return-up-back-outline" />
         </TouchableOpacity>
 
         {/* HEADER */}
@@ -77,7 +77,7 @@ const Auth = ({navigation, route}: Props) => {
         <View style={styles.inputContainer}>
           {mode === 'signup' && (
             <TextInput
-              style={styles.input}
+              style={[styles.input, {borderColor: text, color: text}]}
               placeholder="Escribe tu nombre"
               value={name}
               onChangeText={setName}
@@ -88,7 +88,7 @@ const Auth = ({navigation, route}: Props) => {
             autoCorrect={false}
             blurOnSubmit={false}
             clearButtonMode="while-editing"
-            style={styles.input}
+            style={[styles.input, {borderColor: text, color: text}]}
             value={email}
             placeholder="example@example.com"
             onChangeText={setEmail}
@@ -98,7 +98,7 @@ const Auth = ({navigation, route}: Props) => {
             autoCorrect={false}
             blurOnSubmit={false}
             clearButtonMode="while-editing"
-            style={styles.input}
+            style={[styles.input, {borderColor: text, color: text}]}
             value={password}
             placeholder="*************"
             onChangeText={setPassword}

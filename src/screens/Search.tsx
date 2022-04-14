@@ -70,6 +70,7 @@ const Search = ({navigation}: Props) => {
         />
         <SafeAreaView style={styles.safeAreaContainer}>
           <FlatList
+            showsVerticalScrollIndicator={false}
             refreshing={isLoading}
             onRefresh={() => {
               getPlaces();
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   itemContainer: {
-    height: 150,
+    height: 145,
     width: '33%',
     marginBottom: 5,
     marginRight: 5,
@@ -137,12 +138,12 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderWidth: 1,
+    borderWidth: 1.5,
     padding: 10,
     marginBottom: 10,
   },
   listFooterContainer: {
-    marginBottom: 330,
+    marginBottom: 335,
   },
 });
 

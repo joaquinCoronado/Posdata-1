@@ -59,4 +59,50 @@ const searchPlaces = async (search: string) => {
   return response.data;
 };
 
-export {Api, authConfig, uploadImage, createNewPlace, searchPlaces};
+const getUserInfo = async (userId: number) => {
+  let token = await AsyncStorage.getItem('token');
+  let url = 'user/v1/user/query/' + userId;
+  const response = await Api.get(url, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
+const getPlacesByOwnerId = async (userId: number) => {
+  let token = await AsyncStorage.getItem('token');
+  let url = '/place/v1/place/list?ownerId=' + userId;
+  const response = await Api.get(url, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
+const updateInfoUser = async (user: any) => {
+  let token = await AsyncStorage.getItem('token');
+  let url = '/user/v1/user';
+  console.log('body', user);
+  const response = await Api.patch(url, user, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
+export {
+  Api,
+  authConfig,
+  uploadImage,
+  createNewPlace,
+  searchPlaces,
+  getUserInfo,
+  getPlacesByOwnerId,
+  updateInfoUser,
+};

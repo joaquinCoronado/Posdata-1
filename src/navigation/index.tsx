@@ -12,6 +12,8 @@ import RequestExchangeForm from '../screens/requestExchange/RequestExchangeForm'
 import SuccesExchangeRequest from '../screens/requestExchange/SuccesExchangeRequest';
 import NewPlace from '../screens/NewPlace';
 import Welcome from '../screens/Welcome';
+import Configuration from '../screens/ProfileScreens/Configuration';
+import UserInformation from '../screens/ProfileScreens/UserInformation';
 
 export type RootStackParams = {
   Auth: {mode: string};
@@ -38,6 +40,8 @@ export type RootStackParams = {
   ResetPassword: undefined;
   Welcome: undefined;
   NewPlace: undefined;
+  Configuration: undefined;
+  UserInformation: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -75,6 +79,8 @@ const Navigation = () => {
             name="SuccesExchangeRequest"
           />
           <Stack.Screen component={NewPlace} name="NewPlace" />
+          <Stack.Screen component={Configuration} name="Configuration" />
+          <Stack.Screen component={UserInformation} name="UserInformation" />
         </>
       ) : (
         <>

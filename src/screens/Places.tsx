@@ -60,6 +60,7 @@ const Places = ({navigation}: Props) => {
         </Text>
         <SafeAreaView style={styles.safeAreaContainer}>
           <FlatList
+            showsVerticalScrollIndicator={false}
             refreshing={isLoading}
             onRefresh={() => {
               getPlaces();
