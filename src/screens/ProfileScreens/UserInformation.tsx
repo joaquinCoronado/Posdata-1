@@ -15,6 +15,7 @@ import {useAuth} from '../../context/auth';
 import {updateInfoUser} from '../../api';
 import LoadingModal from '../../components/LoadingModal';
 import DatePicker from 'react-native-date-picker';
+import {Picker} from '@react-native-picker/picker';
 
 const UserInformation = ({navigation}: any) => {
   let [isEditMode, setEditMode] = useState(false);
@@ -74,6 +75,7 @@ const UserInformation = ({navigation}: any) => {
       birthday: new Date(user?.userInfo.birthday),
     });
     const [isBirthdayDatePickerActive, setDatePickerActive] = useState(false);
+    const [isGemderPickerActive, setGenderPickerActive] = useState(false);
 
     const updateUserInfo = async () => {
       setLoading(true);
@@ -141,19 +143,36 @@ const UserInformation = ({navigation}: any) => {
           <Text style={[styles.rowData, {color: theme.colors.text}]}>
             GENDER
           </Text>
-          <TextInput
-            style={[
+          <PosdataButton
+            containerStyles={[
               styles.input,
-              {borderColor: theme.colors.text, color: theme.colors.text},
+              styles.genderAction,
+              {
+                borderColor: theme.colors.text,
+                color: theme.colors.text,
+              },
             ]}
-            onChangeText={value => {
-              setForm(current => {
-                return {...current, gender: value};
-              });
-            }}
-            value={form.gender}
-            placeholder="gender"
+            onPress={() => setGenderPickerActive(value => !value)}
+            title={form.gender}
           />
+
+          {isGemderPickerActive ? (
+            <Picker
+              selectedValue={form.gender}
+              style={styles.picker}
+              mode="dropdown"
+              itemStyle={styles.pickerItem}
+              onValueChange={(itemValue, _itemIndex) => {
+                setForm(current => {
+                  return {...current, gender: itemValue};
+                });
+                setGenderPickerActive(false);
+              }}>
+              <Picker.Item label="Male" value="male" />
+              <Picker.Item label="Female" value="female" />
+            </Picker>
+          ) : null}
+
           {/* BIRTHDAY */}
           <Text style={[styles.rowData, {color: theme.colors.text}]}>
             BIRTHDAY
@@ -316,6 +335,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
+  genderAction: {marginBottom: 10, marginTop: 0, alignItems: 'flex-start'},
+  picker: {height: 120, borderWidth: 1.5, borderColor: 'black', top: -12},
+  pickerItem: {height: 120, fontSize: 16},
   //BUTTONS
   buttonsContainer: {
     height: 130,
