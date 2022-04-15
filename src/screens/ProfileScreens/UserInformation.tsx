@@ -14,6 +14,7 @@ import {useSettings} from '../../context/settings';
 import {useAuth} from '../../context/auth';
 import {updateInfoUser} from '../../api';
 import LoadingModal from '../../components/LoadingModal';
+import DatePicker from 'react-native-date-picker';
 
 const UserInformation = ({navigation}: any) => {
   let [isEditMode, setEditMode] = useState(false);
@@ -22,6 +23,14 @@ const UserInformation = ({navigation}: any) => {
   const {theme} = useSettings();
   const {user, setUser} = useAuth();
   let {picture = ''} = user?.userInfo ? user?.userInfo : {};
+
+  const toLocalDate = date => {
+    let formatedDate = date.toLocaleString('es-MX', {
+      timeZone: 'America/Mexico_City',
+    });
+    let result = formatedDate.split(' ');
+    return result[0];
+  };
 
   const DataRow = ({label, data}) => {
     return (
@@ -39,7 +48,10 @@ const UserInformation = ({navigation}: any) => {
       <DataRow label="COUNTRY" data={user?.userInfo?.country} />
       <DataRow label="CITY" data={user?.userInfo?.city} />
       <DataRow label="GENDER" data={user?.userInfo?.gender} />
-      <DataRow label="BIRTHDAY" data={user?.userInfo?.birthday} />
+      <DataRow
+        label="BIRTHDAY"
+        data={toLocalDate(new Date(user?.userInfo?.birthday))}
+      />
       <View style={styles.buttonsContainer}>
         <PosdataButton
           containerStyles={styles.blackButton}
@@ -59,8 +71,9 @@ const UserInformation = ({navigation}: any) => {
       country: user?.userInfo.country,
       city: user?.userInfo.city,
       gender: user?.userInfo.gender,
-      birthday: user?.userInfo.birthday,
+      birthday: new Date(user?.userInfo.birthday),
     });
+    const [isBirthdayDatePickerActive, setDatePickerActive] = useState(false);
 
     const updateUserInfo = async () => {
       setLoading(true);
@@ -145,18 +158,34 @@ const UserInformation = ({navigation}: any) => {
           <Text style={[styles.rowData, {color: theme.colors.text}]}>
             BIRTHDAY
           </Text>
-          <TextInput
-            style={[
+          <PosdataButton
+            containerStyles={[
               styles.input,
-              {borderColor: theme.colors.text, color: theme.colors.text},
+              {
+                borderColor: theme.colors.text,
+                color: theme.colors.text,
+                marginTop: 0,
+                alignItems: 'flex-start',
+              },
             ]}
-            onChangeText={value => {
+            onPress={() => setDatePickerActive(current => !current)}
+            title={toLocalDate(form.birthday)}
+          />
+
+          <DatePicker
+            modal
+            mode="date"
+            open={isBirthdayDatePickerActive}
+            date={new Date(form.birthday)}
+            onConfirm={date => {
               setForm(current => {
-                return {...current, birthday: value};
+                return {...current, birthday: date};
               });
             }}
-            value={form.birthday}
-            placeholder="birthday"
+            onCancel={() => {
+              console.log('on cancel');
+              setDatePickerActive(false);
+            }}
           />
         </View>
         <View style={styles.buttonsContainer}>
@@ -178,7 +207,7 @@ const UserInformation = ({navigation}: any) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           {isEditMode ? (
@@ -283,6 +312,7 @@ const styles = StyleSheet.create({
   input: {
     height: 45,
     borderWidth: 1.5,
+    borderRadius: 0,
     padding: 10,
     marginBottom: 10,
   },
