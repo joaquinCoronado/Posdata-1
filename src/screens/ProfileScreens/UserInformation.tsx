@@ -159,12 +159,15 @@ const UserInformation = ({navigation}: any) => {
           {isGemderPickerActive ? (
             <Picker
               selectedValue={form.gender}
-              style={styles.picker}
+              style={[styles.picker, {borderColor: theme.colors.text}]}
               mode="dropdown"
-              itemStyle={styles.pickerItem}
+              itemStyle={[styles.pickerItem, {color: theme.colors.text}]}
               onValueChange={(itemValue, _itemIndex) => {
                 setForm(current => {
-                  return {...current, gender: itemValue};
+                  return {
+                    ...current,
+                    gender: itemValue,
+                  };
                 });
                 setGenderPickerActive(false);
               }}>
