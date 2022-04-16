@@ -72,7 +72,9 @@ const UserInformation = ({navigation}: any) => {
       country: user?.userInfo.country,
       city: user?.userInfo.city,
       gender: user?.userInfo.gender,
-      birthday: new Date(user?.userInfo.birthday),
+      birthday: user?.userInfo.birthday
+        ? new Date(user?.userInfo.birthday)
+        : new Date(),
     });
     const [isBirthdayDatePickerActive, setDatePickerActive] = useState(false);
     const [isGemderPickerActive, setGenderPickerActive] = useState(false);

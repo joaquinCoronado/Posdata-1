@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Api = axios.create({
   baseURL: 'http://posdata.io',
+  //baseURL: 'http://localhost',
 });
 
 const authConfig = {
