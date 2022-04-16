@@ -14,6 +14,7 @@ import NewPlace from '../screens/NewPlace';
 import Welcome from '../screens/Welcome';
 import Configuration from '../screens/ProfileScreens/Configuration';
 import UserInformation from '../screens/ProfileScreens/UserInformation';
+import UpdateUserImage from '../screens/ProfileScreens/UpdateUserIamge';
 
 export type RootStackParams = {
   Auth: {mode: string};
@@ -42,6 +43,7 @@ export type RootStackParams = {
   NewPlace: undefined;
   Configuration: undefined;
   UserInformation: undefined;
+  UpdateUserImage: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -81,6 +83,7 @@ const Navigation = () => {
           <Stack.Screen component={NewPlace} name="NewPlace" />
           <Stack.Screen component={Configuration} name="Configuration" />
           <Stack.Screen component={UserInformation} name="UserInformation" />
+          <Stack.Screen component={UpdateUserImage} name="UpdateUserImage" />
         </>
       ) : (
         <>

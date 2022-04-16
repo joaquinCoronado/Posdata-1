@@ -32,7 +32,18 @@ const uploadImage = async (photo: any) => {
       Authorization: 'Bearer ' + token,
     },
   });
-  console.log('images uploaded', res);
+  return res;
+};
+
+const deleteImage = async (imageURL: string) => {
+  let token = await AsyncStorage.getItem('token');
+
+  const res = await Api.delete('/storage/v1/image?imagePath=' + imageURL, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
   return res;
 };
 
@@ -105,4 +116,5 @@ export {
   getUserInfo,
   getPlacesByOwnerId,
   updateInfoUser,
+  deleteImage,
 };

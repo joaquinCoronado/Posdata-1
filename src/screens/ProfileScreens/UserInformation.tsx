@@ -233,21 +233,17 @@ const UserInformation = ({navigation}: any) => {
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           {isEditMode ? (
-            <Pressable
-              style={[styles.changeImageContainer, styles.imageBackground]}
-              onPressOut={() => {
-                console.log('change image');
-              }}>
+            <View style={[styles.changeImageContainer, styles.imageBackground]}>
               <Icon color={'white'} size={34} name="camera-outline" />
               <Text style={{color: 'white', fontWeight: 'bold'}}>CHANCGE</Text>
               <Text style={{color: 'white', fontWeight: 'bold'}}>PHOTO</Text>
-            </Pressable>
+            </View>
           ) : null}
 
           <Pressable
             disabled={!isEditMode}
             onPress={() => {
-              console.log('change image');
+              navigation.navigate('UpdateUserImage');
             }}>
             <Image
               resizeMode="cover"
