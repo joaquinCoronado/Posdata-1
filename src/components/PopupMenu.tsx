@@ -35,6 +35,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 15,
     maxHeight: '30%',
     borderRadius: 15,
