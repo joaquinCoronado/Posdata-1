@@ -1,5 +1,13 @@
 import React, {useState} from 'react';
-import {Text, View, StyleSheet, SafeAreaView, TextInput} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  SafeAreaView,
+  TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import Image from 'react-native-fast-image';
 import PosdataButton from '../../components/PosdataButton';
@@ -61,71 +69,75 @@ const RequestExchangeForm = (props: Props) => {
 
   console.log('navigation', navigation);
   return (
-    <SafeAreaView style={styles.container}>
-      {/* HEADER */}
-      <View style={styles.headerContainer}>
-        <Image
-          style={styles.image}
-          source={{uri: place.picture}}
-          resizeMode="cover"
-        />
-        <View style={styles.placeDataContainer}>
-          <GradientText style={styles.placeName}>{place.name}</GradientText>
-          <Text style={[styles.placeLocation, {color: text}]}>
-            {place.city + ', ' + place.country}
-          </Text>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <SafeAreaView style={styles.container}>
+        {/* HEADER */}
+        <View style={styles.headerContainer}>
+          <Image
+            style={styles.image}
+            source={{uri: place.picture}}
+            resizeMode="cover"
+          />
+          <View style={styles.placeDataContainer}>
+            <GradientText style={styles.placeName}>{place.name}</GradientText>
+            <Text style={[styles.placeLocation, {color: text}]}>
+              {place.city + ', ' + place.country}
+            </Text>
+          </View>
         </View>
-      </View>
-      {/* FORM */}
-      <View style={styles.formContainer}>
-        <Text style={[styles.labelTextForImput, {color: text}]}>
-          DELIVERI DATE
-        </Text>
-        <PosdataButton
-          containerStyles={[styles.input, {borderColor: text, color: text}]}
-          title={toLocalDate(deliveriDate)}
-          onPress={() => setDeliveryDatePickerActive(prev => !prev)}
-        />
-        <DatePicker
-          modal
-          mode="date"
-          open={isDeliveryDatePickerActive}
-          date={deliveriDate}
-          onConfirm={setDeliveriDate}
-          onCancel={() => {
-            setDeliveryDatePickerActive(false);
-          }}
-        />
-        <Text style={[styles.labelTextForImput, {color: text}]}>TEXT NOTE</Text>
-        <TextInput
-          multiline={true}
-          style={[
-            styles.input,
-            styles.textArea,
-            {borderColor: dividerColor, color: text},
-          ]}
-          onChangeText={setTextNote}
-          value={textNote}
-        />
-      </View>
-      {/* BUTTONS */}
-      <View style={styles.buttonsContainer}>
-        <PosdataButton
-          width="48%"
-          title="SEND REQUEST"
-          onPress={handleSendRequest}
-          gradient
-        />
-        <PosdataButton
-          width="48%"
-          title="CANCEL"
-          onPress={() => {
-            navigation.pop();
-          }}
-        />
-      </View>
-      <LoadingModal visible={isLoading} />
-    </SafeAreaView>
+        {/* FORM */}
+        <View style={styles.formContainer}>
+          <Text style={[styles.labelTextForImput, {color: text}]}>
+            DELIVERI DATE
+          </Text>
+          <PosdataButton
+            containerStyles={[styles.input, {borderColor: text, color: text}]}
+            title={toLocalDate(deliveriDate)}
+            onPress={() => setDeliveryDatePickerActive(prev => !prev)}
+          />
+          <DatePicker
+            modal
+            mode="date"
+            open={isDeliveryDatePickerActive}
+            date={deliveriDate}
+            onConfirm={setDeliveriDate}
+            onCancel={() => {
+              setDeliveryDatePickerActive(false);
+            }}
+          />
+          <Text style={[styles.labelTextForImput, {color: text}]}>
+            TEXT NOTE
+          </Text>
+          <TextInput
+            multiline={true}
+            style={[
+              styles.input,
+              styles.textArea,
+              {borderColor: dividerColor, color: text},
+            ]}
+            onChangeText={setTextNote}
+            value={textNote}
+          />
+        </View>
+        {/* BUTTONS */}
+        <View style={styles.buttonsContainer}>
+          <PosdataButton
+            width="48%"
+            title="SEND REQUEST"
+            onPress={handleSendRequest}
+            gradient
+          />
+          <PosdataButton
+            width="48%"
+            title="CANCEL"
+            onPress={() => {
+              navigation.pop();
+            }}
+          />
+        </View>
+        <LoadingModal visible={isLoading} />
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 
