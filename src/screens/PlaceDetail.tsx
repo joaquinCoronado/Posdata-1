@@ -3,8 +3,10 @@ import {Text, View, StyleSheet} from 'react-native';
 import Image from 'react-native-fast-image';
 import OptionsButton from '../components/OptionsButton';
 import PopupMenu from '../components/PopupMenu';
-import FlatButton from '../components/PosdataButton/FlatButton';
 import PosdataButton from '../components/PosdataButton';
+
+import {useAuth} from '../context/auth';
+import {useSettings} from '../context/settings';
 
 interface Props {
   place: any;
@@ -14,9 +16,13 @@ interface Props {
 
 const PlaceDetail = (props: Props) => {
   let [isModalOpen, setModalOpen] = useState(false);
-  console.log('details', props);
+
   const {route, navigation} = props;
   const {params: place} = route;
+  const {theme} = useSettings();
+  const {user} = useAuth();
+
+  console.log('place', place);
 
   return (
     <View style={styles.container}>
@@ -25,10 +31,16 @@ const PlaceDetail = (props: Props) => {
         source={{uri: place.picture}}
         resizeMode="cover"
       />
-      <View style={styles.menuContainer}>
+      <View
+        style={[
+          styles.menuContainer,
+          {backgroundColor: theme.colors.background},
+        ]}>
         <View style={styles.placeInfoContainer}>
-          <Text style={styles.placeName}>{place.name}</Text>
-          <Text style={styles.placeLocation}>
+          <Text style={[styles.placeName, {color: theme.colors.text}]}>
+            {place.name}
+          </Text>
+          <Text style={[styles.placeLocation, {color: theme.colors.text}]}>
             {place.city + ', ' + place.country}
           </Text>
         </View>
@@ -39,13 +51,16 @@ const PlaceDetail = (props: Props) => {
         />
       </View>
       <PopupMenu visible={isModalOpen}>
-        <PosdataButton
-          title="REQUEST FOR EXCHANGE"
-          onPress={() => {
-            navigation.navigate('RequestExchangeForm', {...place});
-            setModalOpen(false);
-          }}
-        />
+        {place.ownerId !== user?.id ? (
+          <PosdataButton
+            title="REQUEST FOR EXCHANGE"
+            onPress={() => {
+              navigation.navigate('RequestExchangeForm', {...place});
+              setModalOpen(false);
+            }}
+          />
+        ) : null}
+
         <PosdataButton
           title="CANCEL"
           onPress={() => {

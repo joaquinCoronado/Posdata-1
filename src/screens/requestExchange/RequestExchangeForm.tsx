@@ -1,12 +1,6 @@
 import React, {useState} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  SafeAreaView,
-  Image,
-  TextInput,
-} from 'react-native';
+import {Text, View, StyleSheet, SafeAreaView, TextInput} from 'react-native';
+import Image from 'react-native-fast-image';
 import PosdataButton from '../../components/PosdataButton';
 import GradientText from '../../components/GradientText';
 import {useSettings} from '../../context/settings';

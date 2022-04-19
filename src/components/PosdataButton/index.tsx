@@ -9,6 +9,7 @@ interface Props {
   containerStyles?: any;
   textStyles?: any;
   gradient?: boolean;
+  disabled?: boolean;
 }
 
 const PosdataButton = (props: Props) => {

@@ -7,6 +7,7 @@ export type AuthContextType = {
   id: number;
   email: string;
   jti: string;
+  userInfo: any;
 } | null;
 
 export interface SettingsContextType {

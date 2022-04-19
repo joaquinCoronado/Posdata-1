@@ -2,12 +2,13 @@ import React, {createContext, useState, useEffect, useContext} from 'react';
 import propTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {Api, authConfig} from '../api/index';
+import {Api, authConfig, getUserInfo} from '../api/index';
 import {AuthContextType} from '../types';
 import {LoginResponse} from '../types/auth';
 
 type AuthContextProps = {
   user: AuthContextType;
+  setUser: () => Dispatch<SetStateAction<AuthContextType>>;
   login: (email: string, password: string) => Promise<Boolean>;
   logout: () => void;
   signup: (body: {
@@ -50,10 +51,10 @@ const AuthProvider = ({children}: any) => {
           authConfig,
         );
         const {access_token, refresh_token, name, id, email, jti} = ok.data;
-        setUser({access_token, refresh_token, name, id, email, jti});
-        Api.defaults.headers.common.Authorization =
-          'Bearer ' +
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJqb2FxdWluQHBvc2RhdGEuaW8iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwibmFtZSI6IkpvYXF1aW4gQ29yb25hZG8iLCJpZCI6MiwiZXhwIjoxNzI3MjIyNTg1LCJqdGkiOiIxZWU3N2E0OC01ODEzLTQwOWYtYjdhOS1iZWU3NzI1M2E3YTkiLCJlbWFpbCI6ImpvYXF1aW5AcG9zZGF0YS5pbyIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIn0.H9_ALfpvA0LYFYKbzuwdrBGSh999z7st-5_oH9SC_v0';
+        Api.defaults.headers.common.Authorization = 'Bearer ' + access_token;
+        AsyncStorage.setItem('token', access_token);
+        const userInfo = await getUserInfo(id);
+        setUser({access_token, refresh_token, name, id, email, jti, userInfo});
         resolve(true);
       } catch (error) {
         reject(new Error('Eror, please try again later'));
@@ -79,7 +80,7 @@ const AuthProvider = ({children}: any) => {
   const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{user, login, logout, signup}}>
+    <AuthContext.Provider value={{user, setUser, login, logout, signup}}>
       {children}
     </AuthContext.Provider>
   );
