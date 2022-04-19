@@ -16,6 +16,7 @@ const authConfig = {
   },
 };
 
+//IMAGES
 const uploadImage = async (photo: any) => {
   const formData = new FormData();
   formData.append('file', {
@@ -48,6 +49,7 @@ const deleteImage = async (imageURL: string) => {
   return res;
 };
 
+//PLACES
 const createNewPlace = async (place: any) => {
   let token = await AsyncStorage.getItem('token');
   const response = await Api.post('/place/v1/place', place, {
@@ -57,6 +59,18 @@ const createNewPlace = async (place: any) => {
     },
   });
   return response;
+};
+
+const getPlacesByOwnerId = async (userId: number) => {
+  let token = await AsyncStorage.getItem('token');
+  let url = '/place/v1/place/list?ownerId=' + userId;
+  const response = await Api.get(url, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
 };
 
 const searchPlaces = async (search: string) => {
@@ -71,21 +85,10 @@ const searchPlaces = async (search: string) => {
   return response.data;
 };
 
+//USERS
 const getUserInfo = async (userId: number) => {
   let token = await AsyncStorage.getItem('token');
   let url = 'user/v1/user/query/' + userId;
-  const response = await Api.get(url, {
-    headers: {
-      Accept: 'application/json',
-      Authorization: 'Bearer ' + token,
-    },
-  });
-  return response.data;
-};
-
-const getPlacesByOwnerId = async (userId: number) => {
-  let token = await AsyncStorage.getItem('token');
-  let url = '/place/v1/place/list?ownerId=' + userId;
   const response = await Api.get(url, {
     headers: {
       Accept: 'application/json',
@@ -108,6 +111,53 @@ const updateInfoUser = async (user: any) => {
   return response.data;
 };
 
+//EXCHANGEST
+interface Exchange {
+  senderId: number;
+  receiverId: number;
+  textNote: string;
+  requestedPlaceId: string;
+  releaseDate: Date;
+}
+
+const createNewExchange = async (exchange: Exchange) => {
+  let token = await AsyncStorage.getItem('token');
+  const body = {...exchange, releaseDate: exchange.releaseDate.toISOString()};
+  let url = '/exchange/v1/exchange';
+  console.log('body', body);
+  const response = await Api.post(url, body, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
+const getPenddingToAcceptExchanges = async () => {
+  let token = await AsyncStorage.getItem('token');
+  let url = '/exchange/v1/exchange/pending';
+  const response = await Api.get(url, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
+const getActiveExchanges = async () => {
+  let token = await AsyncStorage.getItem('token');
+  let url = '/exchange/v1/exchange';
+  const response = await Api.get(url, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
 export {
   Api,
   authConfig,
@@ -118,4 +168,7 @@ export {
   getPlacesByOwnerId,
   updateInfoUser,
   deleteImage,
+  createNewExchange,
+  getPenddingToAcceptExchanges,
+  getActiveExchanges,
 };
