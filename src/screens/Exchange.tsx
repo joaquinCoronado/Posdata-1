@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   SafeAreaView,
@@ -7,266 +7,102 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
-  Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import {useSettings} from '../context/settings';
 import PosdataButton from '../components/PosdataButton';
 import GradientText from '../components/GradientText';
-
-const exchangesToAccept = [
-  {
-    id: 7,
-    releaseDate: '2022-01-16',
-    senderId: 1,
-    receiverId: 2,
-    receiverUser: {
-      name: 'Joaquin Coronado',
-    },
-    senderUser: {
-      name: 'Jessy',
-    },
-    sender: {
-      id: 6,
-      placeId: 'xxxxxx',
-      place: {
-        id: '61cd66b031d3397e0e27ee83',
-        picture:
-          'https://100cosas.guadalajara.gob.mx/storage/images/gallery/minerva-3.jpg',
-        name: 'la minerva',
-        country: 'mexico',
-        city: 'guadalajara',
-        ownerId: 2,
-        createdAt: '2021-12-30',
-      },
-      textNote: 'xxxxxxxxxxxxxx-xxxxxxxxxxxx-xxxxxxxx',
-      itemStatus: 'WAITING_NOTE',
-      ownerId: 1,
-    },
-    receiver: {
-      id: 9,
-      placeId: 'xxxxxx',
-      pictureNote:
-        'https://res.cloudinary.com/posdata/image/upload/v1644387732/posdata/1644387731359-Screenshot at May 10 17-24-10.png',
-      textNote: 'texto de la nota asignada por la aceptacion del intercambio',
-      itemStatus: 'ACCEPTED',
-      ownerId: 2,
-    },
-    requestStatus: 'ACCEPTED',
-    createdAt: '2022-01-16T22:44:14Z',
-    updatedAt: '2022-01-18T19:40:23Z',
-  },
-];
-
-const exchangesWaitingResponse = [
-  {
-    id: 7,
-    releaseDate: '2022-01-16',
-    senderId: 1,
-    receiverId: 2,
-    receiverUser: {
-      name: 'Joaquin Coronado',
-    },
-    senderUser: {
-      name: 'Nathalia',
-    },
-    sender: {
-      id: 6,
-      placeId: 'xxxxxx',
-      place: {
-        id: '61cd66b031d3397e0e27ee83',
-        picture:
-          'https://media.hrs.com/media/image/de/01/d4/Riu_Plaza_Guadalajara_Hotel-Guadalajara-Aussenansicht-2-578890.jpg',
-        name: 'riu',
-        country: 'mexico',
-        city: 'guadalajara',
-        ownerId: 2,
-        createdAt: '2021-12-30',
-      },
-      textNote: 'xxxxxxxxxxxxxx-xxxxxxxxxxxx-xxxxxxxx',
-      itemStatus: 'WAITING_NOTE',
-      ownerId: 1,
-    },
-    receiver: {
-      id: 9,
-      placeId: 'xxxxxx',
-      pictureNote:
-        'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-      textNote: 'texto de la nota asignada por la aceptacion del intercambio',
-      itemStatus: 'ACCEPTED',
-      ownerId: 2,
-    },
-    requestStatus: 'ACCEPTED',
-    createdAt: '2022-01-16T22:44:14Z',
-    updatedAt: '2022-01-18T19:40:23Z',
-  },
-  {
-    id: 8,
-    releaseDate: '2022-01-16',
-    senderId: 1,
-    receiverId: 2,
-    receiverUser: {
-      name: 'Joaquin Coronado',
-    },
-    senderUser: {
-      name: 'Jessy',
-    },
-    sender: {
-      id: 6,
-      placeId: 'xxxxxx',
-      place: {
-        id: '61cd66b031d3397e0e27ee83',
-        picture:
-          'https://images.squarespace-cdn.com/content/v1/58b2f9802e69cf75a41179db/1524601476663-WDL26GE6XUYV7QDRHECU/Tlaquepaque%2C+Mexico',
-        name: 'tlaquepaque',
-        country: 'mexico',
-        city: 'guadalajara',
-        ownerId: 2,
-        createdAt: '2021-12-30',
-      },
-      textNote: 'xxxxxxxxxxxxxx-xxxxxxxxxxxx-xxxxxxxx',
-      itemStatus: 'WAITING_NOTE',
-      ownerId: 1,
-    },
-    receiver: {
-      id: 9,
-      placeId: 'xxxxxx',
-      pictureNote:
-        'https://res.cloudinary.com/posdata/image/upload/v1644387732/posdata/1644387731359-Screenshot at May 10 17-24-10.png',
-      textNote: 'texto de la nota asignada por la aceptacion del intercambio',
-      itemStatus: 'ACCEPTED',
-      ownerId: 2,
-    },
-    requestStatus: 'ACCEPTED',
-    createdAt: '2022-01-16T22:44:14Z',
-    updatedAt: '2022-01-18T19:40:23Z',
-  },
-  {
-    id: 9,
-    releaseDate: '2022-01-16',
-    senderId: 1,
-    receiverId: 2,
-    receiverUser: {
-      name: 'Joaquin Coronado',
-    },
-    senderUser: {
-      name: 'Monserrath',
-    },
-    sender: {
-      id: 6,
-      placeId: 'xxxxxx',
-      place: {
-        id: '61cd66b031d3397e0e27ee83',
-        picture:
-          'https://cdn1.matadornetwork.com/blogs/2/2018/03/chichen-itza-portada.jpg',
-        name: 'Chichén Itzá',
-        country: 'mexico',
-        city: 'guadalajara',
-        ownerId: 2,
-        createdAt: '2021-12-30',
-      },
-      textNote: 'xxxxxxxxxxxxxx-xxxxxxxxxxxx-xxxxxxxx',
-      itemStatus: 'WAITING_NOTE',
-      ownerId: 1,
-    },
-    receiver: {
-      id: 9,
-      placeId: 'xxxxxx',
-      pictureNote:
-        'https://res.cloudinary.com/posdata/image/upload/v1644387732/posdata/1644387731359-Screenshot at May 10 17-24-10.png',
-      textNote: 'texto de la nota asignada por la aceptacion del intercambio',
-      itemStatus: 'ACCEPTED',
-      ownerId: 2,
-    },
-    requestStatus: 'ACCEPTED',
-    createdAt: '2022-01-16T22:44:14Z',
-    updatedAt: '2022-01-18T19:40:23Z',
-  },
-];
-
-const ExchangeRow = ({exchange, onPress}) => {
-  const {sender, senderUser} = exchange;
-  let {theme} = useSettings();
-  let {text} = theme.colors;
-  return (
-    <TouchableOpacity style={styles.rowContainer} onPress={onPress}>
-      <Image
-        source={{uri: sender?.place?.picture}}
-        resizeMode="cover"
-        style={styles.image}
-      />
-      <View style={styles.rowDataContainer}>
-        <Text style={[styles.rowDataUserName, {color: text}]}>
-          {senderUser.name}
-        </Text>
-        <View style={styles.requestNameContainer}>
-          <Text style={{color: text}}>Request to</Text>
-          <GradientText style={styles.rowDataPlaceName}>
-            {sender?.place?.name}
-          </GradientText>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-const ActiveExchamgeList = () => {
-  const {theme} = useSettings();
-  let {text} = theme.colors;
-  const navigation = useNavigation();
-  return (
-    <>
-      <View style={styles.listContainer}>
-        <Text style={[styles.titleTwo, {color: text}]}>PENDIND TO ACCEPT</Text>
-        {exchangesToAccept.map(exchange => (
-          <ExchangeRow
-            exchange={exchange}
-            onPress={() => navigation.navigate('Chat')}
-          />
-        ))}
-      </View>
-      <View style={styles.listContainer}>
-        <Text style={[styles.titleTwo, {color: text}]}>WAITING RESPONSE</Text>
-        {exchangesWaitingResponse.map(exchange => (
-          <ExchangeRow
-            exchange={exchange}
-            onPress={() => navigation.navigate('Chat')}
-          />
-        ))}
-      </View>
-    </>
-  );
-};
-
-const CompledExchamgeList = () => {
-  const {theme} = useSettings();
-  let {text} = theme.colors;
-  const navigation = useNavigation();
-  return (
-    <View style={styles.listContainer}>
-      <Text style={[styles.titleTwo, {color: text}]}>ALL COMPLETED</Text>
-      {exchangesWaitingResponse.map(exchange => (
-        <ExchangeRow
-          key={exchange.id}
-          exchange={exchange}
-          onPress={() => navigation.navigate('Chat')}
-        />
-      ))}
-    </View>
-  );
-};
+import Image from 'react-native-fast-image';
+import {getPenddingToAcceptExchanges, getActiveExchanges} from '../api';
 
 const Exchange = () => {
-  let [isLoading, setLoading] = useState(false);
-  let [showActiveView, setShowActiveView] = useState(true);
+  const [isLoading, setLoading] = useState(false);
+  const [showActiveView, setShowActiveView] = useState(true);
+  const [exchanges, setExchanges] = useState({
+    exchangesPenddingToAccept: [],
+    exchangesActives: [],
+    exchangesCompleted: [],
+  });
+  const {exchangesPenddingToAccept, exchangesActives, exchangesCompleted} =
+    exchanges;
+
   const {theme} = useSettings();
   let {text} = theme.colors;
+
+  useEffect(() => {
+    getExchanges();
+  }, []);
+
+  const getExchanges = async () => {
+    const penddingExchangesFromApi = await getPenddingToAcceptExchanges();
+    const exchangesActivesFromApi = await getActiveExchanges();
+    setExchanges(prev => ({
+      ...prev,
+      exchangesPenddingToAccept: penddingExchangesFromApi,
+      exchangesActives: exchangesActivesFromApi,
+    }));
+  };
+
+  const ExchangeRow = ({exchange}: any) => {
+    const {sender, senderUser} = exchange;
+
+    return (
+      <TouchableOpacity style={styles.rowContainer}>
+        <Image
+          source={{uri: sender?.place?.picture}}
+          resizeMode="cover"
+          style={styles.image}
+        />
+        <View style={styles.rowDataContainer}>
+          <Text style={[styles.rowDataUserName, {color: text}]}>
+            {senderUser?.name}
+          </Text>
+          <View style={styles.requestNameContainer}>
+            <Text style={{color: text}}>Request to</Text>
+            <GradientText style={styles.rowDataPlaceName}>
+              {sender?.place?.name}
+            </GradientText>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const ActiveExchamgeList = () => {
+    return (
+      <>
+        <View style={styles.listContainer}>
+          <Text style={[styles.titleTwo, {color: text}]}>
+            PENDIND TO ACCEPT
+          </Text>
+          {exchangesPenddingToAccept.map(exchange => (
+            <ExchangeRow exchange={exchange} />
+          ))}
+        </View>
+        <View style={styles.listContainer}>
+          <Text style={[styles.titleTwo, {color: text}]}>WAITING RESPONSE</Text>
+          {exchangesActives.map(exchange => (
+            <ExchangeRow exchange={exchange} />
+          ))}
+        </View>
+      </>
+    );
+  };
+
+  const CompledExchamgeList = () => {
+    return (
+      <View style={styles.listContainer}>
+        <Text style={[styles.titleTwo, {color: text}]}>ALL COMPLETED</Text>
+        {exchangesCompleted.map(exchange => (
+          <ExchangeRow key={exchange.id} exchange={exchange} />
+        ))}
+      </View>
+    );
+  };
 
   const onRefresh = () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+    getExchanges();
+    setLoading(false);
   };
 
   return (

@@ -1,9 +1,13 @@
 import React, {useState} from 'react';
 import {Text, View, StyleSheet, SafeAreaView, TextInput} from 'react-native';
+import DatePicker from 'react-native-date-picker';
 import Image from 'react-native-fast-image';
 import PosdataButton from '../../components/PosdataButton';
 import GradientText from '../../components/GradientText';
 import {useSettings} from '../../context/settings';
+import {createNewExchange} from '../../api';
+import {useAuth} from '../../context/auth';
+import LoadingModal from '../../components/LoadingModal';
 
 interface Props {
   place: any;
@@ -12,17 +16,53 @@ interface Props {
 }
 
 const RequestExchangeForm = (props: Props) => {
-  let [deliveriDate, setDeliveriDate] = useState('');
+  let [deliveriDate, setDeliveriDate] = useState(new Date());
   let [textNote, setTextNote] = useState('');
+  let [isLoading, setLoading] = useState(false);
+  let [isDeliveryDatePickerActive, setDeliveryDatePickerActive] =
+    useState(false);
+
   let {theme} = useSettings();
   let {dividerColor} = theme;
   let {text} = theme.colors;
+
+  const {user} = useAuth();
   const {route, navigation} = props;
   const {params: place} = route;
+
+  const toLocalDate = (date: Date) => {
+    let formatedDate = date.toLocaleString('es-MX', {
+      timeZone: 'America/Mexico_City',
+    });
+    let result = formatedDate.split(' ');
+    return result[0];
+  };
+
+  const handleSendRequest = async () => {
+    const exchange = {
+      senderId: user.id,
+      receiverId: place.ownerId,
+      textNote: textNote,
+      requestedPlaceId: place.id,
+      releaseDate: deliveriDate,
+    };
+
+    console.log('exchange', exchange);
+    try {
+      setLoading(true);
+      await createNewExchange(exchange);
+      navigation.navigate('SuccesExchangeRequest', {});
+    } catch (e) {
+      console.log(e);
+    }
+
+    setLoading(false);
+  };
 
   console.log('navigation', navigation);
   return (
     <SafeAreaView style={styles.container}>
+      {/* HEADER */}
       <View style={styles.headerContainer}>
         <Image
           style={styles.image}
@@ -36,14 +76,25 @@ const RequestExchangeForm = (props: Props) => {
           </Text>
         </View>
       </View>
+      {/* FORM */}
       <View style={styles.formContainer}>
         <Text style={[styles.labelTextForImput, {color: text}]}>
           DELIVERI DATE
         </Text>
-        <TextInput
-          style={[styles.input, {borderColor: dividerColor, color: text}]}
-          onChangeText={setDeliveriDate}
-          value={deliveriDate}
+        <PosdataButton
+          containerStyles={[styles.input, {borderColor: text, color: text}]}
+          title={toLocalDate(deliveriDate)}
+          onPress={() => setDeliveryDatePickerActive(prev => !prev)}
+        />
+        <DatePicker
+          modal
+          mode="date"
+          open={isDeliveryDatePickerActive}
+          date={deliveriDate}
+          onConfirm={setDeliveriDate}
+          onCancel={() => {
+            setDeliveryDatePickerActive(false);
+          }}
         />
         <Text style={[styles.labelTextForImput, {color: text}]}>TEXT NOTE</Text>
         <TextInput
@@ -57,13 +108,12 @@ const RequestExchangeForm = (props: Props) => {
           value={textNote}
         />
       </View>
+      {/* BUTTONS */}
       <View style={styles.buttonsContainer}>
         <PosdataButton
           width="48%"
           title="SEND REQUEST"
-          onPress={() => {
-            navigation.navigate('SuccesExchangeRequest', {});
-          }}
+          onPress={handleSendRequest}
           gradient
         />
         <PosdataButton
@@ -74,6 +124,7 @@ const RequestExchangeForm = (props: Props) => {
           }}
         />
       </View>
+      <LoadingModal visible={isLoading} />
     </SafeAreaView>
   );
 };
@@ -118,11 +169,12 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   input: {
-    height: 40,
+    height: 45,
     borderWidth: 1.5,
     padding: 10,
-    paddingTop: 15,
     marginBottom: 25,
+    marginTop: 0,
+    borderRadius: 0,
   },
   textArea: {
     height: 150,
