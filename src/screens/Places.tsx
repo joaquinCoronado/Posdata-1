@@ -6,11 +6,13 @@ import {
   FlatList,
   SafeAreaView,
   TouchableOpacity,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
-import PosdataButton from '../components/PosdataButton';
+
 import {RootStackParams} from '../navigation/places';
 import {searchPlaces} from '../api';
 
@@ -18,31 +20,19 @@ interface renderItemProps {
   item: any;
 }
 
-const listFooter = (onPress: any) => (
-  <View style={styles.listFooterContainer}>
-    <PosdataButton
-      onPress={() => {
-        onPress();
-      }}
-      title="SEE MORE"
-    />
-  </View>
-);
-
 interface Props extends StackScreenProps<RootStackParams, 'Places'> {}
 
 const Places = ({navigation}: Props) => {
-  let [isLoading, setLoading] = useState(false);
+  let [isLoading, setLoading] = useState(true);
   let [places, setPlaces] = useState([]);
   const {theme} = useSettings();
 
   useEffect(() => {
-    getPlaces();
-  }, []);
+    isLoading ? getPlaces() : null;
+  }, [isLoading]);
 
   async function getPlaces() {
     try {
-      setLoading(true);
       let placesFromApi = await searchPlaces('');
       setPlaces(placesFromApi);
     } catch (e) {
@@ -63,7 +53,8 @@ const Places = ({navigation}: Props) => {
             showsVerticalScrollIndicator={false}
             refreshing={isLoading}
             onRefresh={() => {
-              getPlaces();
+              setPlaces([]);
+              setLoading(true);
             }}
             numColumns={2}
             data={places}
@@ -84,8 +75,28 @@ const Places = ({navigation}: Props) => {
                 </TouchableOpacity>
               );
             }}
-            ListFooterComponent={listFooter(getPlaces)}
+            ListFooterComponent={() =>
+              isLoading ? (
+                <View style={styles.listFooterContainer}>
+                  <ActivityIndicator size="large" style={styles.marginTop20} />
+                </View>
+              ) : (
+                <View style={styles.listFooterContainer} />
+              )
+            }
             keyExtractor={item => item.id}
+            refreshControl={
+              <RefreshControl
+                title={'Loading..'}
+                tintColor="rgba('0,0,0,0.5')"
+                refreshing={isLoading}
+                onRefresh={() => {
+                  setPlaces([]);
+                  setLoading(true);
+                }}
+              />
+            }
+            onEndReached={() => setLoading(true)}
           />
         </SafeAreaView>
       </View>
@@ -123,7 +134,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  listFooterContainer: {marginBottom: 255},
+  listFooterContainer: {
+    height: 280,
+    // alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  marginTop20: {marginTop: 20},
 });
 
 export default Places;
