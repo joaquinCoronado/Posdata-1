@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {useSettings} from '../context/settings';
 import PosdataButton from '../components/PosdataButton';
 import GradientText from '../components/GradientText';
@@ -183,13 +184,12 @@ const exchangesWaitingResponse = [
   },
 ];
 
-const ExchangeRow = ({exchange}) => {
+const ExchangeRow = ({exchange, onPress}) => {
   const {sender, senderUser} = exchange;
   let {theme} = useSettings();
   let {text} = theme.colors;
-
   return (
-    <TouchableOpacity style={styles.rowContainer}>
+    <TouchableOpacity style={styles.rowContainer} onPress={onPress}>
       <Image
         source={{uri: sender?.place?.picture}}
         resizeMode="cover"
@@ -213,18 +213,25 @@ const ExchangeRow = ({exchange}) => {
 const ActiveExchamgeList = () => {
   const {theme} = useSettings();
   let {text} = theme.colors;
+  const navigation = useNavigation();
   return (
     <>
       <View style={styles.listContainer}>
         <Text style={[styles.titleTwo, {color: text}]}>PENDIND TO ACCEPT</Text>
         {exchangesToAccept.map(exchange => (
-          <ExchangeRow exchange={exchange} />
+          <ExchangeRow
+            exchange={exchange}
+            onPress={() => navigation.navigate('Chat')}
+          />
         ))}
       </View>
       <View style={styles.listContainer}>
         <Text style={[styles.titleTwo, {color: text}]}>WAITING RESPONSE</Text>
         {exchangesWaitingResponse.map(exchange => (
-          <ExchangeRow exchange={exchange} />
+          <ExchangeRow
+            exchange={exchange}
+            onPress={() => navigation.navigate('Chat')}
+          />
         ))}
       </View>
     </>
@@ -234,11 +241,16 @@ const ActiveExchamgeList = () => {
 const CompledExchamgeList = () => {
   const {theme} = useSettings();
   let {text} = theme.colors;
+  const navigation = useNavigation();
   return (
     <View style={styles.listContainer}>
       <Text style={[styles.titleTwo, {color: text}]}>ALL COMPLETED</Text>
       {exchangesWaitingResponse.map(exchange => (
-        <ExchangeRow key={exchange.id} exchange={exchange} />
+        <ExchangeRow
+          key={exchange.id}
+          exchange={exchange}
+          onPress={() => navigation.navigate('Chat')}
+        />
       ))}
     </View>
   );

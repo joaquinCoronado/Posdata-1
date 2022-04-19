@@ -72,7 +72,13 @@ const Navigation = () => {
             component={SuccesExchangeRequest}
             name="SuccesExchangeRequest"
           />
-          <Stack.Screen component={Chat} name="Chat" />
+          <Stack.Screen
+            component={Chat}
+            name="Chat"
+            options={{
+              headerShown: true,
+            }}
+          />
         </>
       ) : (
         <>
