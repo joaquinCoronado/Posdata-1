@@ -253,8 +253,12 @@ const NewPlace = ({navigation}: Props) => {
       return (
         <View style={[styles.container]}>
           <View style={styles.congratTextContainer}>
-            <Text style={styles.title}>SAVED PLACE</Text>
-            <Text style={styles.subtitle}>CONGRATULATIONS !!</Text>
+            <Text style={[styles.title, {color: theme.colors.text}]}>
+              SAVED PLACE
+            </Text>
+            <Text style={[styles.subtitle, {color: theme.colors.text}]}>
+              CONGRATULATIONS !!
+            </Text>
           </View>
           <View style={styles.congratButtonContainer}>
             <PosdataButton

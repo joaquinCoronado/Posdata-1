@@ -48,7 +48,7 @@ const RequestExchangeForm = (props: Props) => {
 
   const handleSendRequest = async () => {
     const exchange = {
-      senderId: user.id,
+      senderId: user?.id,
       receiverId: place.ownerId,
       textNote: textNote,
       requestedPlaceId: place.id,

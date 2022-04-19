@@ -113,7 +113,7 @@ const updateInfoUser = async (user: any) => {
 
 //EXCHANGEST
 interface Exchange {
-  senderId: number;
+  senderId: number | undefined;
   receiverId: number;
   textNote: string;
   requestedPlaceId: string;
