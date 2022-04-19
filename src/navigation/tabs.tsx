@@ -129,7 +129,7 @@ const Tabs = ({navigation}: Props) => {
                 <TouchableOpacity
                   onPress={() => navigation.navigate('NewPlace')}
                   style={styles.touchableIcon}>
-                  <Icon color={'white'} size={30} name={'add-outline'} />
+                  <Icon color={'white'} size={28} name={'add-outline'} />
                 </TouchableOpacity>
               </LinearGradient>
             ),
@@ -203,8 +203,8 @@ const styles = StyleSheet.create({
   },
   mainIconContainer: {
     width: 55,
-    height: 55,
-    borderRadius: 50,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 30,
