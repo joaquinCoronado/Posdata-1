@@ -1,17 +1,23 @@
-import React, {useState} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  StatusBar,
+  TouchableOpacity,
+} from 'react-native';
 import Image from 'react-native-fast-image';
 import OptionsButton from '../components/OptionsButton';
 import PopupMenu from '../components/PopupMenu';
 import PosdataButton from '../components/PosdataButton';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import {useAuth} from '../context/auth';
 import {useSettings} from '../context/settings';
-
-interface Props {
+import {StackScreenProps} from '@react-navigation/stack';
+import {RootStackParams} from '../navigation';
+interface Props extends StackScreenProps<RootStackParams, 'Place'> {
   place: any;
   route: any;
-  navigation: any;
 }
 
 const PlaceDetail = (props: Props) => {
@@ -22,7 +28,16 @@ const PlaceDetail = (props: Props) => {
   const {theme} = useSettings();
   const {user} = useAuth();
 
-  console.log('place', place);
+  useEffect(() => {
+    StatusBar.setBarStyle('light-content', true);
+    return () => {
+      StatusBar.setBarStyle('dark-content', true);
+    };
+  }, []);
+
+  const handleBack = () => {
+    navigation.pop();
+  };
 
   return (
     <View style={styles.container}>
@@ -31,6 +46,11 @@ const PlaceDetail = (props: Props) => {
         source={{uri: place.picture}}
         resizeMode="cover"
       />
+      {/* BACK */}
+      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+        <Icon color={'white'} size={34} name="arrow-back-sharp" />
+      </TouchableOpacity>
+
       <View
         style={[
           styles.menuContainer,
@@ -108,6 +128,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textTransform: 'capitalize',
     color: 'black',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 10,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 20,
+    padding: 5,
   },
 });
 
