@@ -39,6 +39,7 @@ const Exchange = (props: Props) => {
   }, []);
 
   const getExchanges = async () => {
+    setLoading(true);
     const penddingExchangesFromApi = await getPenddingToAcceptExchanges();
     const exchangesActivesFromApi = await getActiveExchanges();
     setExchanges(prev => ({
@@ -46,6 +47,7 @@ const Exchange = (props: Props) => {
       exchangesPenddingToAccept: penddingExchangesFromApi,
       exchangesActives: exchangesActivesFromApi,
     }));
+    setLoading(false);
   };
 
   const ExchangeRow = ({exchange, onPress}: any) => {
@@ -68,7 +70,7 @@ const Exchange = (props: Props) => {
           </Text>
           <View style={styles.requestNameContainer}>
             <Text style={{color: text}}>Request to</Text>
-            <GradientText style={styles.rowDataPlaceName}>
+            <GradientText numberOfLines={1} style={[styles.rowDataPlaceName]}>
               {sender?.place?.name}
             </GradientText>
           </View>
@@ -80,23 +82,31 @@ const Exchange = (props: Props) => {
   const ActiveExchamgeList = () => {
     return (
       <>
-        <View style={styles.listContainer}>
-          <Text style={[styles.titleTwo, {color: text}]}>
-            PENDIND TO ACCEPT
-          </Text>
-          {exchangesPenddingToAccept.map(exchange => (
-            <ExchangeRow
-              onPress={() => {
-                navigation.navigate('ResponseExchangeRequest', exchange);
-              }}
-              exchange={exchange}
-            />
-          ))}
-        </View>
+        {exchangesPenddingToAccept.length > 0 ? (
+          <View style={styles.listContainer}>
+            <Text style={[styles.titleTwo, {color: text}]}>
+              PENDIND TO ACCEPT
+            </Text>
+            {exchangesPenddingToAccept.map(exchange => (
+              <ExchangeRow
+                key={exchange.id}
+                onPress={() => {
+                  navigation.navigate('ResponseExchangeRequest', exchange);
+                }}
+                exchange={exchange}
+              />
+            ))}
+          </View>
+        ) : null}
+
         <View style={styles.listContainer}>
           <Text style={[styles.titleTwo, {color: text}]}>WAITING RESPONSE</Text>
           {exchangesActives.map(exchange => (
-            <ExchangeRow onPress={() => {}} exchange={exchange} />
+            <ExchangeRow
+              key={exchange.id}
+              onPress={() => {}}
+              exchange={exchange}
+            />
           ))}
         </View>
       </>
@@ -115,9 +125,7 @@ const Exchange = (props: Props) => {
   };
 
   const onRefresh = () => {
-    setLoading(true);
     getExchanges();
-    setLoading(false);
   };
 
   return (
@@ -225,12 +233,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
     textTransform: 'capitalize',
+    width: 200,
   },
   listContainer: {
     marginTop: 20,
   },
   requestNameContainer: {
     flexDirection: 'row',
+    width: '100%',
   },
 });
 
