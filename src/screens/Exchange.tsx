@@ -14,7 +14,11 @@ import GradientText from '../components/GradientText';
 import Image from 'react-native-fast-image';
 import {getPenddingToAcceptExchanges, getActiveExchanges} from '../api';
 
-const Exchange = () => {
+interface Props {
+  navigation: any;
+}
+
+const Exchange = (props: Props) => {
   const [isLoading, setLoading] = useState(false);
   const [showActiveView, setShowActiveView] = useState(true);
   const [exchanges, setExchanges] = useState({
@@ -22,6 +26,8 @@ const Exchange = () => {
     exchangesActives: [],
     exchangesCompleted: [],
   });
+
+  const {navigation} = props;
   const {exchangesPenddingToAccept, exchangesActives, exchangesCompleted} =
     exchanges;
 
@@ -42,11 +48,15 @@ const Exchange = () => {
     }));
   };
 
-  const ExchangeRow = ({exchange}: any) => {
+  const ExchangeRow = ({exchange, onPress}: any) => {
     const {sender, senderUser} = exchange;
 
     return (
-      <TouchableOpacity style={styles.rowContainer}>
+      <TouchableOpacity
+        onPress={() => {
+          onPress(exchange);
+        }}
+        style={styles.rowContainer}>
         <Image
           source={{uri: sender?.place?.picture}}
           resizeMode="cover"
@@ -75,13 +85,18 @@ const Exchange = () => {
             PENDIND TO ACCEPT
           </Text>
           {exchangesPenddingToAccept.map(exchange => (
-            <ExchangeRow exchange={exchange} />
+            <ExchangeRow
+              onPress={() => {
+                navigation.navigate('ResponseExchangeRequest', exchange);
+              }}
+              exchange={exchange}
+            />
           ))}
         </View>
         <View style={styles.listContainer}>
           <Text style={[styles.titleTwo, {color: text}]}>WAITING RESPONSE</Text>
           {exchangesActives.map(exchange => (
-            <ExchangeRow exchange={exchange} />
+            <ExchangeRow onPress={() => {}} exchange={exchange} />
           ))}
         </View>
       </>

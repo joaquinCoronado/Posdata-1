@@ -175,12 +175,21 @@ const NewPlace = ({navigation}: Props) => {
               textStyles={styles.blackButtonText}
               onPress={getPhotos}
             />
-            {tempPhotos.length > 0 ? (
-              <PosdataButton
-                title="NEXT"
-                onPress={() => setStep(s => `${Number(s) + 1}`)}
-              />
-            ) : null}
+            <PosdataButton
+              title="NEXT"
+              onPress={() => {
+                if (tempPhotos.length <= 0) {
+                  Alert.alert('Ups...', 'Pick an image to countinue', [
+                    {
+                      text: 'ok',
+                      onPress: () => {},
+                    },
+                  ]);
+                  return;
+                }
+                setStep(s => `${Number(s) + 1}`);
+              }}
+            />
           </View>
         </View>
       );

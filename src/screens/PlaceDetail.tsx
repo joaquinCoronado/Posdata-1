@@ -16,7 +16,6 @@ import {useSettings} from '../context/settings';
 import {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../navigation';
 interface Props extends StackScreenProps<RootStackParams, 'Place'> {
-  place: any;
   route: any;
 }
 
@@ -24,7 +23,9 @@ const PlaceDetail = (props: Props) => {
   let [isModalOpen, setModalOpen] = useState(false);
 
   const {route, navigation} = props;
-  const {params: place} = route;
+  const {params} = route;
+  const {place, exchange, options} = params;
+
   const {theme} = useSettings();
   const {user} = useAuth();
 
@@ -71,11 +72,22 @@ const PlaceDetail = (props: Props) => {
         />
       </View>
       <PopupMenu visible={isModalOpen}>
-        {place.ownerId !== user?.id ? (
+        {options.mode === 'request' && place.ownerId !== user?.id ? (
           <PosdataButton
             title="REQUEST FOR EXCHANGE"
             onPress={() => {
               navigation.navigate('RequestExchangeForm', {...place});
+              setModalOpen(false);
+            }}
+          />
+        ) : null}
+
+        {options.mode === 'response' ? (
+          <PosdataButton
+            gradient
+            title="SELECT PLACE"
+            onPress={() => {
+              navigation.navigate('ResponseExchangeForm', {place, exchange});
               setModalOpen(false);
             }}
           />

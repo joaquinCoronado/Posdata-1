@@ -8,57 +8,40 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import DatePicker from 'react-native-date-picker';
 import Image from 'react-native-fast-image';
 import PosdataButton from '../../components/PosdataButton';
 import GradientText from '../../components/GradientText';
 import {useSettings} from '../../context/settings';
-import {createNewExchange} from '../../api';
-import {useAuth} from '../../context/auth';
+import {handleExchangeRequest} from '../../api';
 import LoadingModal from '../../components/LoadingModal';
 
 interface Props {
-  place: any;
   route: any;
   navigation: any;
 }
 
-const RequestExchangeForm = (props: Props) => {
-  let [deliveriDate, setDeliveriDate] = useState(new Date());
+const ResponseExchangeForm = (props: Props) => {
   let [textNote, setTextNote] = useState('');
   let [isLoading, setLoading] = useState(false);
-  let [isDeliveryDatePickerActive, setDeliveryDatePickerActive] =
-    useState(false);
 
   let {theme} = useSettings();
   let {dividerColor} = theme;
   let {text} = theme.colors;
 
-  const {user} = useAuth();
   const {route, navigation} = props;
-  const {params: place} = route;
-
-  const toLocalDate = (date: Date) => {
-    let formatedDate = date.toLocaleString('es-MX', {
-      timeZone: 'America/Mexico_City',
-    });
-    let result = formatedDate.split(' ');
-    return result[0];
-  };
+  const {params} = route;
+  const {place, exchange} = params;
 
   const handleSendRequest = async () => {
-    const exchange = {
-      senderId: user?.id,
-      receiverId: place.ownerId,
-      textNote: textNote,
-      requestedPlaceId: place.id,
-      releaseDate: deliveriDate,
-    };
-
     try {
       setLoading(true);
-      await createNewExchange(exchange);
-      navigation.navigate('SuccesExchangeRequest', {});
+      const body = {
+        placeId: place.id,
+        textNote: textNote,
+        ownerId: place.ownerId,
+      };
+      await handleExchangeRequest(true, exchange?.id, body);
+      navigation.navigate('Exchange', {});
     } catch (e) {
       console.log(e);
     }
@@ -73,36 +56,18 @@ const RequestExchangeForm = (props: Props) => {
         <View style={styles.headerContainer}>
           <Image
             style={styles.image}
-            source={{uri: place.picture}}
+            source={{uri: place?.picture}}
             resizeMode="cover"
           />
           <View style={styles.placeDataContainer}>
-            <GradientText style={styles.placeName}>{place.name}</GradientText>
+            <GradientText style={styles.placeName}>{place?.name}</GradientText>
             <Text style={[styles.placeLocation, {color: text}]}>
-              {place.city + ', ' + place.country}
+              {place?.city + ', ' + place?.country}
             </Text>
           </View>
         </View>
         {/* FORM */}
         <View style={styles.formContainer}>
-          <Text style={[styles.labelTextForImput, {color: text}]}>
-            DELIVERI DATE
-          </Text>
-          <PosdataButton
-            containerStyles={[styles.input, {borderColor: text, color: text}]}
-            title={toLocalDate(deliveriDate)}
-            onPress={() => setDeliveryDatePickerActive(prev => !prev)}
-          />
-          <DatePicker
-            modal
-            mode="date"
-            open={isDeliveryDatePickerActive}
-            date={deliveriDate}
-            onConfirm={setDeliveriDate}
-            onCancel={() => {
-              setDeliveryDatePickerActive(false);
-            }}
-          />
           <Text style={[styles.labelTextForImput, {color: text}]}>
             TEXT NOTE
           </Text>
@@ -121,7 +86,7 @@ const RequestExchangeForm = (props: Props) => {
         <View style={styles.buttonsContainer}>
           <PosdataButton
             width="48%"
-            title="SEND REQUEST"
+            title="ACCEPT EXCHANGE"
             onPress={handleSendRequest}
             gradient
           />
@@ -204,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RequestExchangeForm;
+export default ResponseExchangeForm;

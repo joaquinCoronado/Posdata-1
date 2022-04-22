@@ -113,7 +113,6 @@ const UpdateUserImage = ({navigation}: any) => {
     } catch (e) {
       if (newImage !== '') {
         await deleteImage(newImage);
-        console.log('Image deleted');
       }
       console.log(e);
     }

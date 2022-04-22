@@ -4,7 +4,7 @@ import MaskedView from '@react-native-masked-view/masked-view';
 import LinearGradient from 'react-native-linear-gradient';
 
 interface Props {
-  style: any;
+  style?: any;
   children: any;
 }
 

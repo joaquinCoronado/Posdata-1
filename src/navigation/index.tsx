@@ -16,18 +16,26 @@ import Welcome from '../screens/Welcome';
 import Configuration from '../screens/ProfileScreens/Configuration';
 import UserInformation from '../screens/ProfileScreens/UserInformation';
 import UpdateUserImage from '../screens/ProfileScreens/UpdateUserIamge';
+import ResponseExchangeRequest from '../screens/handleRequestExchange/ResponseExchangeRequest';
+import SenderPlaces from '../screens/handleRequestExchange/SenderPlaces';
+import ResponseExchangeForm from '../screens/handleRequestExchange/ResponseExchangeForm';
 
 export type RootStackParams = {
   Auth: {mode: string};
   Home: undefined;
   Place: {
-    id: string;
-    picture: string;
-    name: string;
-    country: string;
-    city: string;
-    ownerId: number;
-    createdAt: string;
+    place: {
+      id: string;
+      picture: string;
+      name: string;
+      country: string;
+      city: string;
+      ownerId: number;
+      createdAt: string;
+    };
+    options: {
+      mode: 'request' | 'response';
+    };
   };
   RequestExchangeForm: {
     id: string;
@@ -38,6 +46,7 @@ export type RootStackParams = {
     ownerId: number;
     createdAt: string;
   };
+  ResponseExchangeForm: any;
   SuccesExchangeRequest: undefined;
   ResetPassword: undefined;
   Chat: undefined;
@@ -46,6 +55,8 @@ export type RootStackParams = {
   Configuration: undefined;
   UserInformation: undefined;
   UpdateUserImage: undefined;
+  ResponseExchangeRequest: any;
+  SenderPlaces: any;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -93,6 +104,15 @@ const Navigation = () => {
           <Stack.Screen component={Configuration} name="Configuration" />
           <Stack.Screen component={UserInformation} name="UserInformation" />
           <Stack.Screen component={UpdateUserImage} name="UpdateUserImage" />
+          <Stack.Screen
+            component={ResponseExchangeRequest}
+            name="ResponseExchangeRequest"
+          />
+          <Stack.Screen component={SenderPlaces} name="SenderPlaces" />
+          <Stack.Screen
+            component={ResponseExchangeForm}
+            name="ResponseExchangeForm"
+          />
         </>
       ) : (
         <>

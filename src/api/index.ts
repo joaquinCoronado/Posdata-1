@@ -158,6 +158,27 @@ const getActiveExchanges = async () => {
   return response.data;
 };
 
+interface AcceptedExchangeBody {
+  placeId: string;
+  textNote: string;
+  ownerId: number;
+}
+const handleExchangeRequest = async (
+  isAccept: boolean,
+  exchangeId: number,
+  body: AcceptedExchangeBody,
+) => {
+  let token = await AsyncStorage.getItem('token');
+  let url = `/exchange/v1/exchange/handler?isAccepted=${isAccept}&exchangeId=${exchangeId}`;
+  const response = await Api.post(url, body, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
 export {
   Api,
   authConfig,
@@ -171,4 +192,5 @@ export {
   createNewExchange,
   getPenddingToAcceptExchanges,
   getActiveExchanges,
+  handleExchangeRequest,
 };

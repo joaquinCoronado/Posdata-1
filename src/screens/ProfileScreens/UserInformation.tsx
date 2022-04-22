@@ -207,7 +207,6 @@ const UserInformation = ({navigation}: any) => {
               });
             }}
             onCancel={() => {
-              console.log('on cancel');
               setDatePickerActive(false);
             }}
           />
