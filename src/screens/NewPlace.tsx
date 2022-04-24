@@ -175,12 +175,21 @@ const NewPlace = ({navigation}: Props) => {
               textStyles={styles.blackButtonText}
               onPress={getPhotos}
             />
-            {tempPhotos.length > 0 ? (
-              <PosdataButton
-                title="NEXT"
-                onPress={() => setStep(s => `${Number(s) + 1}`)}
-              />
-            ) : null}
+            <PosdataButton
+              title="NEXT"
+              onPress={() => {
+                if (tempPhotos.length <= 0) {
+                  Alert.alert('Ups...', 'Pick an image to countinue', [
+                    {
+                      text: 'ok',
+                      onPress: () => {},
+                    },
+                  ]);
+                  return;
+                }
+                setStep(s => `${Number(s) + 1}`);
+              }}
+            />
           </View>
         </View>
       );
@@ -253,8 +262,12 @@ const NewPlace = ({navigation}: Props) => {
       return (
         <View style={[styles.container]}>
           <View style={styles.congratTextContainer}>
-            <Text style={styles.title}>SAVED PLACE</Text>
-            <Text style={styles.subtitle}>CONGRATULATIONS !!</Text>
+            <Text style={[styles.title, {color: theme.colors.text}]}>
+              SAVED PLACE
+            </Text>
+            <Text style={[styles.subtitle, {color: theme.colors.text}]}>
+              CONGRATULATIONS !!
+            </Text>
           </View>
           <View style={styles.congratButtonContainer}>
             <PosdataButton

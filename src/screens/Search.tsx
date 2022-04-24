@@ -32,7 +32,6 @@ const Search = ({navigation}: Props) => {
     try {
       setLoading(true);
       let placesFromApi = await searchPlaces(searchTest);
-      console.log('placesFromApi', placesFromApi);
       setPlaces(placesFromApi);
     } catch (e) {
       console.log(e);
@@ -64,7 +63,6 @@ const Search = ({navigation}: Props) => {
           onChangeText={setSearchText}
           value={searchTest}
           onEndEditing={() => {
-            console.log('text', searchTest);
             getPlaces();
           }}
         />
@@ -84,7 +82,10 @@ const Search = ({navigation}: Props) => {
                   disabled={isLoading}
                   activeOpacity={0.88}
                   onPress={() => {
-                    navigation.navigate('Place', {...item});
+                    navigation.navigate('Place', {
+                      place: item,
+                      options: {mode: 'request'},
+                    });
                   }}
                   style={styles.itemContainer}>
                   <Image

@@ -64,7 +64,10 @@ const Places = ({navigation}: Props) => {
                 <TouchableOpacity
                   activeOpacity={0.88}
                   onPress={() => {
-                    navigation.navigate('Place', {...item});
+                    navigation.navigate('Place', {
+                      place: item,
+                      options: {mode: 'request'},
+                    });
                   }}
                   style={styles.itemContainer}>
                   <Image
