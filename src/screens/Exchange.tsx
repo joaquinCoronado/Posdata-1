@@ -13,12 +13,12 @@ import PosdataButton from '../components/PosdataButton';
 import GradientText from '../components/GradientText';
 import Image from 'react-native-fast-image';
 import {getPenddingToAcceptExchanges, getActiveExchanges} from '../api';
+import {StackScreenProps} from '@react-navigation/stack';
+import {RootStackParams} from '../navigation';
 
-interface Props {
-  navigation: any;
-}
+interface Props extends StackScreenProps<RootStackParams, 'Home'> {}
 
-const Exchange = (props: Props) => {
+const Exchange = ({navigation}: Props) => {
   const [isLoading, setLoading] = useState(false);
   const [showActiveView, setShowActiveView] = useState(true);
   const [exchanges, setExchanges] = useState({
@@ -27,7 +27,6 @@ const Exchange = (props: Props) => {
     exchangesCompleted: [],
   });
 
-  const {navigation} = props;
   const {exchangesPenddingToAccept, exchangesActives, exchangesCompleted} =
     exchanges;
 
@@ -91,7 +90,7 @@ const Exchange = (props: Props) => {
               <ExchangeRow
                 key={exchange.id}
                 onPress={() => {
-                  navigation.navigate('ResponseExchangeRequest', exchange);
+                  navigation.navigate('Chat', exchange);
                 }}
                 exchange={exchange}
               />
@@ -103,8 +102,10 @@ const Exchange = (props: Props) => {
           <Text style={[styles.titleTwo, {color: text}]}>WAITING RESPONSE</Text>
           {exchangesActives.map(exchange => (
             <ExchangeRow
-              key={exchange.id}
-              onPress={() => {}}
+              key={exchange?.id}
+              onPress={() => {
+                navigation.navigate('Chat', exchange);
+              }}
               exchange={exchange}
             />
           ))}
