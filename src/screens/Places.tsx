@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     justifyContent: 'center',
-  },
+   },
   listFooterContainer: {
     height: 280,
     // alignItems: 'flex-start',
