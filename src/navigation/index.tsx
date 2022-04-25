@@ -27,15 +27,17 @@ export type RootStackParams = {
   Auth: {mode: string};
   Home: undefined;
   Place: {
-    place: {
-      id: string;
-      picture: string;
-      name: string;
-      country: string;
-      city: string;
-      ownerId: number;
-      createdAt: string;
-    };
+    place:
+      | {
+          id: string;
+          picture: string;
+          name: string;
+          country: string;
+          city: string;
+          ownerId: number;
+          createdAt: string;
+        }
+      | any;
     options: {
       mode: 'request' | 'response';
     };
