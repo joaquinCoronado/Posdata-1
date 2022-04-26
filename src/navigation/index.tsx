@@ -1,16 +1,18 @@
 import React from 'react';
-
+import {TouchableOpacity, StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {fade} from '../utils/screenAnimations';
 import {useAuth} from '../context/auth';
+import {useSettings} from '../context//settings';
 import Auth from '../screens/Auth';
 import ResetPassword from '../screens/ResetPassword';
 import Tabs from './tabs';
 import PlaceDetail from '../screens/PlaceDetail';
 import RequestExchangeForm from '../screens/requestExchange/RequestExchangeForm';
 import SuccesExchangeRequest from '../screens/requestExchange/SuccesExchangeRequest';
-import Chat from '../screens/Chat';
+import Chat from '../screens/activeExchanges/Chat';
 import NewPlace from '../screens/NewPlace';
 import Welcome from '../screens/Welcome';
 import Configuration from '../screens/ProfileScreens/Configuration';
@@ -21,20 +23,23 @@ import SenderPlaces from '../screens/handleRequestExchange/SenderPlaces';
 import ResponseExchangeForm from '../screens/handleRequestExchange/ResponseExchangeForm';
 import PlacesOnExchange from '../screens/activeExchanges/PlacesOnExchange';
 import UploadNote from '../screens/activeExchanges/UploadNote';
+import {ExchangeUser} from '../types/chat';
 
 export type RootStackParams = {
   Auth: {mode: string};
   Home: undefined;
   Place: {
-    place: {
-      id: string;
-      picture: string;
-      name: string;
-      country: string;
-      city: string;
-      ownerId: number;
-      createdAt: string;
-    };
+    place:
+      | {
+          id: string;
+          picture: string;
+          name: string;
+          country: string;
+          city: string;
+          ownerId: number;
+          createdAt: string;
+        }
+      | any;
     options: {
       mode: 'request' | 'response';
     };
@@ -51,7 +56,7 @@ export type RootStackParams = {
   ResponseExchangeForm: any;
   SuccesExchangeRequest: undefined;
   ResetPassword: undefined;
-  Chat: undefined;
+  Chat: ExchangeUser;
   Welcome: undefined;
   NewPlace: undefined;
   Configuration: undefined;
@@ -67,7 +72,9 @@ const Stack = createStackNavigator<RootStackParams>();
 
 const Navigation = () => {
   const {user} = useAuth();
-  console.log('User: ', user);
+  const {
+    theme: {colors},
+  } = useSettings();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -100,8 +107,27 @@ const Navigation = () => {
           <Stack.Screen
             component={Chat}
             name="Chat"
-            options={{
-              headerShown: true,
+            options={({route, navigation}) => {
+              return {
+                headerShown: true,
+                headerTitle: route.params?.senderUser?.name,
+                headerStyle: {
+                  shadowOpacity: 0,
+                },
+                headerLeft: () => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.pop();
+                    }}
+                    style={styles.backButtonContainer}>
+                    <Icon
+                      color={colors.text}
+                      size={28}
+                      name="arrow-back-sharp"
+                    />
+                  </TouchableOpacity>
+                ),
+              };
             }}
           />
           <Stack.Screen component={NewPlace} name="NewPlace" />
@@ -130,5 +156,11 @@ const Navigation = () => {
     </Stack.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  backButtonContainer: {
+    marginHorizontal: 12,
+  },
+});
 
 export default Navigation;

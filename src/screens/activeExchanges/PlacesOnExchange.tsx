@@ -221,7 +221,12 @@ const PlacesOnExchange = (props: Props) => {
           />
         ) : null}
 
-        <PosdataButton title="COMMENTS" />
+        <PosdataButton
+          title="COMMENTS"
+          onPress={() => {
+            navigation.navigate('Chat', exchange);
+          }}
+        />
       </View>
       <Modal visible={modalVisible} animationType="slide">
         <Image

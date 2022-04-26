@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   TextInput,
 } from 'react-native';
 import Image from 'react-native-fast-image';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
 import PosdataButton from '../components/PosdataButton';
@@ -22,13 +23,10 @@ const Search = ({navigation}: Props) => {
   let [searchTest, setSearchText] = useState('');
   let [isLoading, setLoading] = useState(false);
   const {theme} = useSettings();
+  const {top} = useSafeAreaInsets();
   const {text} = theme.colors;
 
-  useEffect(() => {
-    getPlaces();
-  }, []);
-
-  async function getPlaces() {
+  const getPlaces = useCallback(async () => {
     try {
       setLoading(true);
       let placesFromApi = await searchPlaces(searchTest);
@@ -37,7 +35,11 @@ const Search = ({navigation}: Props) => {
       console.log(e);
     }
     setLoading(false);
-  }
+  }, [searchTest]);
+
+  useEffect(() => {
+    getPlaces();
+  }, [getPlaces]);
 
   interface renderItemProps {
     item: any;
@@ -55,7 +57,7 @@ const Search = ({navigation}: Props) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, marginTop: top}}>
       <Text style={[styles.titleOne, {color: text}]}>Search</Text>
       <View>
         <TextInput

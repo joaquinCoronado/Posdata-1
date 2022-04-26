@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Image from 'react-native-fast-image';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
 
@@ -26,7 +27,7 @@ const Places = ({navigation}: Props) => {
   let [isLoading, setLoading] = useState(true);
   let [places, setPlaces] = useState([]);
   const {theme} = useSettings();
-
+  const {top} = useSafeAreaInsets();
   useEffect(() => {
     isLoading ? getPlaces() : null;
   }, [isLoading]);
@@ -42,7 +43,7 @@ const Places = ({navigation}: Props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, marginTop: top}}>
       <Text style={[styles.titleOne, {color: theme.colors.text}]}>Places</Text>
       <View style={styles.listPalcesContainer}>
         <Text style={[styles.titleTwo, {color: theme.colors.text}]}>
@@ -110,7 +111,6 @@ const Places = ({navigation}: Props) => {
 const styles = StyleSheet.create({
   container: {
     padding: 8,
-    marginTop: 60,
   },
   titleOne: {
     fontWeight: '500',
