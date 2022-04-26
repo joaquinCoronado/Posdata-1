@@ -19,6 +19,8 @@ import UpdateUserImage from '../screens/ProfileScreens/UpdateUserIamge';
 import ResponseExchangeRequest from '../screens/handleRequestExchange/ResponseExchangeRequest';
 import SenderPlaces from '../screens/handleRequestExchange/SenderPlaces';
 import ResponseExchangeForm from '../screens/handleRequestExchange/ResponseExchangeForm';
+import PlacesOnExchange from '../screens/activeExchanges/PlacesOnExchange';
+import UploadNote from '../screens/activeExchanges/UploadNote';
 
 export type RootStackParams = {
   Auth: {mode: string};
@@ -57,6 +59,8 @@ export type RootStackParams = {
   UpdateUserImage: undefined;
   ResponseExchangeRequest: any;
   SenderPlaces: any;
+  PlacesOnExchange: any;
+  UploadNote: any;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -113,6 +117,8 @@ const Navigation = () => {
             component={ResponseExchangeForm}
             name="ResponseExchangeForm"
           />
+          <Stack.Screen component={PlacesOnExchange} name="PlacesOnExchange" />
+          <Stack.Screen component={UploadNote} name="UploadNote" />
         </>
       ) : (
         <>
