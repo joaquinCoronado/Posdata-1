@@ -15,6 +15,7 @@ import {useAuth} from '../../context/auth';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {acceptNote} from '../../api';
 import LoadingModal from '../../components/LoadingModal';
+import {useSettings} from '../../context/settings';
 
 interface Props {
   route: any;
@@ -30,8 +31,7 @@ const PlacesOnExchange = (props: Props) => {
   const {params: exchange} = route;
   const {sender, receiver, receiverUser, senderUser} = exchange;
 
-  console.log('exchange', exchange);
-
+  const {theme} = useSettings();
   const {user} = useAuth();
 
   const NotMyExchangeItemButtonAtRow = ({picture, itemStatus, itemId}: any) => {
@@ -102,7 +102,7 @@ const PlacesOnExchange = (props: Props) => {
     console.log('exchangeItem', exchangeItem);
 
     return (
-      <View style={styles.placeRow}>
+      <View style={[styles.placeRow, {borderColor: theme.colors.text}]}>
         {exchangeItem ? (
           <View style={styles.rowContainer}>
             {/* HEADER */}
@@ -110,7 +110,13 @@ const PlacesOnExchange = (props: Props) => {
               <GradientText style={styles.userNameAtRow}>
                 {userName}
               </GradientText>
-              <Text style={styles.normalTextAtRowHeader}>requested to</Text>
+              <Text
+                style={[
+                  styles.normalTextAtRowHeader,
+                  {color: theme.colors.text},
+                ]}>
+                requested to
+              </Text>
             </View>
             {/* BODY */}
             <View style={styles.rowBody}>
@@ -120,8 +126,11 @@ const PlacesOnExchange = (props: Props) => {
                 style={styles.image}
               />
               <View style={styles.rowDataContainer}>
-                <Text style={styles.placeNameAtRow}>{place?.name}</Text>
-                <Text style={styles.addressAtRow}>
+                <Text
+                  style={[styles.placeNameAtRow, {color: theme.colors.text}]}>
+                  {place?.name}
+                </Text>
+                <Text style={[styles.addressAtRow, {color: theme.colors.text}]}>
                   {place?.city + ', ' + place?.country}
                 </Text>
               </View>
@@ -140,8 +149,12 @@ const PlacesOnExchange = (props: Props) => {
             </View>
             {/* FOOTER */}
             <View style={styles.rowFooter}>
-              <Text style={styles.textNoteTitle}>NOTE:</Text>
-              <Text style={styles.textNote}>{exchangeItem.textNote}</Text>
+              <Text style={[styles.textNoteTitle, {color: theme.colors.text}]}>
+                NOTE:
+              </Text>
+              <Text style={[styles.textNote, {color: theme.colors.text}]}>
+                {exchangeItem.textNote}
+              </Text>
             </View>
           </View>
         ) : (

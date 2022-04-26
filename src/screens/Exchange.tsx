@@ -93,7 +93,7 @@ const Exchange = ({navigation}: Props) => {
               <ExchangeRow
                 key={exchange.id}
                 onPress={() => {
-                  navigation.navigate('Chat', exchange);
+                  navigation.navigate('SenderPlaces', exchange);
                 }}
                 exchange={exchange}
               />
