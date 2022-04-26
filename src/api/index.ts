@@ -2,8 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Api = axios.create({
-  baseURL: 'http://posdata.io',
-  //baseURL: 'http://localhost',
+  //baseURL: 'http://posdata.io',
+  baseURL: 'http://localhost',
 });
 
 const authConfig = {
@@ -196,9 +196,9 @@ const addNoteToRequest = async (itemId: number, urlImage: string) => {
   return response.data;
 };
 
-const acceptNote = async (itemId: number) => {
+const acceptNote = async (itemId: number, exchangeId: number) => {
   let token = await AsyncStorage.getItem('token');
-  let url = `/exchange/v1/items/accepter?itemId=${itemId}`;
+  let url = `/exchange/v1/items/accepter?itemId=${itemId}&exchangeId=${exchangeId}`;
   const response = await Api.put(
     url,
     {},

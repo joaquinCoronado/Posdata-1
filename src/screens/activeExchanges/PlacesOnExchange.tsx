@@ -39,6 +39,8 @@ const PlacesOnExchange = (props: Props) => {
       return (
         <PosdataButton
           containerStyles={styles.buttonAtRow}
+          height={26}
+          gradientHeight={30}
           width={100}
           title="VIEW NOTE"
           gradient
@@ -127,12 +129,12 @@ const PlacesOnExchange = (props: Props) => {
                 <MyExchangeItemButtonAtRow
                   picture={pictureNote}
                   itemStatus={itemStatus}
-                  itemId={exchangeItem.id}
                 />
               ) : (
                 <NotMyExchangeItemButtonAtRow
                   picture={pictureNote}
                   itemStatus={itemStatus}
+                  itemId={exchangeItem.id}
                 />
               )}
             </View>
@@ -177,7 +179,7 @@ const PlacesOnExchange = (props: Props) => {
     setLoading(true);
     try {
       const myItemExchangeInfo = getMyItemExchange();
-      await acceptNote(myItemExchangeInfo.exchangeItem.id);
+      await acceptNote(myItemExchangeInfo.exchangeItem.id, exchange.id);
     } catch (e) {
       console.log(e);
     }
@@ -196,14 +198,14 @@ const PlacesOnExchange = (props: Props) => {
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.placesContainer}>
           <PlaceRow
-            exchangeItem={myItemExchangeInfo.exchangeItem}
-            isMyItemExchange={true}
-            userName={myItemExchangeInfo?.user?.name}
-          />
-          <PlaceRow
             exchangeItem={theOtherItemExchangeInfo.exchangeItem}
             isMyItemExchange={false}
             userName={theOtherItemExchangeInfo.user.name}
+          />
+          <PlaceRow
+            exchangeItem={myItemExchangeInfo.exchangeItem}
+            isMyItemExchange={true}
+            userName={myItemExchangeInfo?.user?.name}
           />
         </View>
       </ScrollView>

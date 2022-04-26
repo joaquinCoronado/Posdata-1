@@ -38,7 +38,6 @@ const ResponseExchangeForm = (props: Props) => {
       const body = {
         placeId: place.id,
         textNote: textNote,
-        ownerId: place.ownerId,
       };
       await handleExchangeRequest(true, exchange?.id, body);
       navigation.navigate('Exchange', {});
