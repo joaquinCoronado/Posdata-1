@@ -209,6 +209,11 @@ const PlacesOnExchange = (props: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.pop()}>
+          <Icon color={theme.colors.text} size={34} name="arrow-back-sharp" />
+        </TouchableOpacity>
         <View style={styles.placesContainer}>
           <PlaceRow
             exchangeItem={theOtherItemExchangeInfo.exchangeItem}
@@ -369,6 +374,10 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 100,
     backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  backButton: {
+    borderRadius: 20,
+    padding: 5,
   },
 });
 

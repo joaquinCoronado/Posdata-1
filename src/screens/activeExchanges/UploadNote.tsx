@@ -163,6 +163,11 @@ const UploadNote = ({navigation, route}: any) => {
         />
         <PosdataButton title="SAVE" onPress={handleUpdateProfileImage} />
       </View>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.pop()}>
+        <Icon color={'white'} size={34} name="arrow-back-sharp" />
+      </TouchableOpacity>
       <LoadingModal visible={isLoading} />
     </View>
   );
@@ -229,6 +234,14 @@ const styles = StyleSheet.create({
   },
   blackButtonText: {
     color: 'white',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 10,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 20,
+    padding: 5,
   },
 });
 
