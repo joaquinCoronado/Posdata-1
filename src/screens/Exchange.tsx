@@ -12,7 +12,11 @@ import {useSettings} from '../context/settings';
 import PosdataButton from '../components/PosdataButton';
 import GradientText from '../components/GradientText';
 import Image from 'react-native-fast-image';
-import {getPenddingToAcceptExchanges, getActiveExchanges} from '../api';
+import {
+  getPenddingToAcceptExchanges,
+  getActiveExchanges,
+  getCompletedExchanges,
+} from '../api';
 import {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../navigation';
 
@@ -39,14 +43,26 @@ const Exchange = ({navigation}: Props) => {
 
   const getExchanges = async () => {
     setLoading(true);
-    const penddingExchangesFromApi = await getPenddingToAcceptExchanges();
-    const exchangesActivesFromApi = await getActiveExchanges();
-    setExchanges(prev => ({
-      ...prev,
-      exchangesPenddingToAccept: penddingExchangesFromApi,
-      exchangesActives: exchangesActivesFromApi,
-    }));
-    setLoading(false);
+
+    Promise.all([
+      getPenddingToAcceptExchanges(),
+      getActiveExchanges(),
+      getCompletedExchanges(),
+    ])
+      .then(responses => {
+        console.log('responses', responses);
+        setExchanges(prev => ({
+          ...prev,
+          exchangesPenddingToAccept: responses[0],
+          exchangesActives: responses[1],
+          exchangesCompleted: responses[2],
+        }));
+        setLoading(false);
+      })
+      .catch(errors => {
+        console.log(errors);
+        setLoading(false);
+      });
   };
 
   const ExchangeRow = ({exchange, onPress}: any) => {
@@ -124,7 +140,13 @@ const Exchange = ({navigation}: Props) => {
       <View style={styles.listContainer}>
         <Text style={[styles.titleTwo, {color: text}]}>ALL COMPLETED</Text>
         {exchangesCompleted.map(exchange => (
-          <ExchangeRow key={exchange.id} exchange={exchange} />
+          <ExchangeRow
+            key={exchange.id}
+            exchange={exchange}
+            onPress={() => {
+              navigation.navigate('PlacesOnExchange', exchange);
+            }}
+          />
         ))}
       </View>
     );

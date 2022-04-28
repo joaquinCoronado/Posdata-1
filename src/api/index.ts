@@ -158,6 +158,18 @@ const getActiveExchanges = async () => {
   return response.data;
 };
 
+const getCompletedExchanges = async () => {
+  let token = await AsyncStorage.getItem('token');
+  let url = '/exchange/v1/exchange/completed';
+  const response = await Api.get(url, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
 interface AcceptedExchangeBody {
   placeId: string;
   textNote: string;
@@ -228,4 +240,5 @@ export {
   handleExchangeRequest,
   addNoteToRequest,
   acceptNote,
+  getCompletedExchanges,
 };
