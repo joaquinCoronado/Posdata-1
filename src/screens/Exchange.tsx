@@ -7,6 +7,7 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {useSettings} from '../context/settings';
 import PosdataButton from '../components/PosdataButton';
@@ -23,7 +24,7 @@ import {RootStackParams} from '../navigation';
 interface Props extends StackScreenProps<RootStackParams, 'Home'> {}
 
 const Exchange = ({navigation}: Props) => {
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [showActiveView, setShowActiveView] = useState(true);
   const [exchanges, setExchanges] = useState({
     exchangesPenddingToAccept: [],
@@ -38,8 +39,8 @@ const Exchange = ({navigation}: Props) => {
   let {text} = theme.colors;
 
   useEffect(() => {
-    getExchanges();
-  }, []);
+    isLoading ? getExchanges() : null;
+  }, [isLoading]);
 
   const getExchanges = async () => {
     setLoading(true);
@@ -98,6 +99,13 @@ const Exchange = ({navigation}: Props) => {
   };
 
   const ActiveExchamgeList = () => {
+    if (isLoading) {
+      return (
+        <View style={styles.listContainer}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
     return (
       <>
         {exchangesPenddingToAccept.length > 0 ? (
@@ -136,6 +144,13 @@ const Exchange = ({navigation}: Props) => {
   };
 
   const CompledExchamgeList = () => {
+    if (isLoading) {
+      return (
+        <View style={styles.listContainer}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
     return (
       <View style={styles.listContainer}>
         <Text style={[styles.titleTwo, {color: text}]}>ALL COMPLETED</Text>
@@ -152,16 +167,15 @@ const Exchange = ({navigation}: Props) => {
     );
   };
 
-  const onRefresh = () => {
-    getExchanges();
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
         style={styles.scrollView}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={() => setLoading(true)}
+          />
         }>
         <View style={styles.titleContainer}>
           <Text style={[styles.titleOne, {color: text}]}>Exchanges</Text>
