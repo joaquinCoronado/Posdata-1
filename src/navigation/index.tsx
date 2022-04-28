@@ -130,7 +130,13 @@ const Navigation = () => {
               };
             }}
           />
-          <Stack.Screen component={NewPlace} name="NewPlace" />
+          <Stack.Screen
+            component={NewPlace}
+            name="NewPlace"
+            options={{
+              cardStyleInterpolator: fade,
+            }}
+          />
           <Stack.Screen component={Configuration} name="Configuration" />
           <Stack.Screen component={UserInformation} name="UserInformation" />
           <Stack.Screen component={UpdateUserImage} name="UpdateUserImage" />
@@ -143,8 +149,20 @@ const Navigation = () => {
             component={ResponseExchangeForm}
             name="ResponseExchangeForm"
           />
-          <Stack.Screen component={PlacesOnExchange} name="PlacesOnExchange" />
-          <Stack.Screen component={UploadNote} name="UploadNote" />
+          <Stack.Screen
+            component={PlacesOnExchange}
+            name="PlacesOnExchange"
+            options={{
+              cardStyleInterpolator: fade,
+            }}
+          />
+          <Stack.Screen
+            component={UploadNote}
+            name="UploadNote"
+            options={{
+              cardStyleInterpolator: fade,
+            }}
+          />
         </>
       ) : (
         <>
