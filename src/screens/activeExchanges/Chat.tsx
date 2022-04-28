@@ -16,9 +16,9 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {RootStackParams} from '../navigation/index';
-import {useAuth} from '../context/auth';
-import {useSettings} from '../context/settings';
+import {RootStackParams} from '../../navigation/index';
+import {useAuth} from '../../context/auth';
+import {useSettings} from '../../context/settings';
 
 const Messages = [
   {
@@ -235,9 +235,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 12,
   },
-  // listMessage: {
-  //   flex: 1,
-  // },
   inputContainer: {
     height: 70,
     flexDirection: 'row',

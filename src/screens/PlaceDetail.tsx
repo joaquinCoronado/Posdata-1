@@ -44,7 +44,7 @@ const PlaceDetail = (props: Props) => {
     <View style={styles.container}>
       <Image
         style={styles.imageContainer}
-        source={{uri: place.picture}}
+        source={{uri: place?.picture}}
         resizeMode="cover"
       />
       {/* BACK */}
@@ -59,10 +59,10 @@ const PlaceDetail = (props: Props) => {
         ]}>
         <View style={styles.placeInfoContainer}>
           <Text style={[styles.placeName, {color: theme.colors.text}]}>
-            {place.name}
+            {place?.name}
           </Text>
           <Text style={[styles.placeLocation, {color: theme.colors.text}]}>
-            {place.city + ', ' + place.country}
+            {place?.city + ', ' + place?.country}
           </Text>
         </View>
         <OptionsButton
@@ -72,7 +72,7 @@ const PlaceDetail = (props: Props) => {
         />
       </View>
       <PopupMenu visible={isModalOpen}>
-        {options.mode === 'request' && place.ownerId !== user?.id ? (
+        {options?.mode === 'request' && place?.ownerId !== user?.id ? (
           <PosdataButton
             title="REQUEST FOR EXCHANGE"
             onPress={() => {
@@ -82,7 +82,7 @@ const PlaceDetail = (props: Props) => {
           />
         ) : null}
 
-        {options.mode === 'response' ? (
+        {options?.mode === 'response' ? (
           <PosdataButton
             gradient
             title="SELECT PLACE"

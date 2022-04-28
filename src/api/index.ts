@@ -163,6 +163,7 @@ interface AcceptedExchangeBody {
   textNote: string;
   ownerId: number;
 }
+
 const handleExchangeRequest = async (
   isAccept: boolean,
   exchangeId: number,
@@ -176,6 +177,38 @@ const handleExchangeRequest = async (
       Authorization: 'Bearer ' + token,
     },
   });
+  return response.data;
+};
+
+const addNoteToRequest = async (itemId: number, urlImage: string) => {
+  let token = await AsyncStorage.getItem('token');
+  let url = `/exchange/v1/items?itemId=${itemId}&urlImage=${urlImage}`;
+  const response = await Api.put(
+    url,
+    {},
+    {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    },
+  );
+  return response.data;
+};
+
+const acceptNote = async (itemId: number, exchangeId: number) => {
+  let token = await AsyncStorage.getItem('token');
+  let url = `/exchange/v1/items/accepter?itemId=${itemId}&exchangeId=${exchangeId}`;
+  const response = await Api.put(
+    url,
+    {},
+    {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    },
+  );
   return response.data;
 };
 
@@ -193,4 +226,6 @@ export {
   getPenddingToAcceptExchanges,
   getActiveExchanges,
   handleExchangeRequest,
+  addNoteToRequest,
+  acceptNote,
 };

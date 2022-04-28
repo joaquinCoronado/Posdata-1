@@ -55,6 +55,9 @@ const Exchange = ({navigation}: Props) => {
     return (
       <TouchableOpacity
         onPress={() => {
+          if (isLoading) {
+            return;
+          }
           onPress(exchange);
         }}
         style={styles.rowContainer}>
@@ -90,7 +93,7 @@ const Exchange = ({navigation}: Props) => {
               <ExchangeRow
                 key={exchange.id}
                 onPress={() => {
-                  navigation.navigate('Chat', exchange);
+                  navigation.navigate('SenderPlaces', exchange);
                 }}
                 exchange={exchange}
               />
@@ -99,12 +102,14 @@ const Exchange = ({navigation}: Props) => {
         ) : null}
 
         <View style={styles.listContainer}>
-          <Text style={[styles.titleTwo, {color: text}]}>WAITING RESPONSE</Text>
+          <Text style={[styles.titleTwo, {color: text}]}>
+            WAITTING RESPONSE
+          </Text>
           {exchangesActives.map(exchange => (
             <ExchangeRow
-              key={exchange?.id}
+              key={exchange.id}
               onPress={() => {
-                navigation.navigate('Chat', exchange);
+                navigation.navigate('PlacesOnExchange', exchange);
               }}
               exchange={exchange}
             />
@@ -204,6 +209,7 @@ const styles = StyleSheet.create({
   bodyContainer: {
     width: '100%',
     paddingHorizontal: 10,
+    marginBottom: 100,
   },
   rowContainer: {
     flexDirection: 'row',
@@ -242,6 +248,12 @@ const styles = StyleSheet.create({
   requestNameContainer: {
     flexDirection: 'row',
     width: '100%',
+  },
+  loadingList: {
+    height: '100%',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

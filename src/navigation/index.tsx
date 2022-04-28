@@ -12,7 +12,7 @@ import Tabs from './tabs';
 import PlaceDetail from '../screens/PlaceDetail';
 import RequestExchangeForm from '../screens/requestExchange/RequestExchangeForm';
 import SuccesExchangeRequest from '../screens/requestExchange/SuccesExchangeRequest';
-import Chat from '../screens/Chat';
+import Chat from '../screens/activeExchanges/Chat';
 import NewPlace from '../screens/NewPlace';
 import Welcome from '../screens/Welcome';
 import Configuration from '../screens/ProfileScreens/Configuration';
@@ -21,6 +21,8 @@ import UpdateUserImage from '../screens/ProfileScreens/UpdateUserIamge';
 import ResponseExchangeRequest from '../screens/handleRequestExchange/ResponseExchangeRequest';
 import SenderPlaces from '../screens/handleRequestExchange/SenderPlaces';
 import ResponseExchangeForm from '../screens/handleRequestExchange/ResponseExchangeForm';
+import PlacesOnExchange from '../screens/activeExchanges/PlacesOnExchange';
+import UploadNote from '../screens/activeExchanges/UploadNote';
 import {ExchangeUser} from '../types/chat';
 
 export type RootStackParams = {
@@ -62,6 +64,8 @@ export type RootStackParams = {
   UpdateUserImage: undefined;
   ResponseExchangeRequest: any;
   SenderPlaces: any;
+  PlacesOnExchange: any;
+  UploadNote: any;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -139,6 +143,8 @@ const Navigation = () => {
             component={ResponseExchangeForm}
             name="ResponseExchangeForm"
           />
+          <Stack.Screen component={PlacesOnExchange} name="PlacesOnExchange" />
+          <Stack.Screen component={UploadNote} name="UploadNote" />
         </>
       ) : (
         <>

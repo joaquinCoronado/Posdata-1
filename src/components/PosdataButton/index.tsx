@@ -6,6 +6,8 @@ interface Props {
   onPress?: () => void;
   title: string;
   width?: any;
+  height?: any;
+  gradientHeight?: any;
   containerStyles?: any;
   textStyles?: any;
   gradient?: boolean;
@@ -19,6 +21,8 @@ const PosdataButton = (props: Props) => {
     },
     title,
     width = '100%',
+    height,
+    gradientHeight,
     containerStyles = {},
     textStyles = {},
     gradient = false,
@@ -30,6 +34,8 @@ const PosdataButton = (props: Props) => {
           onPress={onPress}
           title={title}
           width={width}
+          height={height}
+          gradientHeight={gradientHeight}
           containerStyles={containerStyles}
           textStyles={textStyles}
         />
