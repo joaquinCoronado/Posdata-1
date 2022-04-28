@@ -167,6 +167,11 @@ const NewPlace = ({navigation}: Props) => {
               ))
             )}
           </Swiper>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.pop()}>
+            <Icon color={'white'} size={34} name="arrow-back-sharp" />
+          </TouchableOpacity>
           {/* BUTTONS */}
           <View style={styles.buttons}>
             <PosdataButton
@@ -198,6 +203,11 @@ const NewPlace = ({navigation}: Props) => {
       return (
         <View style={styles.formMainContainer}>
           <ScrollView style={styles.scrollViewContainer}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.pop()}>
+              <Icon color={'white'} size={34} name="arrow-back-sharp" />
+            </TouchableOpacity>
             <View style={styles.formContainer}>
               <Text style={[styles.titleForm, {color: theme.colors.text}]}>
                 PLACE INFORMATION
@@ -385,6 +395,14 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 15,
     paddingBottom: 0,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 10,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 20,
+    padding: 5,
   },
 });
 
