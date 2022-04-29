@@ -96,7 +96,7 @@ const PlacesOnExchange = (props: Props) => {
         />
       );
     } else if (itemStatus === 'ACCEPTED') {
-      return <Text>accepted note</Text>;
+      return <Text style={{color: theme.colors.text}}>accepted note</Text>;
     } else if (picture) {
       return (
         <PosdataButton
@@ -136,7 +136,7 @@ const PlacesOnExchange = (props: Props) => {
         />
       );
     } else if (itemStatus === 'ACCEPTED') {
-      return <Text>accepted note</Text>;
+      return <Text style={{color: theme.colors.text}}>accepted note</Text>;
     } else if (picture) {
       return (
         <PosdataButton
@@ -153,7 +153,7 @@ const PlacesOnExchange = (props: Props) => {
         />
       );
     } else {
-      return <Text>waiting note</Text>;
+      return <Text style={{color: theme.colors.text}}>waiting note</Text>;
     }
   };
 
