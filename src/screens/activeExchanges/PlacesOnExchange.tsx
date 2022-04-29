@@ -42,7 +42,7 @@ const PlacesOnExchange = (props: Props) => {
           height={26}
           gradientHeight={30}
           width={100}
-          title="VIEW NOTE"
+          title="DOWNLOAD"
           gradient
         />
       );
@@ -75,6 +75,18 @@ const PlacesOnExchange = (props: Props) => {
   };
 
   const MyExchangeItemButtonAtRow = ({picture, itemStatus}: any) => {
+    if (itemStatus === 'ACCEPTED') {
+      return (
+        <PosdataButton
+          containerStyles={styles.buttonAtRow}
+          height={26}
+          gradientHeight={30}
+          width={100}
+          title="DOWNLOAD"
+          gradient
+        />
+      );
+    }
     return picture ? (
       <PosdataButton
         containerStyles={styles.buttonAtRow}
