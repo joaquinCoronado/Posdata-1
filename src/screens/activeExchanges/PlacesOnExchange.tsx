@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,18 +7,19 @@ import {
   ScrollView,
   Modal,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import GradientText from '../../components/GradientText';
 import PosdataButton from '../../components/PosdataButton';
 import {useAuth} from '../../context/auth';
+import {useExchangeContext} from '../../context/exchange';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {acceptNote} from '../../api';
+import {acceptNote, getExchangeById} from '../../api';
 import LoadingModal from '../../components/LoadingModal';
 import {useSettings} from '../../context/settings';
 
 interface Props {
-  route: any;
   navigation: any;
 }
 
@@ -26,16 +27,64 @@ const PlacesOnExchange = (props: Props) => {
   const [selectedImage, setSelectedImage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingList, setLoadingList] = useState(false);
 
-  const {route, navigation} = props;
-  const {params: exchange} = route;
+  const {
+    selectedExchange: exchange,
+    setSelectedExchange,
+    setExchanges,
+    exchanges,
+  } = useExchangeContext();
+
+  const {navigation} = props;
   const {sender, receiver, receiverUser, senderUser} = exchange;
 
   const {theme} = useSettings();
   const {user} = useAuth();
 
+  /*******
+   * Update the list of exchanges if
+   * the selected exchange is updated.
+   */
+  useEffect(() => {
+    if (
+      exchange.requestStatus === 'COMPLETED' &&
+      exchanges.exchangesActives.find((item: any) => item.id === exchange.id)
+    ) {
+      setExchanges((prev: any) => {
+        //Remove the selectedExchange from exchangesActive
+        const newExchangesActives = prev.exchangesActives.filter(
+          (item: any) => item.id !== exchange.id,
+        );
+
+        //Add the selectedExchange to exchangesCompleted
+        const newExchangesComplited = [...prev.exchangesCompleted, exchange];
+
+        return {
+          ...prev,
+          exchangesCompleted: newExchangesComplited,
+          exchangesActives: newExchangesActives,
+        };
+      });
+    } else {
+      setExchanges((prev: any) => {
+        const newActiveExchanges = [];
+        for (let i = 0; i < prev.exchangesActives.length; i++) {
+          exchange.id === prev.exchangesActives[i].id
+            ? (newActiveExchanges[i] = exchange)
+            : (newActiveExchanges[i] = prev.exchangesActives[i]);
+        }
+
+        return {
+          ...prev,
+          exchangesActives: newActiveExchanges,
+        };
+      });
+    }
+  }, [exchange]);
+
   const NotMyExchangeItemButtonAtRow = ({picture, itemStatus, itemId}: any) => {
-    if (itemStatus === 'ACCEPTED') {
+    if (exchange.requestStatus === 'COMPLETED' && itemStatus === 'ACCEPTED') {
       return (
         <PosdataButton
           containerStyles={styles.buttonAtRow}
@@ -46,9 +95,9 @@ const PlacesOnExchange = (props: Props) => {
           gradient
         />
       );
-    }
-
-    if (picture) {
+    } else if (itemStatus === 'ACCEPTED') {
+      return <Text>accepted note</Text>;
+    } else if (picture) {
       return (
         <PosdataButton
           containerStyles={[styles.buttonAtRow, {backgroundColor: '#000'}]}
@@ -75,7 +124,7 @@ const PlacesOnExchange = (props: Props) => {
   };
 
   const MyExchangeItemButtonAtRow = ({picture, itemStatus}: any) => {
-    if (itemStatus === 'ACCEPTED') {
+    if (exchange.requestStatus === 'COMPLETED' && itemStatus === 'ACCEPTED') {
       return (
         <PosdataButton
           containerStyles={styles.buttonAtRow}
@@ -86,23 +135,26 @@ const PlacesOnExchange = (props: Props) => {
           gradient
         />
       );
+    } else if (itemStatus === 'ACCEPTED') {
+      return <Text>accepted note</Text>;
+    } else if (picture) {
+      return (
+        <PosdataButton
+          containerStyles={styles.buttonAtRow}
+          height={26}
+          gradientHeight={30}
+          width={100}
+          title="VIEW NOTE"
+          gradient
+          onPress={() => {
+            setSelectedImage(picture);
+            setModalVisible(true);
+          }}
+        />
+      );
+    } else {
+      return <Text>waiting note</Text>;
     }
-    return picture ? (
-      <PosdataButton
-        containerStyles={styles.buttonAtRow}
-        height={26}
-        gradientHeight={30}
-        width={100}
-        title="VIEW NOTE"
-        gradient
-        onPress={() => {
-          setSelectedImage(picture);
-          setModalVisible(true);
-        }}
-      />
-    ) : (
-      <Text>waiting note</Text>
-    );
   };
 
   //   PLACE ROW
@@ -205,10 +257,19 @@ const PlacesOnExchange = (props: Props) => {
     try {
       const myItemExchangeInfo = getMyItemExchange();
       await acceptNote(myItemExchangeInfo.exchangeItem.id, exchange.id);
+      const updatedExchange = await getExchangeById(exchange.id);
+      setSelectedExchange(updatedExchange);
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
+  };
+
+  const hanldeReLoad = async () => {
+    setLoadingList(true);
+    const updatedExchange = await getExchangeById(exchange.id);
+    setSelectedExchange(updatedExchange);
+    setLoadingList(false);
   };
 
   console.log('sender?.ownerId', sender?.ownerId);
@@ -220,7 +281,18 @@ const PlacesOnExchange = (props: Props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* BODY */}
+      <ScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoadingList}
+            onRefresh={() => {
+              hanldeReLoad();
+            }}
+          />
+        }>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.pop()}>
@@ -239,6 +311,8 @@ const PlacesOnExchange = (props: Props) => {
           />
         </View>
       </ScrollView>
+
+      {/* BUTTONS */}
       <View style={styles.buttonsContainer}>
         {myItemExchangeInfo?.exchangeItem?.itemStatus === 'WAITING_ACCEPT' &&
         myItemExchangeInfo?.exchangeItem?.pictureNote ? (
@@ -258,6 +332,8 @@ const PlacesOnExchange = (props: Props) => {
           }}
         />
       </View>
+
+      {/* MODALS */}
       <Modal visible={modalVisible} animationType="slide">
         <Image
           source={{uri: selectedImage}}
@@ -302,7 +378,7 @@ const styles = StyleSheet.create({
     //backgroundColor: 'purple',
   },
   buttonsContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
   },
   rowDataContainer: {
     flex: 1,

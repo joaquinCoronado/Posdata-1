@@ -2,10 +2,10 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useSettings} from '../../context/settings';
+import {useExchangeContext} from '../../context/exchange';
 import {getPlacesByOwnerId} from '../../api';
 
 interface Props {
-  route: any;
   navigation: any;
 }
 
@@ -14,8 +14,8 @@ const SenderPlaces = (props: Props) => {
   const [places, setPlaces] = useState([]);
   const {theme} = useSettings();
 
-  const {route, navigation} = props;
-  const {params: exchange} = route;
+  const {navigation} = props;
+  const {selectedExchange: exchange} = useExchangeContext();
 
   useEffect(() => {
     getPlacesOfTheUser();

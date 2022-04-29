@@ -7,6 +7,7 @@ import App from './App';
 import {name as appName} from './app.json';
 import {AuthProvider} from './src/context/auth';
 import {SettingsProvider} from './src/context/settings';
+import {ExchangeProvider} from './src/context/exchange';
 import {decode, encode} from 'base-64';
 
 if (!global.btoa) {
@@ -19,11 +20,13 @@ if (!global.atob) {
 
 const Posdata = () => {
   return (
-    <SettingsProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </SettingsProvider>
+    <ExchangeProvider>
+      <SettingsProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </SettingsProvider>
+    </ExchangeProvider>
   );
 };
 
