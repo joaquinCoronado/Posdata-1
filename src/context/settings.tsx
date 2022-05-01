@@ -8,6 +8,7 @@ import React, {
 import {Appearance, AppState} from 'react-native';
 import propTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SplashScreen from 'react-native-splash-screen';
 
 import {SettingsContextType, PosdataTheme} from '../types';
 interface SettingsContextProps {
@@ -67,6 +68,7 @@ const SettingsProvider = ({children}: any) => {
           : setDarkTheme();
       }
     });
+    SplashScreen.hide();
     return () => {
       listener.remove();
     };

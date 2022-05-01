@@ -20,13 +20,13 @@ if (!global.atob) {
 
 const Posdata = () => {
   return (
-    <ExchangeProvider>
-      <SettingsProvider>
-        <AuthProvider>
+    <SettingsProvider>
+      <AuthProvider>
+        <ExchangeProvider>
           <App />
-        </AuthProvider>
-      </SettingsProvider>
-    </ExchangeProvider>
+        </ExchangeProvider>
+      </AuthProvider>
+    </SettingsProvider>
   );
 };
 
