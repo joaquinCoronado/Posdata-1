@@ -37,6 +37,7 @@ const Exchange = ({navigation}: Props) => {
 
   useEffect(() => {
     isLoading ? loadExchanges() : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
   const loadExchanges = async () => {
