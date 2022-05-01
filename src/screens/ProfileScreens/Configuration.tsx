@@ -32,7 +32,7 @@ const Configuration = ({navigation}: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
+      <View style={styles.bodyContainer}>
         <Text style={[styles.titleText, {color: theme?.colors?.text}]}>
           CONFIGURATION
         </Text>
@@ -50,8 +50,12 @@ const Configuration = ({navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 15,
     width: '100%',
+    marginTop: 10,
+  },
+  bodyContainer: {
+    flex: 1,
+    paddingHorizontal: 15,
   },
   titleText: {
     fontWeight: '500',

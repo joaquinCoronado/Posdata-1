@@ -4,7 +4,7 @@ import Places from '../screens/Places';
 import {fade} from '../utils/screenAnimations';
 
 export type RootStackParams = {
-  Places: undefined;
+  PlacesTest: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -17,7 +17,7 @@ const PlacesNavigator = () => {
       }}>
       <Stack.Screen
         component={Places}
-        name="Places"
+        name="PlacesTest"
         options={{
           cardStyleInterpolator: fade,
         }}

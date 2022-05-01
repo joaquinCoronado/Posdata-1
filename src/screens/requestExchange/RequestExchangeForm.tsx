@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import Image from 'react-native-fast-image';
@@ -16,6 +17,7 @@ import {useSettings} from '../../context/settings';
 import {createNewExchange} from '../../api';
 import {useAuth} from '../../context/auth';
 import LoadingModal from '../../components/LoadingModal';
+import moment from 'moment';
 
 interface Props {
   place: any;
@@ -25,6 +27,7 @@ interface Props {
 
 const RequestExchangeForm = (props: Props) => {
   let [deliveriDate, setDeliveriDate] = useState(new Date());
+  let [isKeyboardOpen, setKeyboardOpen] = useState(false);
   let [textNote, setTextNote] = useState('');
   let [isLoading, setLoading] = useState(false);
   let [isDeliveryDatePickerActive, setDeliveryDatePickerActive] =
@@ -38,12 +41,22 @@ const RequestExchangeForm = (props: Props) => {
   const {route, navigation} = props;
   const {params: place} = route;
 
-  const toLocalDate = (date: Date) => {
-    let formatedDate = date.toLocaleString('es-MX', {
-      timeZone: 'America/Mexico_City',
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardOpen(true);
     });
-    let result = formatedDate.split(' ');
-    return result[0];
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardOpen(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  const toLocalDate = (date: Date) => {
+    return moment(date).format('DD/MM/YYYY');
   };
 
   const handleSendRequest = async () => {
@@ -96,6 +109,7 @@ const RequestExchangeForm = (props: Props) => {
           <DatePicker
             modal
             mode="date"
+            textColor={theme.dark ? '#fff' : '#000'}
             open={isDeliveryDatePickerActive}
             date={deliveriDate}
             onConfirm={setDeliveriDate}
@@ -108,6 +122,7 @@ const RequestExchangeForm = (props: Props) => {
           </Text>
           <TextInput
             multiline={true}
+            textAlignVertical="top"
             style={[
               styles.input,
               styles.textArea,
@@ -119,19 +134,23 @@ const RequestExchangeForm = (props: Props) => {
         </View>
         {/* BUTTONS */}
         <View style={styles.buttonsContainer}>
-          <PosdataButton
-            width="48%"
-            title="SEND REQUEST"
-            onPress={handleSendRequest}
-            gradient
-          />
-          <PosdataButton
-            width="48%"
-            title="CANCEL"
-            onPress={() => {
-              navigation.pop();
-            }}
-          />
+          {!isKeyboardOpen ? (
+            <>
+              <PosdataButton
+                width="48%"
+                title="SEND REQUEST"
+                onPress={handleSendRequest}
+                gradient
+              />
+              <PosdataButton
+                width="48%"
+                title="CANCEL"
+                onPress={() => {
+                  navigation.pop();
+                }}
+              />
+            </>
+          ) : null}
         </View>
         <LoadingModal visible={isLoading} />
       </SafeAreaView>

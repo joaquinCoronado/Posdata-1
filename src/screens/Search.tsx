@@ -77,6 +77,7 @@ const Search = ({navigation}: Props) => {
             }}
             numColumns={3}
             data={places}
+            keyExtractor={item => item.id}
             renderItem={(props: renderItemProps) => {
               const {item} = props;
               return (
@@ -84,7 +85,7 @@ const Search = ({navigation}: Props) => {
                   disabled={isLoading}
                   activeOpacity={0.88}
                   onPress={() => {
-                    navigation.navigate('Place', {
+                    navigation.navigate('PlaceDetail', {
                       place: item,
                       options: {mode: 'request'},
                     });
@@ -98,11 +99,10 @@ const Search = ({navigation}: Props) => {
                 </TouchableOpacity>
               );
             }}
-            ListFooterComponent={listFooter(getPlaces)}
             ListHeaderComponent={
               <Text style={[styles.titleTwo, {color: text}]}>ALL RESULTS</Text>
             }
-            keyExtractor={item => item.id}
+            ListFooterComponent={listFooter(getPlaces)}
           />
         </SafeAreaView>
       </View>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   listFooterContainer: {
-    marginBottom: 335,
+    marginBottom: 355,
   },
 });
 

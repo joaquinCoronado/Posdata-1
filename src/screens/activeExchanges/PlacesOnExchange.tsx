@@ -8,6 +8,9 @@ import {
   Modal,
   TouchableOpacity,
   RefreshControl,
+  Platform,
+  Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import GradientText from '../../components/GradientText';
@@ -18,6 +21,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {acceptNote, getExchangeById} from '../../api';
 import LoadingModal from '../../components/LoadingModal';
 import {useSettings} from '../../context/settings';
+import RNFetchBlob from 'rn-fetch-blob';
+import CameraRoll from '@react-native-community/cameraroll';
 
 interface Props {
   navigation: any;
@@ -92,6 +97,9 @@ const PlacesOnExchange = (props: Props) => {
           gradientHeight={30}
           width={100}
           title="DOWNLOAD"
+          onPress={() => {
+            downloadImage(picture);
+          }}
           gradient
         />
       );
@@ -132,6 +140,9 @@ const PlacesOnExchange = (props: Props) => {
           gradientHeight={30}
           width={100}
           title="DOWNLOAD"
+          onPress={() => {
+            downloadImage(picture);
+          }}
           gradient
         />
       );
@@ -157,13 +168,68 @@ const PlacesOnExchange = (props: Props) => {
     }
   };
 
+  async function hasAndroidPermission() {
+    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+    const hasPermission = await PermissionsAndroid.check(permission);
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(permission);
+    return status === 'granted';
+  }
+
+  const downloadImage = async (urlImage: string) => {
+    setLoading(true);
+
+    if (Platform.OS === 'android') {
+      if (!(await hasAndroidPermission())) {
+        setLoading(false);
+        return;
+      }
+
+      RNFetchBlob.config({
+        fileCache: true,
+        appendExt: 'jpg',
+      })
+        .fetch('GET', urlImage)
+        .then(res => {
+          CameraRoll.save(res.path(), {album: 'Posdata'})
+            .then(() => {
+              setLoading(false);
+              Alert.alert('Success', 'Image added to POSDATA album');
+            })
+            .catch(err => {
+              console.log(err);
+              Alert.alert('Ups..', 'Error getting the image, try again later');
+              setLoading(false);
+            });
+        })
+        .catch(err => {
+          console.log(err);
+          Alert.alert('Ups..', 'Error getting the image, try again later');
+          setLoading(false);
+        });
+    } else {
+      CameraRoll.save(urlImage, {album: 'Posdata'})
+        .then(() => {
+          Alert.alert('Success', 'Image added to POSDATA album');
+          setLoading(false);
+        })
+        .catch(e => {
+          console.log(e);
+          Alert.alert('Ups..', 'Error getting the image, try again later');
+          setLoading(false);
+        });
+    }
+  };
+
   //   PLACE ROW
   const PlaceRow = ({exchangeItem, isMyItemExchange, userName}: any) => {
     const place = exchangeItem?.place;
     const itemStatus = exchangeItem?.itemStatus;
     const pictureNote = exchangeItem?.pictureNote;
-
-    console.log('exchangeItem', exchangeItem);
 
     return (
       <View style={[styles.placeRow, {borderColor: theme.colors.text}]}>
@@ -229,8 +295,6 @@ const PlacesOnExchange = (props: Props) => {
   };
 
   const getMyItemExchange = () => {
-    console.log('getMyItemExchange: sender: ', sender);
-    console.log('getMyItemExchange: receiver: ', receiver);
     if (sender?.ownerId === user?.id) {
       return {exchangeItem: sender, user: senderUser};
     }
@@ -241,8 +305,6 @@ const PlacesOnExchange = (props: Props) => {
   };
 
   const getTheOtherItemExchange = () => {
-    console.log('getTheOtherItemExchange: sender: ', sender);
-    console.log('getTheOtherItemExchange: receiver: ', receiver);
     if (sender?.ownerId !== user?.id) {
       return {exchangeItem: sender, user: senderUser};
     }
@@ -272,10 +334,6 @@ const PlacesOnExchange = (props: Props) => {
     setLoadingList(false);
   };
 
-  console.log('sender?.ownerId', sender?.ownerId);
-  console.log('user?.id', user?.id);
-  console.log('receiver?.ownerId', receiver?.ownerId);
-
   const myItemExchangeInfo = getMyItemExchange();
   const theOtherItemExchangeInfo = getTheOtherItemExchange();
 
@@ -283,7 +341,7 @@ const PlacesOnExchange = (props: Props) => {
     <SafeAreaView style={styles.container}>
       {/* BODY */}
       <ScrollView
-        style={styles.container}
+        style={styles.bodyContainer}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -356,6 +414,9 @@ const PlacesOnExchange = (props: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
+  },
+  bodyContainer: {
     paddingHorizontal: 15,
     width: '100%',
   },
@@ -370,15 +431,15 @@ const styles = StyleSheet.create({
     minHeight: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 25,
+    marginBottom: 25,
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 10,
     padding: 10,
-    //backgroundColor: 'purple',
   },
   buttonsContainer: {
     paddingHorizontal: 15,
+    marginBottom: 25,
   },
   rowDataContainer: {
     flex: 1,
@@ -466,6 +527,7 @@ const styles = StyleSheet.create({
   backButton: {
     borderRadius: 20,
     padding: 5,
+    marginVertical: 5,
   },
 });
 

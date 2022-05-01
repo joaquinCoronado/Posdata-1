@@ -28,7 +28,7 @@ import {ExchangeUser} from '../types/chat';
 export type RootStackParams = {
   Auth: {mode: string};
   Home: undefined;
-  Place: {
+  PlaceDetail: {
     place:
       | {
           id: string;
@@ -91,7 +91,7 @@ const Navigation = () => {
           />
           <Stack.Screen
             component={PlaceDetail}
-            name="Place"
+            name="PlaceDetail"
             options={{
               cardStyleInterpolator: fade,
             }}

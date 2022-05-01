@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import {
   createBottomTabNavigator,
@@ -60,6 +61,7 @@ const Tabs = ({navigation}: Props) => {
               width: 10,
               height: 10,
             },
+            elevation: 3,
             paddingHorizontal: 15,
             borderTopColor: theme.colors.background,
           },
@@ -197,17 +199,17 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 60,
     height: 50,
-    top: '50%',
+    top: Platform.OS === 'ios' ? '50%' : 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
   mainIconContainer: {
     width: 55,
     height: 40,
+    top: Platform.OS === 'ios' ? '50%' : 0,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
   },
   tabIndicator: {
     width: getWidth(),
