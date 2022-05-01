@@ -12,6 +12,7 @@ import Image from 'react-native-fast-image';
 import PosdataButton from '../../components/PosdataButton';
 import GradientText from '../../components/GradientText';
 import {useSettings} from '../../context/settings';
+import {useExchangeContext} from '../../context/exchange';
 import {handleExchangeRequest} from '../../api';
 import LoadingModal from '../../components/LoadingModal';
 
@@ -30,7 +31,9 @@ const ResponseExchangeForm = (props: Props) => {
 
   const {route, navigation} = props;
   const {params} = route;
-  const {place, exchange} = params;
+  const {place} = params;
+
+  const {selectedExchange: exchange, loadExchanges} = useExchangeContext();
 
   const handleSendRequest = async () => {
     try {
@@ -40,6 +43,7 @@ const ResponseExchangeForm = (props: Props) => {
         textNote: textNote,
       };
       await handleExchangeRequest(true, exchange?.id, body);
+      await loadExchanges();
       navigation.navigate('Exchange', {});
     } catch (e) {
       console.log(e);

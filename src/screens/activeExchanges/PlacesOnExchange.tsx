@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,18 +7,24 @@ import {
   ScrollView,
   Modal,
   TouchableOpacity,
+  RefreshControl,
+  Platform,
+  Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import GradientText from '../../components/GradientText';
 import PosdataButton from '../../components/PosdataButton';
 import {useAuth} from '../../context/auth';
+import {useExchangeContext} from '../../context/exchange';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {acceptNote} from '../../api';
+import {acceptNote, getExchangeById} from '../../api';
 import LoadingModal from '../../components/LoadingModal';
 import {useSettings} from '../../context/settings';
+import RNFetchBlob from 'rn-fetch-blob';
+import CameraRoll from '@react-native-community/cameraroll';
 
 interface Props {
-  route: any;
   navigation: any;
 }
 
@@ -26,16 +32,64 @@ const PlacesOnExchange = (props: Props) => {
   const [selectedImage, setSelectedImage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingList, setLoadingList] = useState(false);
 
-  const {route, navigation} = props;
-  const {params: exchange} = route;
+  const {
+    selectedExchange: exchange,
+    setSelectedExchange,
+    setExchanges,
+    exchanges,
+  } = useExchangeContext();
+
+  const {navigation} = props;
   const {sender, receiver, receiverUser, senderUser} = exchange;
 
   const {theme} = useSettings();
   const {user} = useAuth();
 
+  /*******
+   * Update the list of exchanges if
+   * the selected exchange is updated.
+   */
+  useEffect(() => {
+    if (
+      exchange.requestStatus === 'COMPLETED' &&
+      exchanges.exchangesActives.find((item: any) => item.id === exchange.id)
+    ) {
+      setExchanges((prev: any) => {
+        //Remove the selectedExchange from exchangesActive
+        const newExchangesActives = prev.exchangesActives.filter(
+          (item: any) => item.id !== exchange.id,
+        );
+
+        //Add the selectedExchange to exchangesCompleted
+        const newExchangesComplited = [...prev.exchangesCompleted, exchange];
+
+        return {
+          ...prev,
+          exchangesCompleted: newExchangesComplited,
+          exchangesActives: newExchangesActives,
+        };
+      });
+    } else {
+      setExchanges((prev: any) => {
+        const newActiveExchanges = [];
+        for (let i = 0; i < prev.exchangesActives.length; i++) {
+          exchange.id === prev.exchangesActives[i].id
+            ? (newActiveExchanges[i] = exchange)
+            : (newActiveExchanges[i] = prev.exchangesActives[i]);
+        }
+
+        return {
+          ...prev,
+          exchangesActives: newActiveExchanges,
+        };
+      });
+    }
+  }, [exchange]);
+
   const NotMyExchangeItemButtonAtRow = ({picture, itemStatus, itemId}: any) => {
-    if (itemStatus === 'ACCEPTED') {
+    if (exchange.requestStatus === 'COMPLETED' && itemStatus === 'ACCEPTED') {
       return (
         <PosdataButton
           containerStyles={styles.buttonAtRow}
@@ -43,12 +97,15 @@ const PlacesOnExchange = (props: Props) => {
           gradientHeight={30}
           width={100}
           title="DOWNLOAD"
+          onPress={() => {
+            downloadImage(picture);
+          }}
           gradient
         />
       );
-    }
-
-    if (picture) {
+    } else if (itemStatus === 'ACCEPTED') {
+      return <Text style={{color: theme.colors.text}}>accepted note</Text>;
+    } else if (picture) {
       return (
         <PosdataButton
           containerStyles={[styles.buttonAtRow, {backgroundColor: '#000'}]}
@@ -75,7 +132,7 @@ const PlacesOnExchange = (props: Props) => {
   };
 
   const MyExchangeItemButtonAtRow = ({picture, itemStatus}: any) => {
-    if (itemStatus === 'ACCEPTED') {
+    if (exchange.requestStatus === 'COMPLETED' && itemStatus === 'ACCEPTED') {
       return (
         <PosdataButton
           containerStyles={styles.buttonAtRow}
@@ -83,26 +140,89 @@ const PlacesOnExchange = (props: Props) => {
           gradientHeight={30}
           width={100}
           title="DOWNLOAD"
+          onPress={() => {
+            downloadImage(picture);
+          }}
           gradient
         />
       );
+    } else if (itemStatus === 'ACCEPTED') {
+      return <Text style={{color: theme.colors.text}}>accepted note</Text>;
+    } else if (picture) {
+      return (
+        <PosdataButton
+          containerStyles={styles.buttonAtRow}
+          height={26}
+          gradientHeight={30}
+          width={100}
+          title="VIEW NOTE"
+          gradient
+          onPress={() => {
+            setSelectedImage(picture);
+            setModalVisible(true);
+          }}
+        />
+      );
+    } else {
+      return <Text style={{color: theme.colors.text}}>waiting note</Text>;
     }
-    return picture ? (
-      <PosdataButton
-        containerStyles={styles.buttonAtRow}
-        height={26}
-        gradientHeight={30}
-        width={100}
-        title="VIEW NOTE"
-        gradient
-        onPress={() => {
-          setSelectedImage(picture);
-          setModalVisible(true);
-        }}
-      />
-    ) : (
-      <Text>waiting note</Text>
-    );
+  };
+
+  async function hasAndroidPermission() {
+    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+    const hasPermission = await PermissionsAndroid.check(permission);
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(permission);
+    return status === 'granted';
+  }
+
+  const downloadImage = async (urlImage: string) => {
+    setLoading(true);
+
+    if (Platform.OS === 'android') {
+      if (!(await hasAndroidPermission())) {
+        setLoading(false);
+        return;
+      }
+
+      RNFetchBlob.config({
+        fileCache: true,
+        appendExt: 'jpg',
+      })
+        .fetch('GET', urlImage)
+        .then(res => {
+          CameraRoll.save(res.path(), {album: 'Posdata'})
+            .then(() => {
+              setLoading(false);
+              Alert.alert('Success', 'Image added to POSDATA album');
+            })
+            .catch(err => {
+              console.log(err);
+              Alert.alert('Ups..', 'Error getting the image, try again later');
+              setLoading(false);
+            });
+        })
+        .catch(err => {
+          console.log(err);
+          Alert.alert('Ups..', 'Error getting the image, try again later');
+          setLoading(false);
+        });
+    } else {
+      CameraRoll.save(urlImage, {album: 'Posdata'})
+        .then(() => {
+          Alert.alert('Success', 'Image added to POSDATA album');
+          setLoading(false);
+        })
+        .catch(e => {
+          console.log(e);
+          Alert.alert('Ups..', 'Error getting the image, try again later');
+          setLoading(false);
+        });
+    }
   };
 
   //   PLACE ROW
@@ -110,8 +230,6 @@ const PlacesOnExchange = (props: Props) => {
     const place = exchangeItem?.place;
     const itemStatus = exchangeItem?.itemStatus;
     const pictureNote = exchangeItem?.pictureNote;
-
-    console.log('exchangeItem', exchangeItem);
 
     return (
       <View style={[styles.placeRow, {borderColor: theme.colors.text}]}>
@@ -177,8 +295,6 @@ const PlacesOnExchange = (props: Props) => {
   };
 
   const getMyItemExchange = () => {
-    console.log('getMyItemExchange: sender: ', sender);
-    console.log('getMyItemExchange: receiver: ', receiver);
     if (sender?.ownerId === user?.id) {
       return {exchangeItem: sender, user: senderUser};
     }
@@ -189,8 +305,6 @@ const PlacesOnExchange = (props: Props) => {
   };
 
   const getTheOtherItemExchange = () => {
-    console.log('getTheOtherItemExchange: sender: ', sender);
-    console.log('getTheOtherItemExchange: receiver: ', receiver);
     if (sender?.ownerId !== user?.id) {
       return {exchangeItem: sender, user: senderUser};
     }
@@ -205,22 +319,38 @@ const PlacesOnExchange = (props: Props) => {
     try {
       const myItemExchangeInfo = getMyItemExchange();
       await acceptNote(myItemExchangeInfo.exchangeItem.id, exchange.id);
+      const updatedExchange = await getExchangeById(exchange.id);
+      setSelectedExchange(updatedExchange);
     } catch (e) {
       console.log(e);
     }
     setLoading(false);
   };
 
-  console.log('sender?.ownerId', sender?.ownerId);
-  console.log('user?.id', user?.id);
-  console.log('receiver?.ownerId', receiver?.ownerId);
+  const hanldeReLoad = async () => {
+    setLoadingList(true);
+    const updatedExchange = await getExchangeById(exchange.id);
+    setSelectedExchange(updatedExchange);
+    setLoadingList(false);
+  };
 
   const myItemExchangeInfo = getMyItemExchange();
   const theOtherItemExchangeInfo = getTheOtherItemExchange();
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* BODY */}
+      <ScrollView
+        style={styles.bodyContainer}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoadingList}
+            onRefresh={() => {
+              hanldeReLoad();
+            }}
+          />
+        }>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.pop()}>
@@ -239,6 +369,8 @@ const PlacesOnExchange = (props: Props) => {
           />
         </View>
       </ScrollView>
+
+      {/* BUTTONS */}
       <View style={styles.buttonsContainer}>
         {myItemExchangeInfo?.exchangeItem?.itemStatus === 'WAITING_ACCEPT' &&
         myItemExchangeInfo?.exchangeItem?.pictureNote ? (
@@ -258,6 +390,8 @@ const PlacesOnExchange = (props: Props) => {
           }}
         />
       </View>
+
+      {/* MODALS */}
       <Modal visible={modalVisible} animationType="slide">
         <Image
           source={{uri: selectedImage}}
@@ -280,6 +414,9 @@ const PlacesOnExchange = (props: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
+  },
+  bodyContainer: {
     paddingHorizontal: 15,
     width: '100%',
   },
@@ -294,15 +431,15 @@ const styles = StyleSheet.create({
     minHeight: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 25,
+    marginBottom: 25,
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 10,
     padding: 10,
-    //backgroundColor: 'purple',
   },
   buttonsContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
+    marginBottom: 25,
   },
   rowDataContainer: {
     flex: 1,
@@ -390,6 +527,7 @@ const styles = StyleSheet.create({
   backButton: {
     borderRadius: 20,
     padding: 5,
+    marginVertical: 5,
   },
 });
 

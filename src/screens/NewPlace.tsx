@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  SafeAreaView,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
@@ -169,7 +170,9 @@ const NewPlace = ({navigation}: Props) => {
           </Swiper>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => navigation.pop()}>
+            onPress={() => {
+              navigation.pop();
+            }}>
             <Icon color={'white'} size={34} name="arrow-back-sharp" />
           </TouchableOpacity>
           {/* BUTTONS */}
@@ -201,13 +204,8 @@ const NewPlace = ({navigation}: Props) => {
     }
     case '2': {
       return (
-        <View style={styles.formMainContainer}>
+        <SafeAreaView style={styles.formMainContainer}>
           <ScrollView style={styles.scrollViewContainer}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.pop()}>
-              <Icon color={'white'} size={34} name="arrow-back-sharp" />
-            </TouchableOpacity>
             <View style={styles.formContainer}>
               <Text style={[styles.titleForm, {color: theme.colors.text}]}>
                 PLACE INFORMATION
@@ -265,7 +263,7 @@ const NewPlace = ({navigation}: Props) => {
               onPress={() => setStep(s => `${Number(s) - 1}`)}
             />
           </View>
-        </View>
+        </SafeAreaView>
       );
     }
     default:
@@ -385,7 +383,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   formButtonContainer: {width: '100%', padding: 15, marginBottom: 25},
-  scrollViewContainer: {height: '100%', paddingTop: 55},
+  scrollViewContainer: {height: '100%'},
   formMainContainer: {backgroundColor: 'transparent', flex: 1},
   congratTextContainer: {
     alignItems: 'center',

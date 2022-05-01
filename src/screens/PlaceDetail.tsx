@@ -24,7 +24,7 @@ const PlaceDetail = (props: Props) => {
 
   const {route, navigation} = props;
   const {params} = route;
-  const {place, exchange, options} = params;
+  const {place, options} = params;
 
   const {theme} = useSettings();
   const {user} = useAuth();
@@ -87,7 +87,7 @@ const PlaceDetail = (props: Props) => {
             gradient
             title="SELECT PLACE"
             onPress={() => {
-              navigation.navigate('ResponseExchangeForm', {place, exchange});
+              navigation.navigate('ResponseExchangeForm', {place});
               setModalOpen(false);
             }}
           />

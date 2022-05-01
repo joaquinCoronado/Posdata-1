@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  SafeAreaView,
+} from 'react-native';
 import Image from 'react-native-fast-image';
 import PosdataButton from '../components/PosdataButton';
 import {getUserInfo, getPlacesByOwnerId} from '../api';
@@ -43,6 +50,7 @@ const Profile = ({navigation}: any) => {
 
   interface renderItemProps {
     item: any;
+    index: any;
   }
 
   const UserData = () => {
@@ -95,7 +103,7 @@ const Profile = ({navigation}: any) => {
   );
 
   return (
-    <View style={styles.placesContainer}>
+    <SafeAreaView style={styles.placesContainer}>
       <FlatList
         showsVerticalScrollIndicator={false}
         numColumns={2}
@@ -103,18 +111,30 @@ const Profile = ({navigation}: any) => {
         refreshing={isLoading}
         onRefresh={handleRefresh}
         renderItem={(props: renderItemProps) => {
-          const {item} = props;
+          const {item, index} = props;
+          let isRigthItem = (index + 1) % 2 === 0;
           return (
             <TouchableOpacity
               disabled={isLoading}
               activeOpacity={0.88}
               onPress={() => {
-                navigation.navigate('Place', {
+                navigation.navigate('PlaceDetail', {
                   place: item,
                   options: {mode: 'request'},
                 });
               }}
-              style={styles.itemContainer}>
+              style={[
+                styles.itemContainer,
+                isRigthItem
+                  ? {
+                      paddingLeft: 5,
+                      paddingRight: 8,
+                    }
+                  : {
+                      paddingLeft: 8,
+                      paddingRight: 0,
+                    },
+              ]}>
               <Image
                 source={{uri: item.picture}}
                 resizeMode="cover"
@@ -132,7 +152,7 @@ const Profile = ({navigation}: any) => {
         }
         ListFooterComponent={ListFooter(getPlacesOfTheUser)}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -140,12 +160,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    padding: 10,
   },
   // DATA USER
   userDataContainer: {
-    marginTop: 65,
-    marginBottom: 25,
+    marginVertical: 25,
+    paddingHorizontal: 8,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -171,6 +190,7 @@ const styles = StyleSheet.create({
   //BUTTONS
   buttonsContainer: {
     width: '100%',
+    paddingHorizontal: 8,
     backgroundColor: 'transparent',
   },
   blackButton: {
@@ -185,15 +205,12 @@ const styles = StyleSheet.create({
 
   //PLACES
   placesContainer: {
-    flex: 1,
-    paddingHorizontal: 8,
     width: '100%',
   },
   itemContainer: {
     height: 250,
     width: '50%',
     marginBottom: 5,
-    marginRight: 5,
   },
   placeImage: {
     flex: 1,
@@ -204,6 +221,7 @@ const styles = StyleSheet.create({
   },
   listFooter: {
     marginBottom: 125,
+    paddingHorizontal: 8,
   },
 });
 

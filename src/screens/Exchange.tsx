@@ -10,60 +10,44 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {useSettings} from '../context/settings';
+import {useExchangeContext} from '../context/exchange';
 import PosdataButton from '../components/PosdataButton';
 import GradientText from '../components/GradientText';
 import Image from 'react-native-fast-image';
-import {
-  getPenddingToAcceptExchanges,
-  getActiveExchanges,
-  getCompletedExchanges,
-} from '../api';
 import {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../navigation';
+import {listAllExchagnes} from '../api';
 
 interface Props extends StackScreenProps<RootStackParams, 'Home'> {}
 
 const Exchange = ({navigation}: Props) => {
-  const [isLoading, setLoading] = useState(true);
   const [showActiveView, setShowActiveView] = useState(true);
-  const [exchanges, setExchanges] = useState({
-    exchangesPenddingToAccept: [],
-    exchangesActives: [],
-    exchangesCompleted: [],
-  });
+  const [isLoading, setLoading] = useState(true);
+  const {exchanges, setSelectedExchange, setExchanges} = useExchangeContext();
 
-  const {exchangesPenddingToAccept, exchangesActives, exchangesCompleted} =
-    exchanges;
+  const {
+    exchangesPenddingToAccept,
+    exchangesActives,
+    isExchangesLoading,
+    exchangesCompleted,
+  } = exchanges;
 
   const {theme} = useSettings();
   let {text} = theme.colors;
 
   useEffect(() => {
-    isLoading ? getExchanges() : null;
+    isLoading ? loadExchanges() : null;
   }, [isLoading]);
 
-  const getExchanges = async () => {
-    setLoading(true);
-
-    Promise.all([
-      getPenddingToAcceptExchanges(),
-      getActiveExchanges(),
-      getCompletedExchanges(),
-    ])
-      .then(responses => {
-        console.log('responses', responses);
-        setExchanges(prev => ({
-          ...prev,
-          exchangesPenddingToAccept: responses[0],
-          exchangesActives: responses[1],
-          exchangesCompleted: responses[2],
-        }));
-        setLoading(false);
-      })
-      .catch(errors => {
-        console.log(errors);
-        setLoading(false);
-      });
+  const loadExchanges = async () => {
+    const responses = await listAllExchagnes();
+    setLoading(false);
+    setExchanges((prev: any) => ({
+      ...prev,
+      exchangesPenddingToAccept: responses[0],
+      exchangesActives: responses[1],
+      exchangesCompleted: responses[2],
+    }));
   };
 
   const ExchangeRow = ({exchange, onPress}: any) => {
@@ -113,11 +97,12 @@ const Exchange = ({navigation}: Props) => {
             <Text style={[styles.titleTwo, {color: text}]}>
               PENDIND TO ACCEPT
             </Text>
-            {exchangesPenddingToAccept.map(exchange => (
+            {exchangesPenddingToAccept.map((exchange: any) => (
               <ExchangeRow
                 key={exchange.id}
                 onPress={() => {
-                  navigation.navigate('ResponseExchangeRequest', exchange);
+                  setSelectedExchange(exchange);
+                  navigation.navigate('ResponseExchangeRequest');
                 }}
                 exchange={exchange}
               />
@@ -129,11 +114,12 @@ const Exchange = ({navigation}: Props) => {
           <Text style={[styles.titleTwo, {color: text}]}>
             WAITTING RESPONSE
           </Text>
-          {exchangesActives.map(exchange => (
+          {exchangesActives.map((exchange: any) => (
             <ExchangeRow
               key={exchange.id}
               onPress={() => {
-                navigation.navigate('PlacesOnExchange', exchange);
+                setSelectedExchange(exchange);
+                navigation.navigate('PlacesOnExchange');
               }}
               exchange={exchange}
             />
@@ -154,12 +140,13 @@ const Exchange = ({navigation}: Props) => {
     return (
       <View style={styles.listContainer}>
         <Text style={[styles.titleTwo, {color: text}]}>ALL COMPLETED</Text>
-        {exchangesCompleted.map(exchange => (
+        {exchangesCompleted.map((exchange: any) => (
           <ExchangeRow
             key={exchange.id}
             exchange={exchange}
             onPress={() => {
-              navigation.navigate('PlacesOnExchange', exchange);
+              setSelectedExchange(exchange);
+              navigation.navigate('PlacesOnExchange');
             }}
           />
         ))}
@@ -173,7 +160,7 @@ const Exchange = ({navigation}: Props) => {
         style={styles.scrollView}
         refreshControl={
           <RefreshControl
-            refreshing={isLoading}
+            refreshing={isLoading || isExchangesLoading}
             onRefresh={() => setLoading(true)}
           />
         }>

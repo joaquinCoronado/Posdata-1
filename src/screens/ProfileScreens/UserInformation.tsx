@@ -6,6 +6,7 @@ import {
   TextInput,
   ScrollView,
   Pressable,
+  SafeAreaView,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,6 +17,7 @@ import {updateInfoUser} from '../../api';
 import LoadingModal from '../../components/LoadingModal';
 import DatePicker from 'react-native-date-picker';
 import {Picker} from '@react-native-picker/picker';
+import moment from 'moment';
 
 const UserInformation = ({navigation}: any) => {
   let [isEditMode, setEditMode] = useState(false);
@@ -25,12 +27,8 @@ const UserInformation = ({navigation}: any) => {
   const {user, setUser} = useAuth();
   let {picture = ''} = user?.userInfo ? user?.userInfo : {};
 
-  const toLocalDate = date => {
-    let formatedDate = date.toLocaleString('es-MX', {
-      timeZone: 'America/Mexico_City',
-    });
-    let result = formatedDate.split(' ');
-    return result[0];
+  const toLocalDate = (date: Date) => {
+    return moment(date).format('DD/MM/YYYY');
   };
 
   const DataRow = ({label, data}) => {
@@ -199,6 +197,7 @@ const UserInformation = ({navigation}: any) => {
           <DatePicker
             modal
             mode="date"
+            textColor={theme.dark ? '#fff' : '#000'}
             open={isBirthdayDatePickerActive}
             date={new Date(form.birthday)}
             onConfirm={date => {
@@ -230,8 +229,10 @@ const UserInformation = ({navigation}: any) => {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.bodyContainer}
+        showsVerticalScrollIndicator={false}>
         <View style={styles.imageContainer}>
           {isEditMode ? (
             <View style={[styles.changeImageContainer, styles.imageBackground]}>
@@ -256,20 +257,20 @@ const UserInformation = ({navigation}: any) => {
         <View style={styles.dataContainer}>
           {isEditMode ? <UserDataForm /> : <InformationList />}
         </View>
-      </View>
-      <LoadingModal visible={isLoading} />
-    </ScrollView>
+        <LoadingModal visible={isLoading} />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 35,
-    paddingHorizontal: 10,
     width: '100%',
-    height: '100%',
-    // backgroundColor: 'grey',
+  },
+  bodyContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
   },
   titleText: {
     fontWeight: '500',

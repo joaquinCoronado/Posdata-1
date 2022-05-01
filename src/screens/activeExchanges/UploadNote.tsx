@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Image from 'react-native-fast-image';
@@ -7,8 +7,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import PosdataButton from '../../components/PosdataButton';
 import LoadingModal from '../../components/LoadingModal';
 
-import {uploadImage, addNoteToRequest, deleteImage} from '../../api';
+import {
+  uploadImage,
+  addNoteToRequest,
+  deleteImage,
+  listAllExchagnes,
+} from '../../api';
 import {useSettings} from '../../context/settings';
+import {useExchangeContext} from '../../context/exchange';
 
 interface Photo {
   type: string;
@@ -22,9 +28,19 @@ const UploadNote = ({navigation, route}: any) => {
 
   const {params} = route;
   const {actualImage, itemId} = params;
-  console.log('params', params);
 
   const {theme} = useSettings();
+  const {exchanges, setExchanges, selectedExchange, setSelectedExchange} =
+    useExchangeContext();
+
+  useEffect(() => {
+    for (let i = 0; i < exchanges.exchangesActives.length; i++) {
+      if (exchanges.exchangesActives[i].id === selectedExchange?.id) {
+        setSelectedExchange(exchanges.exchangesActives[i]);
+        break;
+      }
+    }
+  }, [exchanges.exchangesActives]);
 
   const getPhotos = () => {
     Alert.alert('Subir Foto', 'Selecciona una opcion', [
@@ -104,7 +120,14 @@ const UploadNote = ({navigation, route}: any) => {
 
       if (res?.data?.image) {
         newImage = res.data.image;
-        await addNoteToRequest(itemId, newImage);
+        const updatedItem = await addNoteToRequest(itemId, newImage);
+        const allPlaces = await listAllExchagnes();
+        setExchanges((prev: any) => ({
+          ...prev,
+          exchangesPenddingToAccept: allPlaces[0],
+          exchangesActives: allPlaces[1],
+          exchangesCompleted: allPlaces[2],
+        }));
         navigation.pop();
       }
     } catch (e) {

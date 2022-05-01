@@ -27,9 +27,9 @@ const Welcome = ({navigation}: Props) => {
           <FastImage
             style={styles.imageLogo}
             source={{
-              uri: 'https://res.cloudinary.com/posdata/image/upload/v1649741414/posdata/Group_3_j53coj.png',
+              uri: 'https://res.cloudinary.com/posdata/image/upload/v1651404581/posdata/Group_29_kdyduo.png',
             }}
-            resizeMode={FastImage.resizeMode.center}
+            resizeMode={FastImage.resizeMode.cover}
           />
 
           <Text style={styles.posdataText}>Posdata</Text>

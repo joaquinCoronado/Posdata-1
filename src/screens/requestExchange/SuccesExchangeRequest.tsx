@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, SafeAreaView, Text} from 'react-native';
 import {useSettings} from '../../context/settings';
+import {useExchangeContext} from '../../context/exchange';
 import PosdataButton from '../../components/PosdataButton';
 
 interface Props {
@@ -12,6 +13,8 @@ const SuccesExchangeRequest = (props: Props) => {
 
   let {theme} = useSettings();
   let {text} = theme.colors;
+
+  const {loadExchanges} = useExchangeContext();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -30,6 +33,7 @@ const SuccesExchangeRequest = (props: Props) => {
         <PosdataButton
           title="MY EXCHANGES"
           onPress={() => {
+            loadExchanges();
             navigation.navigate('Exchange', {});
           }}
         />

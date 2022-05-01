@@ -224,6 +224,28 @@ const acceptNote = async (itemId: number, exchangeId: number) => {
   return response.data;
 };
 
+const listAllExchagnes = async () => {
+  const response = await Promise.all([
+    getPenddingToAcceptExchanges(),
+    getActiveExchanges(),
+    getCompletedExchanges(),
+  ]);
+
+  return response;
+};
+
+const getExchangeById = async (exchangeId: number) => {
+  let token = await AsyncStorage.getItem('token');
+  let url = `/exchange/v1/exchange/individual?exchangeId=${exchangeId}`;
+  const response = await Api.get(url, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
 export {
   Api,
   authConfig,
@@ -241,4 +263,6 @@ export {
   addNoteToRequest,
   acceptNote,
   getCompletedExchanges,
+  listAllExchagnes,
+  getExchangeById,
 };

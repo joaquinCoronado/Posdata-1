@@ -3,12 +3,12 @@ import {View, Text, StyleSheet, SafeAreaView} from 'react-native';
 import Image from 'react-native-fast-image';
 import PosdataButton from '../../components/PosdataButton';
 import {useSettings} from '../../context/settings';
+import {useExchangeContext} from '../../context/exchange';
 import LoadingModal from '../../components/LoadingModal';
 import GradientText from '../../components/GradientText';
 import {handleExchangeRequest} from '../../api';
 
 interface Props {
-  route: any;
   navigation: any;
 }
 
@@ -16,8 +16,8 @@ const ResponseExchangeRequest = (props: Props) => {
   const [isLoading, setLoading] = useState(false);
   const {theme} = useSettings();
 
-  const {route, navigation} = props;
-  const {params: exchange} = route;
+  const {navigation} = props;
+  const {selectedExchange: exchange, setExchanges} = useExchangeContext();
 
   const {senderUser, sender} = exchange;
 
@@ -25,6 +25,19 @@ const ResponseExchangeRequest = (props: Props) => {
     setLoading(true);
     try {
       await handleExchangeRequest(false, exchange.id, {});
+
+      setExchanges((prev: any) => {
+        //Remove the selectedExchange from exchangesActive
+        const newExchangesPenddingToAccept =
+          prev.exchangesPenddingToAccept.filter(
+            (item: any) => item.id !== exchange.id,
+          );
+        return {
+          ...prev,
+          exchangesPenddingToAccept: newExchangesPenddingToAccept,
+        };
+      });
+
       navigation.pop();
     } catch (e) {
       console.log(e);

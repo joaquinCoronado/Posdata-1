@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {useSettings} from './src/context/settings';
@@ -11,6 +11,10 @@ const App = () => {
 
   return (
     <View style={{...styles.wrapper, backgroundColor: theme.colors.background}}>
+      <StatusBar
+        backgroundColor={theme.colors.background}
+        barStyle={theme.dark ? 'light-content' : 'dark-content'}
+      />
       <NavigationContainer theme={theme}>
         <Navigation />
       </NavigationContainer>
