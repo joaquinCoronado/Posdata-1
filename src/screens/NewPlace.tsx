@@ -58,9 +58,11 @@ const NewPlace = ({navigation}: Props) => {
 
               setTempPhotos(s =>
                 s.concat({
+                  // @ts-ignore
                   uri: res?.assets?.[0]?.uri,
                   type: res?.assets?.[0]?.type,
                   name: res?.assets?.[0]?.fileName,
+                  // @ts-ignore
                   size: res.assets[0].fileSize,
                 }),
               );
@@ -84,9 +86,11 @@ const NewPlace = ({navigation}: Props) => {
 
               setTempPhotos(s =>
                 s.concat({
+                  // @ts-ignore
                   uri: res?.assets?.[0]?.uri,
                   type: res?.assets?.[0]?.type,
-                  name: res.assets[0].fileName,
+                  name: res.assets?.[0].fileName,
+                  // @ts-ignore
                   size: res.assets[0].fileSize,
                 }),
               );
@@ -112,9 +116,11 @@ const NewPlace = ({navigation}: Props) => {
           name: form.placeName,
           picture: res?.data?.image,
         });
+        // @ts-ignore
         onChange('clean', null);
         setTempPhotos([]);
         setLoading(false);
+        // @ts-ignore
         setStep(s => `${Number(s) + 1}`);
       }
     } catch (error) {
@@ -171,6 +177,7 @@ const NewPlace = ({navigation}: Props) => {
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => {
+              // @ts-ignore
               navigation.pop();
             }}>
             <Icon color={'white'} size={34} name="arrow-back-sharp" />
@@ -195,6 +202,7 @@ const NewPlace = ({navigation}: Props) => {
                   ]);
                   return;
                 }
+                // @ts-ignore
                 setStep(s => `${Number(s) + 1}`);
               }}
             />
@@ -260,6 +268,7 @@ const NewPlace = ({navigation}: Props) => {
             <PosdataButton title="SAVE PLACE" onPress={onSubmit} gradient />
             <PosdataButton
               title="BACK"
+              // @ts-ignore
               onPress={() => setStep(s => `${Number(s) - 1}`)}
             />
           </View>
