@@ -7,28 +7,28 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
+  RefreshControl,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useSettings} from '../context/settings';
 import PosdataButton from '../components/PosdataButton';
-import {RootStackParams} from '../navigation/places';
+import {RootTabsParams} from '../navigation/tabs';
 import {searchPlaces} from '../api';
 
-interface Props extends StackScreenProps<RootStackParams, 'Places'> {}
+interface Props extends StackScreenProps<RootTabsParams, 'Search'> {}
 
 const Search = ({navigation}: Props) => {
   let [places, setPlaces] = useState([]);
   let [searchTest, setSearchText] = useState('');
-  let [isLoading, setLoading] = useState(false);
+  let [isLoading, setLoading] = useState(true);
   const {theme} = useSettings();
   const {top} = useSafeAreaInsets();
   const {text} = theme.colors;
 
   const getPlaces = useCallback(async () => {
     try {
-      setLoading(true);
       let placesFromApi = await searchPlaces(searchTest);
       setPlaces(placesFromApi);
     } catch (e) {
@@ -38,8 +38,8 @@ const Search = ({navigation}: Props) => {
   }, [searchTest]);
 
   useEffect(() => {
-    getPlaces();
-  }, [getPlaces]);
+    isLoading ? getPlaces() : null;
+  }, [getPlaces, isLoading]);
 
   interface renderItemProps {
     item: any;
@@ -66,7 +66,7 @@ const Search = ({navigation}: Props) => {
           value={searchTest}
           placeholder="Search Place"
           onEndEditing={() => {
-            getPlaces();
+            setLoading(true);
           }}
         />
         <SafeAreaView style={styles.safeAreaContainer}>
@@ -74,8 +74,19 @@ const Search = ({navigation}: Props) => {
             showsVerticalScrollIndicator={false}
             refreshing={isLoading}
             onRefresh={() => {
-              getPlaces();
+              setLoading(true);
             }}
+            refreshControl={
+              <RefreshControl
+                title={'Loading...'}
+                tintColor="rgba(0,0,0,0.5)"
+                refreshing={isLoading}
+                onRefresh={() => {
+                  setPlaces([]);
+                  setLoading(true);
+                }}
+              />
+            }
             numColumns={3}
             data={places}
             keyExtractor={item => item.id}
@@ -86,6 +97,7 @@ const Search = ({navigation}: Props) => {
                   disabled={isLoading}
                   activeOpacity={0.88}
                   onPress={() => {
+                    // @ts-ignore
                     navigation.navigate('PlaceDetail', {
                       place: item,
                       options: {mode: 'request'},
@@ -103,7 +115,7 @@ const Search = ({navigation}: Props) => {
             ListHeaderComponent={
               <Text style={[styles.titleTwo, {color: text}]}>ALL RESULTS</Text>
             }
-            ListFooterComponent={listFooter(getPlaces)}
+            ListFooterComponent={listFooter(() => setLoading(true))}
           />
         </SafeAreaView>
       </View>
