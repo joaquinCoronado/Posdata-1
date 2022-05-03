@@ -246,6 +246,20 @@ const getExchangeById = async (exchangeId: number) => {
   return response.data;
 };
 
+interface BodyEvent {}
+
+const addEvent = async (body: BodyEvent) => {
+  const token = await AsyncStorage.getItem('token');
+  const url = '/event/v1/event';
+  const response = await Api.post(url, body, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  return response.data;
+};
+
 export {
   Api,
   authConfig,
@@ -265,4 +279,5 @@ export {
   getCompletedExchanges,
   listAllExchagnes,
   getExchangeById,
+  addEvent,
 };
