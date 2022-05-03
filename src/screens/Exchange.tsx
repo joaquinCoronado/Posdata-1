@@ -25,12 +25,8 @@ const Exchange = ({navigation}: Props) => {
   const [isLoading, setLoading] = useState(true);
   const {exchanges, setSelectedExchange, setExchanges} = useExchangeContext();
 
-  const {
-    exchangesPenddingToAccept,
-    exchangesActives,
-    isExchangesLoading,
-    exchangesCompleted,
-  } = exchanges;
+  const {exchangesPenddingToAccept, exchangesActives, exchangesCompleted} =
+    exchanges;
 
   const {theme} = useSettings();
   let {text} = theme.colors;
@@ -161,7 +157,7 @@ const Exchange = ({navigation}: Props) => {
         style={styles.scrollView}
         refreshControl={
           <RefreshControl
-            refreshing={isLoading || isExchangesLoading}
+            refreshing={isLoading}
             onRefresh={() => setLoading(true)}
           />
         }>
