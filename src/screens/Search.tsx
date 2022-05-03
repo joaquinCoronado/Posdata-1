@@ -64,6 +64,7 @@ const Search = ({navigation}: Props) => {
           style={[styles.input, {borderColor: text, color: text}]}
           onChangeText={setSearchText}
           value={searchTest}
+          placeholder="Search Place"
           onEndEditing={() => {
             getPlaces();
           }}
