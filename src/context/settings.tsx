@@ -5,7 +5,6 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import {Appearance, AppState} from 'react-native';
 import propTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from 'react-native-splash-screen';
@@ -56,22 +55,17 @@ const SettingsProvider = ({children}: any) => {
     appLoading: true,
     welcomed: false,
   });
-  const [theme, setTheme] = useState<PosdataTheme>(
-    Appearance.getColorScheme() === 'dark' ? darkTheme : lightTheme,
-  );
+  const [theme, setTheme] = useState<PosdataTheme>(lightTheme);
 
   useEffect(() => {
-    const listener = AppState.addEventListener('change', status => {
-      if (status === 'active') {
-        Appearance.getColorScheme() === 'light'
-          ? setLightTheme()
-          : setDarkTheme();
-      }
-    });
+    // const listener = AppState.addEventListener('change', status => {
+    //   if (status === 'active') {
+    //     Appearance.getColorScheme() === 'light'
+    //       ? setLightTheme()
+    //       : setDarkTheme();
+    //   }
+    // });
     SplashScreen.hide();
-    return () => {
-      listener.remove();
-    };
   }, []);
 
   useEffect(() => {
