@@ -15,7 +15,8 @@ import {useAuth} from '../context/auth';
 import {useSettings} from '../context/settings';
 import {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../navigation';
-interface Props extends StackScreenProps<RootStackParams, 'Place'> {
+import {addEvent} from '../api';
+interface Props extends StackScreenProps<RootStackParams, 'PlaceDetail'> {
   route: any;
 }
 
@@ -31,6 +32,19 @@ const PlaceDetail = (props: Props) => {
 
   useEffect(() => {
     StatusBar.setBarStyle('light-content', true);
+    addEvent({
+      name: user?.name || '',
+      // @ts-ignore
+      userId: user?.id || '',
+      payload: {
+        placeId: place.id,
+        placeName: place.name,
+      },
+    })
+      .then(res => {
+        console.log('Exito: ', res);
+      })
+      .catch();
     return () => {
       StatusBar.setBarStyle('dark-content', true);
     };

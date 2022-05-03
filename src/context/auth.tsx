@@ -2,13 +2,13 @@ import React, {createContext, useState, useEffect, useContext} from 'react';
 import propTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {Api, authConfig, getUserInfo} from '../api/index';
+import {Api, authConfig, getUserInfo, addEvent} from '../api/index';
 import {AuthContextType} from '../types';
 import {LoginResponse} from '../types/auth';
 
 type AuthContextProps = {
   user: AuthContextType;
-  setUser: () => Dispatch<SetStateAction<AuthContextType>>;
+  setUser: (data: AuthContextType) => () => void;
   login: (email: string, password: string) => Promise<Boolean>;
   logout: () => void;
   signup: (body: {
@@ -36,6 +36,16 @@ const AuthProvider = ({children}: any) => {
 
   useEffect(() => {
     AsyncStorage.setItem('@user', JSON.stringify(user));
+    if (user) {
+      addEvent({
+        name: user.name,
+        userId: user.id,
+      })
+        .then(response => {
+          console.log('Response: ', response);
+        })
+        .catch();
+    }
   }, [user]);
 
   const login = (username: string, password: string) => {
@@ -77,9 +87,22 @@ const AuthProvider = ({children}: any) => {
     });
   };
 
-  const logout = () => setUser(null);
+  const logout = async () => {
+    try {
+      const response = await addEvent({
+        // @ts-ignore
+        userId: user?.id || '',
+        name: user?.name || '',
+      });
+      console.log('response : ', response);
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+    setUser(null);
+  };
 
   return (
+    // @ts-ignore
     <AuthContext.Provider value={{user, setUser, login, logout, signup}}>
       {children}
     </AuthContext.Provider>

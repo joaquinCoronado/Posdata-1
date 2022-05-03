@@ -246,7 +246,14 @@ const getExchangeById = async (exchangeId: number) => {
   return response.data;
 };
 
-interface BodyEvent {}
+interface BodyEvent {
+  name: string;
+  userId: number;
+  payload?: {
+    placeId: string;
+    placeName: string;
+  };
+}
 
 const addEvent = async (body: BodyEvent) => {
   const token = await AsyncStorage.getItem('token');
