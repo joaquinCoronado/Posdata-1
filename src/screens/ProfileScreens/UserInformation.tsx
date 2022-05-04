@@ -18,6 +18,7 @@ import LoadingModal from '../../components/LoadingModal';
 import DatePicker from 'react-native-date-picker';
 import {Picker} from '@react-native-picker/picker';
 import moment from 'moment';
+const defaultProfile = require('../../assets/profile.png');
 
 const UserInformation = ({navigation}: any) => {
   let [isEditMode, setEditMode] = useState(false);
@@ -26,7 +27,7 @@ const UserInformation = ({navigation}: any) => {
   const {theme} = useSettings();
   const {user, setUser} = useAuth();
   let {picture = ''} = user?.userInfo ? user?.userInfo : {};
-
+  const userImage = picture ? {uri: picture} : defaultProfile;
   const toLocalDate = (date: Date) => {
     return moment(date).format('DD/MM/YYYY');
   };
@@ -249,7 +250,7 @@ const UserInformation = ({navigation}: any) => {
             }}>
             <Image
               resizeMode="cover"
-              source={{uri: picture}}
+              source={userImage}
               style={[styles.image, {opacity: isEditMode ? 0.3 : 1}]}
             />
           </Pressable>
@@ -289,7 +290,6 @@ const styles = StyleSheet.create({
     height: 145,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
     opacity: 0.3,
     borderRadius: 80,
   },

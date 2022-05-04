@@ -7,7 +7,6 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import Image from 'react-native-fast-image';

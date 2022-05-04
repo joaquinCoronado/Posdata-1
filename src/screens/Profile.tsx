@@ -14,6 +14,8 @@ import {getUserInfo, getPlacesByOwnerId} from '../api';
 import {useSettings} from '../context/settings';
 import {useAuth} from '../context/auth';
 
+const defaultProfile = require('../assets/profile.png');
+
 const Profile = ({navigation}: any) => {
   const [isLoading, setLoading] = useState(false);
   const [places, setPlaces] = useState([]);
@@ -21,8 +23,11 @@ const Profile = ({navigation}: any) => {
   const {theme} = useSettings();
   const {user, setUser} = useAuth();
   const {
+    // @ts-ignore
     picture,
+    // @ts-ignore
     id,
+    // @ts-ignore
     name,
     country = '',
     city = '',
@@ -43,6 +48,7 @@ const Profile = ({navigation}: any) => {
     setLoading(true);
     const userInfo = await getUserInfo(id);
     console.log('userInfo', userInfo);
+    // @ts-ignore
     setUser({...user, userInfo});
     getPlacesOfTheUser();
     setLoading(false);
@@ -53,14 +59,12 @@ const Profile = ({navigation}: any) => {
     index: any;
   }
 
+  const userImage = picture ? {uri: picture} : defaultProfile;
+
   const UserData = () => {
     return (
       <View style={styles.userDataContainer}>
-        <Image
-          resizeMode="cover"
-          source={{uri: picture}}
-          style={styles.image}
-        />
+        <Image resizeMode="cover" source={userImage} style={styles.image} />
         <Text style={[styles.userNameText, {color: theme.colors.text}]}>
           {name}
         </Text>
