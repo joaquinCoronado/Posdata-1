@@ -253,6 +253,7 @@ interface BodyEvent {
     placeId: string;
     placeName: string;
   };
+  user_os: string;
 }
 
 const addEvent = async (body: BodyEvent) => {

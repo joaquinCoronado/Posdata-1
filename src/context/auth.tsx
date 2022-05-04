@@ -1,4 +1,5 @@
 import React, {createContext, useState, useEffect, useContext} from 'react';
+import {Platform} from 'react-native';
 import propTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -38,8 +39,9 @@ const AuthProvider = ({children}: any) => {
     AsyncStorage.setItem('@user', JSON.stringify(user));
     if (user) {
       addEvent({
-        name: user.name,
+        name: 'open_app',
         userId: user.id,
+        user_os: Platform.OS,
       })
         .then(response => {
           console.log('Response: ', response);
@@ -92,7 +94,8 @@ const AuthProvider = ({children}: any) => {
       const response = await addEvent({
         // @ts-ignore
         userId: user?.id || '',
-        name: user?.name || '',
+        name: 'close_app',
+        user_os: Platform.OS,
       });
       console.log('response : ', response);
     } catch (error) {
