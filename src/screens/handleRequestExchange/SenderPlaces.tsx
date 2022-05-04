@@ -67,7 +67,7 @@ const SenderPlaces = (props: Props) => {
                 disabled={isLoading}
                 activeOpacity={0.88}
                 onPress={() => {
-                  navigation.navigate('Place', {
+                  navigation.navigate('PlaceDetail', {
                     place: item,
                     exchange,
                     options: {mode: 'response'},
