@@ -32,6 +32,7 @@ const NewPlace = ({navigation}: Props) => {
   const [tempPhotos, setTempPhotos] = useState<Photo[]>([]);
   const [step, setStep] = useState<'1' | '2' | '3'>('1');
   const [isLoading, setLoading] = useState<true | false>(false);
+  const [showWarning, setShowWarning] = useState<true | false>(false);
   const {form, onChange} = useForm({
     country: '',
     state: '',
@@ -106,6 +107,12 @@ const NewPlace = ({navigation}: Props) => {
   };
 
   const onSubmit = async () => {
+    if (!form.city || !form.country || !form.placeName || !form.state) {
+      Alert.alert('Faltan datos por llenar');
+      setShowWarning(true);
+      return;
+    }
+    setShowWarning(false);
     try {
       setLoading(true);
       const res = await uploadImage(tempPhotos[0]);
@@ -261,6 +268,13 @@ const NewPlace = ({navigation}: Props) => {
                 placeholder="Name place"
                 placeholderTextColor={theme.colors.text}
               />
+              {showWarning ? (
+                <View style={styles.warningContainer}>
+                  <Text style={styles.warningMessage}>
+                    * Faltan datos por llenar
+                  </Text>
+                </View>
+              ) : null}
               <LoadingModal visible={isLoading} text="Saving place..." />
             </View>
           </ScrollView>
@@ -410,6 +424,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.3)',
     borderRadius: 20,
     padding: 5,
+  },
+  warningContainer: {
+    margin: 20,
+  },
+  warningMessage: {
+    color: '#FF4D00',
+    fontWeight: 'bold',
+    fontSize: 15,
   },
 });
 
