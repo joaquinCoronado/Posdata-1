@@ -5,6 +5,7 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import OptionsButton from '../components/OptionsButton';
@@ -33,9 +34,10 @@ const PlaceDetail = (props: Props) => {
   useEffect(() => {
     StatusBar.setBarStyle('light-content', true);
     addEvent({
-      name: user?.name || '',
+      name: 'see_place',
       // @ts-ignore
       userId: user?.id || '',
+      user_os: Platform.OS,
       payload: {
         placeId: place.id,
         placeName: place.name,
