@@ -382,13 +382,6 @@ const PlacesOnExchange = (props: Props) => {
             }}
           />
         ) : null}
-
-        <PosdataButton
-          title="COMMENTS"
-          onPress={() => {
-            navigation.navigate('Chat', exchange);
-          }}
-        />
       </View>
 
       {/* MODALS */}
