@@ -88,6 +88,7 @@ const Auth = ({navigation, route}: Props) => {
             autoCorrect={false}
             blurOnSubmit={false}
             clearButtonMode="while-editing"
+            keyboardType="email-address"
             style={[styles.input, {borderColor: text, color: text}]}
             value={email}
             placeholder="example@example.com"
