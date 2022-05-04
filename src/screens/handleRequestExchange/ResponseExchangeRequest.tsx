@@ -7,6 +7,7 @@ import {useExchangeContext} from '../../context/exchange';
 import LoadingModal from '../../components/LoadingModal';
 import GradientText from '../../components/GradientText';
 import {handleExchangeRequest} from '../../api';
+const userProfile = require('../../assets/profile.png');
 
 interface Props {
   navigation: any;
@@ -49,11 +50,15 @@ const ResponseExchangeRequest = (props: Props) => {
     navigation.navigate('SenderPlaces', exchange);
   };
 
+  const userImage = senderUser?.picture
+    ? {uri: senderUser?.picture}
+    : userProfile;
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.imagesContainer}>
         <Image
-          source={{uri: senderUser?.picture}}
+          source={userImage}
           resizeMode="cover"
           style={[styles.image, styles.userImage]}
         />
@@ -110,6 +115,7 @@ const styles = StyleSheet.create({
   },
   userImage: {
     left: 15,
+    backgroundColor: 'grey',
     zIndex: 1,
   },
   placeImage: {

@@ -4,7 +4,7 @@ import Image from 'react-native-fast-image';
 import {useSettings} from '../../context/settings';
 import {useExchangeContext} from '../../context/exchange';
 import {getPlacesByOwnerId} from '../../api';
-
+const userProfile = require('../../assets/profile.png');
 interface Props {
   navigation: any;
 }
@@ -33,13 +33,12 @@ const SenderPlaces = (props: Props) => {
   };
 
   const UserData = () => {
+    const userImage = exchange?.senderUser?.picture
+      ? {uri: exchange?.senderUser?.picture}
+      : userProfile;
     return (
       <View style={styles.userDataContainer}>
-        <Image
-          resizeMode="cover"
-          source={{uri: exchange?.senderUser?.picture}}
-          style={styles.image}
-        />
+        <Image resizeMode="cover" source={userImage} style={styles.image} />
         <Text style={[styles.userNameText, {color: theme.colors.text}]}>
           {exchange?.senderUser?.name}
         </Text>
