@@ -150,7 +150,7 @@ const Exchange = ({navigation}: Props) => {
       </View>
     );
   };
-  console.log('exchanges: ', exchanges);
+  console.log('exchanges: ', JSON.stringify(exchanges));
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView

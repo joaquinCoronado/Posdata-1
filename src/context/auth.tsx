@@ -3,7 +3,7 @@ import {Platform} from 'react-native';
 import propTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {Api, authConfig, getUserInfo, addEvent} from '../api/index';
+import {Api, getUserInfo, addEvent} from '../api/index';
 import {AuthContextType} from '../types';
 import {LoginResponse} from '../types/auth';
 
@@ -52,24 +52,20 @@ const AuthProvider = ({children}: any) => {
 
   const login = (username: string, password: string) => {
     return new Promise<Boolean>(async (resolve, reject) => {
-      const params = new URLSearchParams();
-      params.append('username', username);
-      params.append('password', password);
-      params.append('grant_type', 'password');
       try {
-        const ok = await Api.post<LoginResponse>(
-          '/security/oauth/token',
-          params,
-          authConfig,
-        );
-        const {access_token, refresh_token, name, id, email, jti} = ok.data;
-        Api.defaults.headers.common.Authorization = 'Bearer ' + access_token;
-        AsyncStorage.setItem('token', access_token);
+        const ok = await Api.post<LoginResponse>('auth/v1/login', {
+          email: username,
+          password,
+        });
+
+        const {accessToken, refresh_token, name, id, email, jti} = ok.data;
+        Api.defaults.headers.common.Authorization = 'Bearer ' + accessToken;
+        AsyncStorage.setItem('token', accessToken);
         const userInfo = await getUserInfo(id);
-        setUser({access_token, refresh_token, name, id, email, jti, userInfo});
+        setUser({accessToken, refresh_token, name, id, email, jti, userInfo});
         resolve(true);
       } catch (error) {
-        reject(new Error('Eror, please try again later'));
+        reject(new Error('Eror, please try again later ' + error));
       }
     });
   };
@@ -77,7 +73,7 @@ const AuthProvider = ({children}: any) => {
   const signup = (body: {name: string; password: string; email: string}) => {
     return new Promise<Boolean>(async (resolve, reject) => {
       try {
-        const res = await Api.post('/user/v1/signup', body);
+        const res = await Api.post('/auth/v1/signup', body);
         if (res.status !== 200) {
           reject(new Error(''));
         }

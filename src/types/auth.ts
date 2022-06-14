@@ -1,11 +1,11 @@
 export interface LoginResponse {
-  access_token: string;
+  accessToken: string;
   token_type: string;
   refresh_token: string;
   expires_in: number;
   scope: string;
   name: string;
-  id: number;
+  id: string;
   email: string;
   jti: string;
 }

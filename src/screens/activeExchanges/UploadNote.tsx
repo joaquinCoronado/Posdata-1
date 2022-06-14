@@ -120,7 +120,7 @@ const UploadNote = ({navigation, route}: any) => {
 
       if (res?.data?.image) {
         newImage = res.data.image;
-        const updatedItem = await addNoteToRequest(itemId, newImage);
+        await addNoteToRequest(selectedExchange.id, itemId, newImage);
         const allPlaces = await listAllExchagnes();
         setExchanges((prev: any) => ({
           ...prev,
