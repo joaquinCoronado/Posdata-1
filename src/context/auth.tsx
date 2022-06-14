@@ -38,15 +38,15 @@ const AuthProvider = ({children}: any) => {
   useEffect(() => {
     AsyncStorage.setItem('@user', JSON.stringify(user));
     if (user) {
-      addEvent({
-        name: 'open_app',
-        userId: user.id,
-        user_os: Platform.OS,
-      })
-        .then(response => {
-          console.log('Response: ', response);
-        })
-        .catch();
+      // addEvent({
+      //   name: 'open_app',
+      //   userId: user.id,
+      //   user_os: Platform.OS,
+      // })
+      //   .then(response => {
+      //     console.log('Response: ', response);
+      //   })
+      //   .catch();
     }
   }, [user]);
 
@@ -87,13 +87,13 @@ const AuthProvider = ({children}: any) => {
 
   const logout = async () => {
     try {
-      const response = await addEvent({
-        // @ts-ignore
-        userId: user?.id || '',
-        name: 'close_app',
-        user_os: Platform.OS,
-      });
-      console.log('response : ', response);
+      // const response = await addEvent({
+      //   // @ts-ignore
+      //   userId: user?.id || '',
+      //   name: 'close_app',
+      //   user_os: Platform.OS,
+      // });
+      // console.log('response : ', response);
     } catch (error) {
       console.log('Error: ', error);
     }
