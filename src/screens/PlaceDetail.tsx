@@ -32,23 +32,28 @@ const PlaceDetail = (props: Props) => {
   const {user} = useAuth();
 
   useEffect(() => {
-    StatusBar.setBarStyle('light-content', true);
-    addEvent({
-      name: 'see_place',
-      // @ts-ignore
-      userId: user?.id || '',
-      user_os: Platform.OS,
-      payload: {
-        placeId: place.id,
-        placeName: place.name,
-      },
-    })
-      .then(res => {
-        console.log('Exito: ', res);
-      })
-      .catch();
+    if (Platform.OS === 'ios') {
+      StatusBar.setBarStyle('light-content', true);
+    }
+
+    // addEvent({
+    //   name: 'see_place',
+    //   // @ts-ignore
+    //   userId: user?.id || '',
+    //   user_os: Platform.OS,
+    //   payload: {
+    //     placeId: place.id,
+    //     placeName: place.name,
+    //   },
+    // })
+    //   .then(res => {
+    //     console.log('Exito: ', res);
+    //   })
+    //   .catch();
     return () => {
-      StatusBar.setBarStyle('dark-content', true);
+      if (Platform.OS === 'ios') {
+        StatusBar.setBarStyle('dark-content', true);
+      }
     };
   }, []);
 

@@ -358,12 +358,12 @@ const PlacesOnExchange = (props: Props) => {
         </TouchableOpacity>
         <View style={styles.placesContainer}>
           <PlaceRow
-            exchangeItem={theOtherItemExchangeInfo.exchangeItem}
+            exchangeItem={theOtherItemExchangeInfo?.exchangeItem}
             isMyItemExchange={false}
-            userName={theOtherItemExchangeInfo.user.name}
+            userName={theOtherItemExchangeInfo?.user?.name}
           />
           <PlaceRow
-            exchangeItem={myItemExchangeInfo.exchangeItem}
+            exchangeItem={myItemExchangeInfo?.exchangeItem}
             isMyItemExchange={true}
             userName={myItemExchangeInfo?.user?.name}
           />

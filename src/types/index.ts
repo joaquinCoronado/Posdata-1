@@ -1,10 +1,10 @@
 import {Theme} from '@react-navigation/native';
 
 export type AuthContextType = {
-  access_token: string;
+  accessToken: string;
   refresh_token: string;
   name: string;
-  id: number;
+  id: string;
   email: string;
   jti: string;
   userInfo: any;

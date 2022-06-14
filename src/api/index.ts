@@ -86,7 +86,7 @@ const searchPlaces = async (search: string) => {
 };
 
 //USERS
-const getUserInfo = async (userId: number) => {
+const getUserInfo = async (userId: string) => {
   let token = await AsyncStorage.getItem('token');
   let url = 'user/v1/user/query/' + userId;
   const response = await Api.get(url, {
@@ -192,9 +192,13 @@ const handleExchangeRequest = async (
   return response.data;
 };
 
-const addNoteToRequest = async (itemId: number, urlImage: string) => {
+const addNoteToRequest = async (
+  exchangeId: string,
+  itemId: string,
+  urlImage: string,
+) => {
   let token = await AsyncStorage.getItem('token');
-  let url = `/exchange/v1/items?itemId=${itemId}&urlImage=${urlImage}`;
+  let url = `/exchange/v1/items?exchangeId=${exchangeId}&itemId=${itemId}&urlImage=${urlImage}`;
   const response = await Api.put(
     url,
     {},
@@ -248,7 +252,7 @@ const getExchangeById = async (exchangeId: number) => {
 
 interface BodyEvent {
   name: string;
-  userId: number;
+  userId: string;
   payload?: {
     placeId: string;
     placeName: string;
