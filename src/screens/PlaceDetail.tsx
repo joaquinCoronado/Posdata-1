@@ -63,21 +63,25 @@ const PlaceDetail = (props: Props) => {
 
   return (
     <View style={styles.container}>
+      {/* PRINCIPAL IMAGE */}
       <Image
         style={styles.imageContainer}
         source={{uri: place?.picture}}
         resizeMode="cover"
       />
+
       {/* BACK */}
       <TouchableOpacity style={styles.backButton} onPress={handleBack}>
         <Icon color={'white'} size={34} name="arrow-back-sharp" />
       </TouchableOpacity>
 
+      {/* FOOTER */}
       <View
         style={[
           styles.menuContainer,
           {backgroundColor: theme.colors.background},
         ]}>
+        {/* PLACE INFORMATION */}
         <View style={styles.placeInfoContainer}>
           <Text style={[styles.placeName, {color: theme.colors.text}]}>
             {place?.name}
@@ -86,13 +90,17 @@ const PlaceDetail = (props: Props) => {
             {place?.city + ', ' + place?.country}
           </Text>
         </View>
+        {/* OPTIONS MENU BUTTON*/}
         <OptionsButton
           onPress={() => {
             setModalOpen(true);
           }}
         />
       </View>
+
+      {/* OPTIONS MENU */}
       <PopupMenu visible={isModalOpen}>
+        {/* REQUEST EXVHANGE */}
         {options?.mode === 'request' && place?.ownerId !== user?.id ? (
           <PosdataButton
             title="REQUEST FOR EXCHANGE"
@@ -103,6 +111,7 @@ const PlaceDetail = (props: Props) => {
           />
         ) : null}
 
+        {/* SELECT PLACE BUTTON*/}
         {options?.mode === 'response' ? (
           <PosdataButton
             gradient
@@ -114,6 +123,7 @@ const PlaceDetail = (props: Props) => {
           />
         ) : null}
 
+        {/* CANCEL BUTTON */}
         <PosdataButton
           title="CANCEL"
           onPress={() => {
