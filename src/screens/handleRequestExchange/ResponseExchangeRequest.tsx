@@ -56,18 +56,24 @@ const ResponseExchangeRequest = (props: Props) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* HEADER IMAGES */}
       <View style={styles.imagesContainer}>
-        <Image
-          source={userImage}
-          resizeMode="cover"
-          style={[styles.image, styles.userImage]}
-        />
-        <Image
-          source={{uri: sender?.place?.picture}}
-          resizeMode="cover"
-          style={[styles.image, styles.placeImage]}
-        />
+        <View style={[styles.individualImageContainer, {zIndex: 1, left: 1}]}>
+          <Image
+            source={userImage}
+            resizeMode="cover"
+            style={[styles.image, styles.userImage]}
+          />
+        </View>
+        <View style={[styles.individualImageContainer, {right: 1}]}>
+          <Image
+            source={{uri: sender?.place?.picture}}
+            resizeMode="cover"
+            style={[styles.image, styles.placeImage]}
+          />
+        </View>
       </View>
+      {/* EXCHANGE INFO */}
       <View style={styles.dataContainer}>
         <Text style={[styles.userNameText, {color: theme.colors.text}]}>
           {senderUser?.name}
@@ -79,10 +85,13 @@ const ResponseExchangeRequest = (props: Props) => {
           {sender?.place?.name}
         </GradientText>
       </View>
+      {/* BUTTONS */}
       <View style={styles.buttonsContainer}>
         <PosdataButton
           gradient
-          title="SELECT PLACE TO ACEPT"
+          height={'100%'}
+          gradientHeight={60}
+          title="SELECT PLACE TO ACCEPT"
           onPress={hanldeSelectPlaceToAcept}
         />
         <PosdataButton title="REJECT" onPress={hanldeRejectExchange} />
@@ -108,15 +117,27 @@ const styles = StyleSheet.create({
     marginBottom: 75,
     marginTop: 65,
   },
-  image: {
+
+  individualImageContainer: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     width: 190,
     height: 190,
     borderRadius: 95,
   },
+  image: {
+    width: 190,
+    height: 190,
+    borderRadius: 95,
+    elevation: 13,
+  },
   userImage: {
     left: 15,
-    backgroundColor: 'grey',
-    zIndex: 1,
   },
   placeImage: {
     right: 15,

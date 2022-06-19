@@ -22,7 +22,7 @@ const PosdataButton = (props: Props) => {
     title,
     width = '100%',
     height,
-    gradientHeight,
+    gradientHeight = 60,
     containerStyles = {},
     textStyles = {},
     gradient = false,

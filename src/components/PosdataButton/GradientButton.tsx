@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity, StyleSheet} from 'react-native';
+import {TouchableOpacity, StyleSheet, Platform} from 'react-native';
 import {useSettings} from '../../context/settings';
 import LinearGradient from 'react-native-linear-gradient';
 import GradientText from '../GradientText';
@@ -74,6 +74,8 @@ const styles = StyleSheet.create({
     marginRight: 0,
     borderRadius: 5,
     padding: 2,
+    paddingBottom: Platform.OS === 'ios' ? 2 : 1.6,
+    paddingRight: Platform.OS === 'ios' ? 2 : 1.3,
   },
   buttonText: {
     fontWeight: 'bold',
