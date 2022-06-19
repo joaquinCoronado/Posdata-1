@@ -11,6 +11,8 @@ import {
   Platform,
   Alert,
   PermissionsAndroid,
+  Dimensions,
+  StatusBar,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import GradientText from '../../components/GradientText';
@@ -23,6 +25,7 @@ import LoadingModal from '../../components/LoadingModal';
 import {useSettings} from '../../context/settings';
 import RNFetchBlob from 'rn-fetch-blob';
 import CameraRoll from '@react-native-community/cameraroll';
+import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 interface Props {
   navigation: any;
@@ -46,6 +49,9 @@ const PlacesOnExchange = (props: Props) => {
 
   const {theme} = useSettings();
   const {user} = useAuth();
+
+  let width = Dimensions.get('window').width;
+  let height = Dimensions.get('window').height;
 
   /*******
    * Update the list of exchanges if
@@ -87,6 +93,24 @@ const PlacesOnExchange = (props: Props) => {
       });
     }
   }, [exchange]);
+
+  useEffect(() => {
+    if (modalVisible === true) {
+      StatusBar.setBarStyle('light-content', true);
+      if (Platform.OS === 'android') {
+        StatusBar.setBackgroundColor('black');
+      }
+    } else {
+      if (theme.currentTheme !== 'dark') {
+        StatusBar.setBarStyle('dark-content', true);
+        if (Platform.OS === 'android') {
+          StatusBar.setBackgroundColor('white');
+        }
+      } else {
+        StatusBar.setBackgroundColor('#263238');
+      }
+    }
+  }, [modalVisible]);
 
   const NotMyExchangeItemButtonAtRow = ({picture, itemStatus, itemId}: any) => {
     if (exchange.requestStatus === 'COMPLETED' && itemStatus === 'ACCEPTED') {
@@ -386,11 +410,23 @@ const PlacesOnExchange = (props: Props) => {
 
       {/* MODALS */}
       <Modal visible={modalVisible} animationType="slide">
-        <Image
-          source={{uri: selectedImage}}
-          resizeMode="cover"
-          style={{width: '100%', height: '100%', flex: 1}}
-        />
+        <View style={styles.imageZoomContainer}>
+          <ReactNativeZoomableView
+            maxZoom={10}
+            minZoom={1}
+            contentWidth={width}
+            contentHeight={height / 2}
+            bindToBorders={true}
+            movementSensibility={1.9}
+            doubleTapZoomToCenter={true}>
+            <Image
+              source={{uri: selectedImage}}
+              resizeMode="contain"
+              style={{width: '100%', height: '100%', flex: 1}}
+            />
+          </ReactNativeZoomableView>
+        </View>
+
         <TouchableOpacity
           style={styles.iconContainer}
           onPress={() => {
@@ -511,9 +547,13 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
     top: 50,
     right: 30,
     padding: 5,
+    width: 50,
+    height: 50,
     borderRadius: 100,
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
@@ -521,6 +561,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 5,
     marginVertical: 5,
+  },
+  imageZoomContainer: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'black',
   },
 });
 

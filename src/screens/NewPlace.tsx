@@ -8,6 +8,7 @@ import {
   ScrollView,
   TextInput,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
@@ -20,6 +21,7 @@ import {uploadImage, createNewPlace} from '../api';
 import {RootTabsParams} from '../navigation/tabs';
 import LoadingModal from '../components/LoadingModal';
 import PosdataButton from '../components/PosdataButton';
+import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 interface Photo {
   type: string;
@@ -40,6 +42,7 @@ const NewPlace = ({navigation}: Props) => {
     placeName: '',
   });
 
+  let width = Dimensions.get('window').width;
   const {theme} = useSettings();
 
   const getPhotos = () => {
@@ -163,11 +166,23 @@ const NewPlace = ({navigation}: Props) => {
             ) : (
               tempPhotos.map((photo, index) => (
                 <View style={styles.slide}>
-                  <Image
-                    resizeMode="cover"
-                    source={{uri: photo.uri}}
-                    style={styles.image}
-                  />
+                  <View style={styles.image}>
+                    <ReactNativeZoomableView
+                      maxZoom={10}
+                      minZoom={1}
+                      contentWidth={width}
+                      contentHeight={150}
+                      bindToBorders={true}
+                      movementSensibility={1.9}
+                      doubleTapZoomToCenter={true}>
+                      <Image
+                        resizeMode="contain"
+                        source={{uri: photo.uri}}
+                        style={styles.image}
+                      />
+                    </ReactNativeZoomableView>
+                  </View>
+
                   <TouchableOpacity
                     style={styles.iconContainer}
                     onPress={() => {
@@ -329,8 +344,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    ...StyleSheet.absoluteFillObject,
-    alignSelf: 'flex-start',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'black',
   },
   slide: {
     height: '100%',

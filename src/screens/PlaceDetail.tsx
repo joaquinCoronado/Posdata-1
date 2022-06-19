@@ -5,6 +5,7 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
+  Dimensions,
   Platform,
 } from 'react-native';
 import Image from 'react-native-fast-image';
@@ -16,7 +17,8 @@ import {useAuth} from '../context/auth';
 import {useSettings} from '../context/settings';
 import {StackScreenProps} from '@react-navigation/stack';
 import {RootStackParams} from '../navigation';
-import {addEvent} from '../api';
+import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
+
 interface Props extends StackScreenProps<RootStackParams, 'PlaceDetail'> {
   route: any;
 }
@@ -28,12 +30,15 @@ const PlaceDetail = (props: Props) => {
   const {params} = route;
   const {place, options} = params;
 
-  const {theme} = useSettings();
   const {user} = useAuth();
+  const {theme} = useSettings();
+
+  let width = Dimensions.get('window').width;
 
   useEffect(() => {
-    if (Platform.OS === 'ios') {
-      StatusBar.setBarStyle('light-content', true);
+    StatusBar.setBarStyle('light-content', true);
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor('black');
     }
 
     // addEvent({
@@ -51,8 +56,13 @@ const PlaceDetail = (props: Props) => {
     //   })
     //   .catch();
     return () => {
-      if (Platform.OS === 'ios') {
+      if (theme.currentTheme !== 'dark') {
         StatusBar.setBarStyle('dark-content', true);
+        if (Platform.OS === 'android') {
+          StatusBar.setBackgroundColor('white');
+        }
+      } else {
+        StatusBar.setBackgroundColor('#263238');
       }
     };
   }, []);
@@ -64,11 +74,22 @@ const PlaceDetail = (props: Props) => {
   return (
     <View style={styles.container}>
       {/* PRINCIPAL IMAGE */}
-      <Image
-        style={styles.imageContainer}
-        source={{uri: place?.picture}}
-        resizeMode="cover"
-      />
+      <View style={styles.zoomableViewContainer}>
+        <ReactNativeZoomableView
+          maxZoom={10}
+          minZoom={1}
+          contentWidth={width}
+          contentHeight={150}
+          bindToBorders={true}
+          movementSensibility={1.9}
+          doubleTapZoomToCenter={true}>
+          <Image
+            style={styles.imageContainer}
+            source={{uri: place?.picture}}
+            resizeMode="contain"
+          />
+        </ReactNativeZoomableView>
+      </View>
 
       {/* BACK */}
       <TouchableOpacity style={styles.backButton} onPress={handleBack}>
@@ -76,22 +97,17 @@ const PlaceDetail = (props: Props) => {
       </TouchableOpacity>
 
       {/* FOOTER */}
-      <View
-        style={[
-          styles.menuContainer,
-          {backgroundColor: theme.colors.background},
-        ]}>
+      <View style={styles.menuContainer}>
         {/* PLACE INFORMATION */}
         <View style={styles.placeInfoContainer}>
-          <Text style={[styles.placeName, {color: theme.colors.text}]}>
-            {place?.name}
-          </Text>
-          <Text style={[styles.placeLocation, {color: theme.colors.text}]}>
+          <Text style={styles.placeName}>{place?.name}</Text>
+          <Text style={[styles.placeLocation]}>
             {place?.city + ', ' + place?.country}
           </Text>
         </View>
         {/* OPTIONS MENU BUTTON*/}
         <OptionsButton
+          color="white"
           onPress={() => {
             setModalOpen(true);
           }}
@@ -144,9 +160,10 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    height: '85%',
+    height: '100%',
   },
   menuContainer: {
+    position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
@@ -155,6 +172,7 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     height: '15%',
     width: '100%',
+    bottom: 0,
     backgroundColor: 'transparent',
   },
   placeInfoContainer: {
@@ -163,14 +181,14 @@ const styles = StyleSheet.create({
     color: 'balck',
   },
   placeLocation: {
-    color: 'black',
+    color: 'white',
     textTransform: 'capitalize',
   },
   placeName: {
     fontWeight: 'bold',
     fontSize: 20,
     textTransform: 'capitalize',
-    color: 'black',
+    color: 'white',
   },
   backButton: {
     position: 'absolute',
@@ -179,6 +197,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.3)',
     borderRadius: 20,
     padding: 5,
+  },
+  zoomableViewContainer: {
+    backgroundColor: 'black',
+    height: '100%',
+    width: '100%',
   },
 });
 

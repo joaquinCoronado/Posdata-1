@@ -1,8 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 import PosdataButton from '../../components/PosdataButton';
 import LoadingModal from '../../components/LoadingModal';
@@ -32,6 +40,8 @@ const UploadNote = ({navigation, route}: any) => {
   const {theme} = useSettings();
   const {exchanges, setExchanges, selectedExchange, setSelectedExchange} =
     useExchangeContext();
+
+  let width = Dimensions.get('window').width;
 
   useEffect(() => {
     for (let i = 0; i < exchanges.exchangesActives.length; i++) {
@@ -159,11 +169,21 @@ const UploadNote = ({navigation, route}: any) => {
           <ImageBlanckState />
         ) : (
           <View style={styles.selectedImageContainer}>
-            <Image
-              resizeMode="cover"
-              source={{uri: tempPhotos[0] ? tempPhotos[0].uri : actualImage}}
-              style={styles.selectedImage}
-            />
+            <ReactNativeZoomableView
+              maxZoom={10}
+              minZoom={1}
+              contentWidth={width}
+              contentHeight={150}
+              bindToBorders={true}
+              movementSensibility={1.9}
+              doubleTapZoomToCenter={true}>
+              <Image
+                resizeMode="contain"
+                source={{uri: tempPhotos[0] ? tempPhotos[0].uri : actualImage}}
+                style={styles.selectedImage}
+              />
+            </ReactNativeZoomableView>
+
             {tempPhotos.length > 0 ? (
               <TouchableOpacity
                 style={styles.iconContainer}
@@ -189,7 +209,7 @@ const UploadNote = ({navigation, route}: any) => {
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.pop()}>
-        <Icon color={'white'} size={34} name="arrow-back-sharp" />
+        <Icon name="arrow-back-sharp" size={30} color={'white'} />
       </TouchableOpacity>
       <LoadingModal visible={isLoading} />
     </View>
@@ -228,6 +248,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   selectedImageContainer: {
+    backgroundColor: 'black',
     height: '100%',
     overflow: 'hidden',
   },
@@ -238,9 +259,13 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: 'absolute',
-    top: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 40,
     right: 30,
     padding: 5,
+    height: 50,
+    width: 50,
     borderRadius: 100,
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
@@ -260,10 +285,14 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
     top: 40,
     left: 10,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 20,
+    height: 50,
+    width: 50,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 100,
     padding: 5,
   },
 });

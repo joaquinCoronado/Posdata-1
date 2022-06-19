@@ -1,18 +1,18 @@
 import React from 'react';
 import {TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useSettings} from '../context/settings';
 
 interface Props {
   onPress?: () => void;
+  color: string;
 }
 
 const OptionsButton = (props: Props) => {
-  const {theme} = useSettings();
   const {
     onPress = () => {
       console.log('set prop onPress to FlatButton');
     },
+    color = 'white',
   } = props;
   return (
     <TouchableOpacity
@@ -20,11 +20,7 @@ const OptionsButton = (props: Props) => {
       onPress={() => {
         onPress();
       }}>
-      <Icon
-        color={theme.colors.text}
-        size={24}
-        name="ellipsis-vertical-sharp"
-      />
+      <Icon color={color} size={24} name="ellipsis-vertical-sharp" />
     </TouchableOpacity>
   );
 };
