@@ -9,6 +9,7 @@ import {
   TextInput,
   SafeAreaView,
   Dimensions,
+  Platform,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-fast-image';
@@ -366,8 +367,12 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: 'absolute',
-    top: 50,
-    right: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 50,
+    height: 50,
+    top: Platform.OS === 'ios' ? 40 : 10,
+    right: 10,
     padding: 5,
     borderRadius: 100,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -435,10 +440,14 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 50,
+    height: 50,
+    top: Platform.OS === 'ios' ? 40 : 10,
     left: 10,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 100,
     padding: 5,
   },
   warningContainer: {

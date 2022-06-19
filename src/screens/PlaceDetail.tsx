@@ -34,6 +34,7 @@ const PlaceDetail = (props: Props) => {
   const {theme} = useSettings();
 
   let width = Dimensions.get('window').width;
+  let height = Dimensions.get('window').height;
 
   useEffect(() => {
     StatusBar.setBarStyle('light-content', true);
@@ -79,7 +80,7 @@ const PlaceDetail = (props: Props) => {
           maxZoom={10}
           minZoom={1}
           contentWidth={width}
-          contentHeight={150}
+          contentHeight={height / 2}
           bindToBorders={true}
           movementSensibility={1.9}
           doubleTapZoomToCenter={true}>
@@ -93,7 +94,7 @@ const PlaceDetail = (props: Props) => {
 
       {/* BACK */}
       <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Icon color={'white'} size={34} name="arrow-back-sharp" />
+        <Icon color={'white'} size={30} name="arrow-back-sharp" />
       </TouchableOpacity>
 
       {/* FOOTER */}
@@ -173,7 +174,8 @@ const styles = StyleSheet.create({
     height: '15%',
     width: '100%',
     bottom: 0,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    //backgroundColor: 'transparent',
   },
   placeInfoContainer: {
     marginTop: 2,
@@ -192,10 +194,14 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 50,
+    height: 50,
+    top: Platform.OS === 'ios' ? 40 : 10,
     left: 10,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 100,
     padding: 5,
   },
   zoomableViewContainer: {
