@@ -59,11 +59,13 @@ const Exchange = ({navigation}: Props) => {
           onPress(exchange);
         }}
         style={styles.rowContainer}>
-        <Image
-          source={{uri: sender?.place?.picture}}
-          resizeMode="cover"
-          style={styles.image}
-        />
+        <View style={styles.individualImageContainer}>
+          <Image
+            source={{uri: sender?.place?.picture}}
+            resizeMode="cover"
+            style={styles.image}
+          />
+        </View>
         <View style={styles.rowDataContainer}>
           <Text style={[styles.rowDataUserName, {color: text}]}>
             {senderUser?.name}
@@ -239,10 +241,23 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: 'lightgrey',
   },
+  individualImageContainer: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
   image: {
     width: 70,
     height: 70,
     borderRadius: 35,
+    elevation: 5,
   },
   rowDataContainer: {
     flex: 1,

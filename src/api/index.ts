@@ -2,8 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Api = axios.create({
-  baseURL: 'http://posdata.io',
-  //baseURL: 'http://localhost',
+  baseURL: 'https://p01--service-posdata-api--4jg9l7wj6wsq.code.run',
 });
 
 const authConfig = {

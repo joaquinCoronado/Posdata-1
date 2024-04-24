@@ -7,6 +7,7 @@ import {
   ScrollView,
   Pressable,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -144,39 +145,79 @@ const UserInformation = ({navigation}: any) => {
           <Text style={[styles.rowData, {color: theme.colors.text}]}>
             GENDER
           </Text>
-          <PosdataButton
-            containerStyles={[
-              styles.input,
-              styles.genderAction,
-              {
-                borderColor: theme.colors.text,
-                color: theme.colors.text,
-              },
-            ]}
-            onPress={() => setGenderPickerActive(value => !value)}
-            title={form.gender}
-          />
-
-          {isGemderPickerActive ? (
-            <Picker
-              selectedValue={form.gender}
-              style={[styles.picker, {borderColor: theme.colors.text}]}
-              mode="dropdown"
-              itemStyle={[styles.pickerItem, {color: theme.colors.text}]}
-              onValueChange={(itemValue, _itemIndex) => {
-                setForm(current => {
-                  return {
-                    ...current,
-                    gender: itemValue,
-                  };
-                });
-                setGenderPickerActive(false);
-              }}>
-              <Picker.Item label="Male" value="male" />
-              <Picker.Item label="Female" value="female" />
-            </Picker>
-          ) : null}
-
+          {Platform.OS === 'ios' ? (
+            <>
+              <PosdataButton
+                containerStyles={[
+                  styles.input,
+                  styles.genderAction,
+                  {
+                    borderColor: theme.colors.text,
+                    color: theme.colors.text,
+                  },
+                ]}
+                onPress={() => setGenderPickerActive(value => !value)}
+                title={form.gender}
+              />
+              {isGemderPickerActive ? (
+                <Picker
+                  dropdownIconColor="black"
+                  dropdownIconRippleColor="black"
+                  selectedValue={form.gender}
+                  style={[styles.picker]}
+                  mode="dropdown"
+                  itemStyle={[styles.pickerItem]}
+                  onValueChange={(itemValue, _itemIndex) => {
+                    setForm(current => {
+                      return {
+                        ...current,
+                        gender: itemValue,
+                      };
+                    });
+                    setGenderPickerActive(false);
+                  }}>
+                  <Picker.Item label="Male" value="male" />
+                  <Picker.Item label="Female" value="female" />
+                </Picker>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <PosdataButton
+                containerStyles={[
+                  styles.input,
+                  styles.genderAction,
+                  {
+                    borderColor: theme.colors.text,
+                    color: theme.colors.text,
+                  },
+                ]}
+                onPress={() => setGenderPickerActive(value => !value)}
+                title={form.gender}
+              />
+              {isGemderPickerActive ? (
+                <Picker
+                  dropdownIconColor="black"
+                  dropdownIconRippleColor="black"
+                  selectedValue={form.gender}
+                  style={[styles.picker]}
+                  mode="dropdown"
+                  itemStyle={[styles.pickerItem]}
+                  onValueChange={(itemValue, _itemIndex) => {
+                    setForm(current => {
+                      return {
+                        ...current,
+                        gender: itemValue,
+                      };
+                    });
+                    setGenderPickerActive(false);
+                  }}>
+                  <Picker.Item label="Male" value="male" />
+                  <Picker.Item label="Female" value="female" />
+                </Picker>
+              ) : null}
+            </>
+          )}
           {/* BIRTHDAY */}
           <Text style={[styles.rowData, {color: theme.colors.text}]}>
             BIRTHDAY
@@ -194,7 +235,6 @@ const UserInformation = ({navigation}: any) => {
             onPress={() => setDatePickerActive(current => !current)}
             title={toLocalDate(form.birthday)}
           />
-
           <DatePicker
             modal
             mode="date"
@@ -337,7 +377,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   genderAction: {marginBottom: 10, marginTop: 0, alignItems: 'flex-start'},
-  picker: {height: 120, borderWidth: 1.5, borderColor: 'black', top: -12},
+  picker: {
+    color: 'black',
+    height: 120,
+    borderWidth: 1.5,
+    borderColor: 'black',
+    top: -12,
+  },
   pickerItem: {height: 120, fontSize: 16},
   //BUTTONS
   buttonsContainer: {
